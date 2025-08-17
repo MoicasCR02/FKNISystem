@@ -1,82 +1,214 @@
 ﻿@model IEnumerable<FKNI.Application.DTOs.ProductosDTO>
 
 @{
-    ViewData["Title"] = "IndexAdmin";
+    ViewData["Title"] = "Productos – Admin";
 }
 
-<h1>IndexAdmin</h1>
+<style>
+    .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdProducto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreProducto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stock)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PromedioValoracion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCategoria)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descuento)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdProducto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NombreProducto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PromedioValoracion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCategoria)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descuento)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.IdProducto }) |
-                @Html.ActionLink("Details", "Details", new { id = item.IdProducto }) |
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    .table-wrap {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(34,34,34,.06);
+        overflow: hidden;
+    }
+
+    .table thead th {
+        white-space: nowrap;
+        background: #f8f9fa;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .badge-status {
+        font-weight: 600;
+        letter-spacing: .2px;
+    }
+
+    .rating {
+        display: inline-flex;
+        align-items: center;
+        gap: .15rem;
+        color: #f4b400; /* tono “warning” */
+    }
+
+        .rating .score {
+            color: #6c757d;
+            font-size: .85rem;
+            margin-left: .3rem;
+        }
+
+    .price {
+        font-weight: 600;
+        letter-spacing: .2px;
+    }
+
+    .toolbar {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        border-radius: .5rem;
+        padding: .35rem .6rem;
+        font-weight: 600;
+    }
+
+    .cell-truncate {
+        max-width: 380px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="admin-header mb-3">
+        <h2 class="text-primary mb-0"><i class="fas fa-box-open me-2"></i>Productos (Admin)</h2>
+
+        <div class="toolbar">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Crear producto
+            </a>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(m => m.First().IdProducto)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().NombreProducto)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Descripcion)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Precio)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Stock)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().PromedioValoracion)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().IdCategoria)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Estado)</th>
+                        <th>@Html.DisplayNameFor(m => m.First().Descuento)</th>
+                        <th class="text-center" style="width:160px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            var activo = false;
+                            try { activo = Convert.ToBoolean(item.Estado); } catch { /* por si viene distinto */ }
+
+                            // Promedio (visual)
+                            decimal promedio = 0m;
+                            int full = 0; bool half = false; int empty = 5;
+                            try
+                            {
+                                promedio = (decimal)item.PromedioValoracion;
+                                full = (int)Math.Floor(promedio);
+                                half = (promedio - full) >= 0.5m;
+                                empty = 5 - full - (half ? 1 : 0);
+                            }
+                            catch { /* segura */ }
+
+                            // Precio
+                            string precioTxt = $"₡{(item?.Precio ?? 0m):N2}";
+
+                            // Descuento
+                            decimal desc = 0m;
+                            try { desc = Convert.ToDecimal(item.Descuento); } catch { }
+
+                            <tr>
+                                <td class="text-muted">@item.IdProducto</td>
+
+                                <td class="fw-semibold">@item.NombreProducto</td>
+
+                                <td>
+                                    <div class="cell-truncate" title="@item.Descripcion">@item.Descripcion</div>
+                                </td>
+
+                                <td class="price">@precioTxt</td>
+
+                                <td>@item.Stock</td>
+
+                                <td>
+                                    <div class="rating" aria-label="Valoración @promedio.ToString("0.0") de 5">
+                                        @for (int i = 0; i < full; i++)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        @if (half)
+                                        {
+                                            <i class="fas fa-star-half-alt"></i>
+                                        }
+                                        @for (int i = 0; i < empty; i++)
+                                        {
+                                            <i class="far fa-star"></i>
+                                        }
+                                <span class="score">(@promedio.ToString("0.0"))</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            @* Si tu DTO incluye NombreCategoria, úsalo; si no, mantenemos el Id *@
+                            @(item.GetType().GetProperty("NombreCategoria") != null
+                                                        ? (item.GetType().GetProperty("NombreCategoria")!.GetValue(item)?.ToString() ?? item.IdCategoria?.ToString())
+                                                        : item.IdCategoria?.ToString())
+                        </td>
+
+                                <td>
+                            @if (activo)
+                                    {
+                                        <span class="badge bg-success badge-status">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary badge-status">Inactivo</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (desc > 0)
+                                    {
+                                        <span class="badge bg-danger">-@desc.ToString("0")%</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.IdProducto" class="btn btn-outline-primary btn-sm btn-action" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.IdProducto" class="btn btn-outline-secondary btn-sm btn-action" title="Detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center py-4 text-muted">
+                                No hay productos para mostrar.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
