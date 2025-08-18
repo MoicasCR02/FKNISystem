@@ -12,5 +12,7 @@ namespace FKNI.Application.Services.Interfaces
         {
             Task<ICollection<UsuariosDTO>> ListAsync();
             Task<UsuariosDTO> FindByIdAsync(int id_usuario);
+            Task<int> AddAsync(UsuariosDTO dto);
+            Task<UsuariosDTO> LoginAsync(string id, string password);
         }
 }

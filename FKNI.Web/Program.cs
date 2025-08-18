@@ -1,3 +1,4 @@
+using FKNI.Application.Config;
 using FKNI.Application.Profiles;
 using FKNI.Application.Services.Implementations;
 using FKNI.Application.Services.Interfaces;
@@ -5,6 +6,7 @@ using FKNI.Infraestructure.Data;
 using FKNI.Infraestructure.Repository.Implementations;
 using FKNI.Infraestructure.Repository.Interfaces;
 using FKNI.Web.Middleware;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -14,6 +16,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+// Mapeo de la clase AppConfig para leer appsettings.json
+builder.Services.Configure<AppConfig>(builder.Configuration);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+//***********************
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login"; // Ruta donde redirige si no está autenticado
+        options.AccessDeniedPath = "/Login/Forbidden"; // Ruta si no tiene permisos
+    });
+
+builder.Services.AddAuthorization();
 
 //Registra repositorios, Servicios y profiles
 
@@ -107,6 +125,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

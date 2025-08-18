@@ -36,24 +36,63 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Mantenimiento Usuarios</a>
-                        </li>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Mantenimiento Usuarios</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Resenas" asp-action="Index">Mantenimiento Reseñas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Promociones" asp-action="Index">Mantenimiento Promociones</a>
-                        </li>
+                        
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Resenas" asp-action="Index">Mantenimiento Reseñas</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Promociones" asp-action="Index">Mantenimiento Promociones</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrador"))
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pedidos" asp-action="Index">Mantenimiento Pedidos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="IndexAdmin">Mantenimiento Productos</a>
+                        }
+                        
+                        @if (User.IsInRole("Administrador") && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="IndexAdmin">Mantenimiento Productos</a>
+                            </li>
+                        }
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Create">Registrarse</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Iniciar Sesion</a>
+                        </li>
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                          <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="LogOff">Cerrar Sesion</a>
+                        </li>
+                        }
+
+                        
+                        
                     </ul>
                 </div>
             </div>

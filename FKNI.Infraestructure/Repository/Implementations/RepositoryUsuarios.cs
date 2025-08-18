@@ -28,5 +28,26 @@ namespace FKNI.Infraestructure.Repository.Implementations
             var collection = await _context.Set<Usuarios>().AsNoTracking().ToListAsync();
             return collection;
         }
+
+        public async Task<int> AddAsync(Usuarios entity)
+        {
+            // Agregar la entidad al contexto
+            await _context.Usuarios.AddAsync(entity);
+
+            // Guardar en la base de datos
+            await _context.SaveChangesAsync();
+
+            // Retornar el Id generado
+            return entity.IdUsuario;
+        }
+
+        public async Task<Usuarios> LoginNameAsync(string id)
+        {
+            var @object = await _context.Set<Usuarios>()
+                                        .Include(b => b.IdRolNavigation)
+                                        .Where(p => p.Correo == id)
+                                        .FirstOrDefaultAsync();
+            return @object!;
+        }
     }
 }

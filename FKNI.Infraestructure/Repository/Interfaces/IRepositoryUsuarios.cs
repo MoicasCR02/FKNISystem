@@ -11,5 +11,7 @@ namespace FKNI.Infraestructure.Repository.Interfaces
     {
         Task<ICollection<Usuarios>> ListAsync();
         Task<Usuarios> FindByIdAsync(int IdUsuario);
+        Task<int> AddAsync(Usuarios entity);
+        Task<Usuarios> LoginNameAsync(string id);
     }
 }

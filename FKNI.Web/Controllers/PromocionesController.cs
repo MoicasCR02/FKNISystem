@@ -2,6 +2,7 @@
 using FKNI.Application.Services.Implementations;
 using FKNI.Application.Services.Interfaces;
 using FKNI.Infraestructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace FKNI.Web.Controllers
             _serviceCategorias = serviceCategorias;
         }
         [HttpGet]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             var collection = await _servicePromociones.ListAsync();
@@ -48,7 +50,6 @@ namespace FKNI.Web.Controllers
             }
         }
 
-
         public async Task<IActionResult> Create()
         {
             ViewBag.ListCategoria = await _serviceCategorias.SinPromo();
@@ -62,9 +63,11 @@ namespace FKNI.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PromocionesDTO dto)
         {
-            if(dto.IdCategoria != null)
+            ModelState.Remove("NombreCategoria");
+            if (dto.IdCategoria != null)
             {
                 ModelState.Remove("BuscarProducto");
+
             }
             else
             {
@@ -167,6 +170,7 @@ namespace FKNI.Web.Controllers
             {
                 ModelState.Remove("BuscarProducto");
                 ModelState.Remove("IdCategoria");
+                ModelState.Remove("NombreCategoria");
             }
 
             if(dto.IdProducto == null)
