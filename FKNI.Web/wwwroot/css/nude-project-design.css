@@ -923,21 +923,18 @@ a {
 /* ================================================
    9. FOOTER
    ================================================ */
+/* FOOTER */
 .footer {
     background-color: var(--color-gray-900);
-    color: var(--color-white);
     padding: var(--space-12) 0 var(--space-8);
 }
 
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-8);
-    margin-bottom: var(--space-8);
-}
+    .footer,
+    .footer * {
+        color: var(--color-white) !important;
+    }
 
 .footer-section h4 {
-    color: var(--color-white);
     margin-bottom: var(--space-4);
     font-size: var(--font-size-lg);
     text-transform: uppercase;
@@ -946,6 +943,8 @@ a {
 
 .footer-links {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
     .footer-links li {
@@ -953,13 +952,13 @@ a {
     }
 
     .footer-links a {
-        color: var(--color-gray-400);
+        color: var(--color-gray-400) !important;
         text-decoration: none;
         transition: color var(--transition-fast);
     }
 
         .footer-links a:hover {
-            color: var(--color-white);
+            color: var(--color-white) !important;
         }
 
 .footer-bottom {
@@ -968,6 +967,7 @@ a {
     text-align: center;
     font-size: var(--font-size-sm);
 }
+
 
 /* ================================================
    10. CAROUSEL COMPONENTS

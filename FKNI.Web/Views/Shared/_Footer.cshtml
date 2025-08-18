@@ -1,0 +1,66 @@
+﻿<footer class="footer" role="contentinfo">
+    <div class="container">
+        <div class="footer-content">
+
+            <!-- Marca / About -->
+            <section class="footer-section">
+                <h4>Fucking Industry</h4>
+                <p class="text-sm">
+                    Camisetas con actitud, diseño y materiales que respetan el planeta.
+                    Ediciones limitadas y colaboraciones con artistas locales.
+                </p>
+                <div class="d-flex items-center gap-4 mt-3" aria-label="Redes sociales">
+                    <a href="#" class="np-minimal-link" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="#" class="np-minimal-link" aria-label="TikTok">
+                        <i class="bi bi-tiktok"></i>
+                    </a>
+                    <a href="#" class="np-minimal-link" aria-label="YouTube">
+                        <i class="bi bi-youtube"></i>
+                    </a>
+                    <a href="#" class="np-minimal-link" aria-label="Twitter/X">
+                        <i class="bi bi-twitter-x"></i>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Enlaces -->
+            <section class="footer-section">
+                <h4>Explorar</h4>
+                <ul class="footer-links">
+                    <li><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+                    <li><a asp-controller="Productos" asp-action="Index">Catálogo</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy">Política de Privacidad</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact">Contacto</a></li>
+                </ul>
+            </section>
+
+            <!-- Ayuda -->
+            <section class="footer-section">
+                <h4>Soporte</h4>
+                <ul class="footer-links">
+                    <li><a asp-controller="Ayuda" asp-action="Preguntas">Preguntas frecuentes</a></li>
+                    <li><a asp-controller="Cuenta" asp-action="Pedidos">Mis pedidos</a></li>
+                    <li><a asp-controller="Cuenta" asp-action="Login">Iniciar sesión</a></li>
+                    <li><a href="mailto:contacto@fi.com">contacto@fi.com</a></li>
+                </ul>
+            </section>
+
+            <!-- Newsletter -->
+            <section class="footer-section">
+                <h4>Newsletter</h4>
+                <p class="text-sm">Lanzamientos, promos y drops exclusivos. Sin spam.</p>
+                <form class="d-flex gap-2 mt-2" method="post" asp-controller="Suscripcion" asp-action="Crear">
+                    <input name="email" type="email" class="form-input" placeholder="tu@email.com" required />
+                    <button type="submit" class="btn btn-primary btn-sm">Suscribirme</button>
+                </form>
+            </section>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div>&copy; @DateTime.Now.Year Fucking Industry — Todos los derechos reservados.</div>
+        </div>
+    </div>
+</footer>

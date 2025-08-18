@@ -1,84 +1,110 @@
 ﻿@model FKNI.Application.DTOs.UsuariosDTO
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear usuario";
 }
 
-<h1>Create</h1>
+<section class="section">
+    <div class="container container-narrow">
 
-<h4>UsuariosDTO</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NombreUsuario" class="control-label"></label>
-                <input asp-for="NombreUsuario" class="form-control" />
-                <span asp-validation-for="NombreUsuario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Correo" class="control-label"></label>
-                <input asp-for="Correo" class="form-control" />
-                <span asp-validation-for="Correo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Contrasena" class="control-label"></label>
-                <input asp-for="Contrasena" class="form-control" />
-                <span asp-validation-for="Contrasena" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-                <input asp-for="FechaRegistro" class="form-control" />
-                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
+        <!-- Header -->
+        <div class="section-header">
+            <h2 class="section-title">Crear usuario</h2>
+            <p class="section-subtitle">Completa los datos para registrar un nuevo usuario en el sistema.</p>
+        </div>
 
-            @if (User.IsInRole("Administrador"))
-            {
-                <div class="mb-3">
-                    <label asp-for="IdRol" class="form-label">Rol</label>
-                    @Html.DropDownListFor(m => m.IdRol,
-                    new List<SelectListItem>
-                                {
-                                new SelectListItem { Text = "Seleccione un Rol", Value = "" },
-                                new SelectListItem { Text = "Administrador", Value = "1" },
-                                new SelectListItem { Text = "Cliente", Value = "2" },
-                                new SelectListItem { Text = "Vendedor", Value = "3" },
-                                new SelectListItem { Text = "Invitado", Value = "4" },
-                                // new SelectListItem { Text = "Categoría", Value = "categoria" }
-                                },
-                                new { @class = "form-select", required = "required" }
-                                )
-                <span class="text-danger" id="errorCategoria"></span>
-                <span asp-validation-for="IdRol" class="text-danger"></span>
-                </div>
-            }
-            else
-            {
-                @if (!User.IsInRole("Administrador"))
-                {
-                    <div class="alert alert-info mt-3">
-                        <strong>Nota:</strong> Te estás registrando como <span class="fw-bold">Cliente</span>. Este rol se asigna automáticamente.
+        <!-- Card Form -->
+        <div class="card shadow-md">
+            <div class="card-body">
+                <form asp-action="Create" method="post" class="grid grid-cols-1 gap-6">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+
+                    <!-- Nombre -->
+                    <div class="form-group">
+                        <label asp-for="NombreUsuario" class="form-label">Nombre de usuario</label>
+                        <input asp-for="NombreUsuario" class="form-input" placeholder="Ej: moicas_92" />
+                        <span asp-validation-for="NombreUsuario" class="form-error"></span>
                     </div>
-                }
-            }
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                    <!-- Correo -->
+                    <div class="form-group">
+                        <label asp-for="Correo" class="form-label">Correo</label>
+                        <input asp-for="Correo" class="form-input" type="email" placeholder="tucorreo@dominio.com" />
+                        <span asp-validation-for="Correo" class="form-error"></span>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <label asp-for="Contrasena" class="form-label">Contraseña</label>
+                        <input asp-for="Contrasena" class="form-input" type="password" placeholder="Mínimo 8 caracteres" />
+                        <span asp-validation-for="Contrasena" class="form-error"></span>
+                    </div>
+
+                    <!-- Fecha Registro -->
+                    <div class="form-group">
+                        <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
+                        <input asp-for="FechaRegistro" class="form-input" type="datetime-local" />
+                        <span asp-validation-for="FechaRegistro" class="form-error"></span>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label asp-for="Telefono" class="form-label">Teléfono</label>
+                        <input asp-for="Telefono" class="form-input" inputmode="numeric" placeholder="88888888" />
+                        <span asp-validation-for="Telefono" class="form-error"></span>
+                    </div>
+
+                    <!-- Rol (solo admin) -->
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <div class="form-group">
+                            <label asp-for="IdRol" class="form-label">Rol</label>
+                            @Html.DropDownListFor(m => m.IdRol,
+                            new List<SelectListItem>
+                                                {
+                                                new SelectListItem { Text = "Seleccione un Rol", Value = "" },
+                                                new SelectListItem { Text = "Administrador", Value = "1" },
+                                                new SelectListItem { Text = "Cliente", Value = "2" },
+                                                new SelectListItem { Text = "Vendedor", Value = "3" },
+                                                new SelectListItem { Text = "Invitado", Value = "4" },
+                                                },
+                                                new { @class = "form-select", required = "required" }
+                                                )
+                        <span id="errorCategoria" class="form-error"></span>
+                        <span asp-validation-for="IdRol" class="form-error"></span>
+                    </div>
+                                        }
+                    else
+                    {
+                        <div class="card bg-white border np-accent-line">
+                            <div class="card-body">
+                                <div class="d-flex items-center gap-2">
+                                    <i class="bi bi-info-circle"></i>
+                                    <div>
+                                        <strong>Nota:</strong> Te estás registrando como <span class="font-semibold">Cliente</span>. Este rol se asigna automáticamente.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-between items-center gap-4 mt-2">
+                        <button type="submit" class="btn btn-primary">
+                            Crear usuario
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    </div>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
