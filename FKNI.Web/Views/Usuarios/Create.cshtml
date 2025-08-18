@@ -4,102 +4,207 @@
     ViewData["Title"] = "Crear usuario";
 }
 
-<section class="section">
+<!-- Create User Header -->
+<section class="section bg-nude-light">
     <div class="container container-narrow">
-
-        <!-- Header -->
         <div class="section-header">
-            <h2 class="section-title">Crear usuario</h2>
-            <p class="section-subtitle">Completa los datos para registrar un nuevo usuario en el sistema.</p>
+            <h1 class="section-title">Crear Usuario</h1>
+            <p class="section-subtitle">Completa los datos para registrar un nuevo usuario en el sistema</p>
+        </div>
+    </div>
+</section>
+
+<!-- User Form -->
+<section class="section">
+    <div class="container container-narrow content-with-footer-space">
+
+        <!-- Welcome Card -->
+        <div class="welcome-card mb-8">
+            <div class="welcome-content">
+                <div class="welcome-icon">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <div class="welcome-text">
+                    <h3 class="welcome-title">¡Únete a Fucking Industry!</h3>
+                    <p class="welcome-subtitle">Crea tu cuenta y descubre diseños únicos que definen tu estilo</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Card Form -->
-        <div class="card shadow-md">
+        <!-- Form Card -->
+        <div class="card shadow-lg">
             <div class="card-body">
-                <form asp-action="Create" method="post" class="grid grid-cols-1 gap-6">
+                <form asp-action="Create" method="post" class="modern-form" id="userForm">
                     @Html.AntiForgeryToken()
 
-                    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+                    <div asp-validation-summary="ModelOnly" class="form-error mb-6"></div>
 
-                    <!-- Nombre -->
-                    <div class="form-group">
-                        <label asp-for="NombreUsuario" class="form-label">Nombre de usuario</label>
-                        <input asp-for="NombreUsuario" class="form-input" placeholder="Ej: moicas_92" />
-                        <span asp-validation-for="NombreUsuario" class="form-error"></span>
-                    </div>
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-person"></i>
+                            Información Personal
+                        </h3>
 
-                    <!-- Correo -->
-                    <div class="form-group">
-                        <label asp-for="Correo" class="form-label">Correo</label>
-                        <input asp-for="Correo" class="form-input" type="email" placeholder="tucorreo@dominio.com" />
-                        <span asp-validation-for="Correo" class="form-error"></span>
-                    </div>
-
-                    <!-- Contraseña -->
-                    <div class="form-group">
-                        <label asp-for="Contrasena" class="form-label">Contraseña</label>
-                        <input asp-for="Contrasena" class="form-input" type="password" placeholder="Mínimo 8 caracteres" />
-                        <span asp-validation-for="Contrasena" class="form-error"></span>
-                    </div>
-
-                    <!-- Fecha Registro -->
-                    <div class="form-group">
-                        <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
-                        <input asp-for="FechaRegistro" class="form-input" type="datetime-local" />
-                        <span asp-validation-for="FechaRegistro" class="form-error"></span>
-                    </div>
-
-                    <!-- Teléfono -->
-                    <div class="form-group">
-                        <label asp-for="Telefono" class="form-label">Teléfono</label>
-                        <input asp-for="Telefono" class="form-input" inputmode="numeric" placeholder="88888888" />
-                        <span asp-validation-for="Telefono" class="form-error"></span>
-                    </div>
-
-                    <!-- Rol (solo admin) -->
-                    @if (User.IsInRole("Administrador"))
-                    {
+                        <!-- Nombre de Usuario -->
                         <div class="form-group">
-                            <label asp-for="IdRol" class="form-label">Rol</label>
-                            @Html.DropDownListFor(m => m.IdRol,
-                            new List<SelectListItem>
-                                                {
-                                                new SelectListItem { Text = "Seleccione un Rol", Value = "" },
-                                                new SelectListItem { Text = "Administrador", Value = "1" },
-                                                new SelectListItem { Text = "Cliente", Value = "2" },
-                                                new SelectListItem { Text = "Vendedor", Value = "3" },
-                                                new SelectListItem { Text = "Invitado", Value = "4" },
-                                                },
-                                                new { @class = "form-select", required = "required" }
-                                                )
-                        <span id="errorCategoria" class="form-error"></span>
-                        <span asp-validation-for="IdRol" class="form-error"></span>
+                            <label asp-for="NombreUsuario" class="form-label">
+                                <i class="bi bi-at"></i>
+                                Nombre de Usuario
+                            </label>
+                            <input asp-for="NombreUsuario" class="form-input" placeholder="Ej: moicas_92" />
+                            <small class="form-help">
+                                <i class="bi bi-info-circle"></i>
+                                Este será tu identificador único en la plataforma
+                            </small>
+                            <span asp-validation-for="NombreUsuario" class="form-error"></span>
+                        </div>
+
+                        <!-- Correo -->
+                        <div class="form-group">
+                            <label asp-for="Correo" class="form-label">
+                                <i class="bi bi-envelope"></i>
+                                Correo Electrónico
+                            </label>
+                            <input asp-for="Correo" class="form-input" type="email" placeholder="tucorreo@dominio.com" />
+                            <small class="form-help">
+                                <i class="bi bi-shield-check"></i>
+                                Usaremos este correo para notificaciones importantes
+                            </small>
+                            <span asp-validation-for="Correo" class="form-error"></span>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="form-group">
+                            <label asp-for="Telefono" class="form-label">
+                                <i class="bi bi-phone"></i>
+                                Teléfono
+                            </label>
+                            <input asp-for="Telefono" class="form-input" inputmode="numeric" placeholder="88888888" />
+                            <small class="form-help">
+                                <i class="bi bi-truck"></i>
+                                Para coordinar entregas y soporte
+                            </small>
+                            <span asp-validation-for="Telefono" class="form-error"></span>
+                        </div>
                     </div>
-                                        }
-                    else
-                    {
-                        <div class="card bg-white border np-accent-line">
-                            <div class="card-body">
-                                <div class="d-flex items-center gap-2">
-                                    <i class="bi bi-info-circle"></i>
-                                    <div>
-                                        <strong>Nota:</strong> Te estás registrando como <span class="font-semibold">Cliente</span>. Este rol se asigna automáticamente.
+
+                    <!-- Security Section -->
+                    <div class="form-section security-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-shield-lock"></i>
+                            Seguridad
+                        </h3>
+
+                        <!-- Contraseña -->
+                        <div class="form-group">
+                            <label asp-for="Contrasena" class="form-label">
+                                <i class="bi bi-key"></i>
+                                Contraseña
+                            </label>
+                            <div class="password-input-container">
+                                <input asp-for="Contrasena" class="form-input password-input" type="password" placeholder="Mínimo 8 caracteres" id="passwordInput" />
+                                <button type="button" class="password-toggle" onclick="togglePassword()">
+                                    <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <span class="strength-text" id="strengthText">Ingresa una contraseña</span>
+                            </div>
+                            <span asp-validation-for="Contrasena" class="form-error"></span>
+                        </div>
+
+                        <!-- Fecha Registro -->
+                        <div class="form-group">
+                            <label asp-for="FechaRegistro" class="form-label">
+                                <i class="bi bi-calendar-plus"></i>
+                                Fecha de Registro
+                            </label>
+                            <input asp-for="FechaRegistro" class="form-input" type="datetime-local" />
+                            <span asp-validation-for="FechaRegistro" class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Role Selection Section -->
+                    <div class="form-section role-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-person-badge"></i>
+                            Rol del Usuario
+                        </h3>
+
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <div class="form-group">
+                                <label asp-for="IdRol" class="form-label">
+                                    <i class="bi bi-shield-fill-check"></i>
+                                    Seleccionar Rol
+                                </label>
+                                @Html.DropDownListFor(m => m.IdRol,
+                                new List<SelectListItem>
+                                                        {
+                                                        new SelectListItem { Text = "Seleccione un Rol", Value = "" },
+                                                        new SelectListItem { Text = "👑 Administrador", Value = "1" },
+                                                        new SelectListItem { Text = "🛍️ Cliente", Value = "2" },
+                                                        new SelectListItem { Text = "💼 Vendedor", Value = "3" },
+                                                        new SelectListItem { Text = "👤 Invitado", Value = "4" },
+                                                        },
+                                                        new { @class = "form-select", required = "required" }
+                                                        )
+                            <small class="form-help">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Selecciona cuidadosamente el rol según los permisos necesarios
+                            </small>
+                            <span asp-validation-for="IdRol" class="form-error"></span>
+                        </div>
+                                                }
+                        else
+                        {
+                            <div class="role-info-card">
+                                <div class="role-info-content">
+                                    <div class="role-info-icon">
+                                        <i class="bi bi-person-check"></i>
+                                    </div>
+                                    <div class="role-info-text">
+                                        <h4 class="role-info-title">Registro como Cliente</h4>
+                                        <p class="role-info-description">
+                                            Te estás registrando como <strong>Cliente</strong>. Este rol se asigna automáticamente
+                                            y te permitirá realizar compras y escribir reseñas.
+                                        </p>
                                     </div>
                                 </div>
+                                <div class="role-benefits">
+                                    <h5 class="benefits-title">Con tu cuenta podrás:</h5>
+                                    <ul class="benefits-list">
+                                        <li><i class="bi bi-check-circle"></i> Realizar compras</li>
+                                        <li><i class="bi bi-check-circle"></i> Escribir reseñas</li>
+                                        <li><i class="bi bi-check-circle"></i> Guardar favoritos</li>
+                                        <li><i class="bi bi-check-circle"></i> Seguir pedidos</li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
 
-                    <!-- Actions -->
-                    <div class="d-flex justify-between items-center gap-4 mt-2">
-                        <button type="submit" class="btn btn-primary">
-                            Crear usuario
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a asp-action="Index" class="btn btn-ghost btn-lg">
+                            <i class="bi bi-arrow-left"></i>
+                            Cancelar
+                        </a>
+                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-lg btn-submit">
+                            <i class="bi bi-person-plus"></i>
+                            <span class="btn-text">Crear Usuario</span>
+                            <div id="spinner" class="btn-spinner">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </div>
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-
     </div>
 </section>
 
@@ -107,4 +212,122 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('userForm');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnText = document.querySelector('.btn-text');
+            const spinner = document.getElementById('spinner');
+            const passwordInput = document.getElementById('passwordInput');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+
+            // Password strength checker
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                let feedback = '';
+
+                if (password.length >= 8) strength += 25;
+                if (/[a-z]/.test(password)) strength += 25;
+                if (/[A-Z]/.test(password)) strength += 25;
+                if (/[0-9]/.test(password)) strength += 25;
+
+                if (strength === 0) {
+                    feedback = 'Ingresa una contraseña';
+                } else if (strength <= 25) {
+                    feedback = '🔴 Muy débil';
+                } else if (strength <= 50) {
+                    feedback = '🟡 Débil';
+                } else if (strength <= 75) {
+                    feedback = '🟢 Buena';
+                } else {
+                    feedback = '💚 ¡Excelente!';
+                }
+
+                return { strength, feedback };
+            }
+
+            // Password input listener
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const result = checkPasswordStrength(this.value);
+
+                    if (strengthFill) {
+                        strengthFill.style.width = result.strength + '%';
+
+                        // Color based on strength
+                        if (result.strength <= 25) {
+                            strengthFill.style.background = '#EF4444';
+                        } else if (result.strength <= 50) {
+                            strengthFill.style.background = '#F59E0B';
+                        } else if (result.strength <= 75) {
+                            strengthFill.style.background = '#10B981';
+                        } else {
+                            strengthFill.style.background = '#059669';
+                        }
+                    }
+
+                    if (strengthText) {
+                        strengthText.textContent = result.feedback;
+                    }
+                });
+            }
+
+            // Form submission
+            form.addEventListener('submit', function (e) {
+                if (!form.checkValidity()) return;
+
+                // Show loading state
+                btnSubmit.disabled = true;
+                btnSubmit.classList.add('loading');
+                btnText.textContent = 'Creando usuario...';
+                spinner.style.display = 'block';
+
+                // Show success notification
+                setTimeout(() => {
+                    showNotification('🎉 ¡Usuario creado exitosamente!', 'success');
+                }, 500);
+            });
+
+            // Notification system
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+
+                document.body.appendChild(notification);
+                setTimeout(() => notification.classList.add('show'), 100);
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 4000);
+            }
+        });
+
+        // Password toggle functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+    </script>
 }
