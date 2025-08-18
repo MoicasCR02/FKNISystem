@@ -4,28 +4,161 @@
     ViewData["Title"] = "Detalles del Producto";
 }
 
-<div class="container my-5">
-    <h2 class="text-primary mb-4">Detalles del Producto</h2>
+<!-- Product Details Header -->
+<section class="section">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav mb-8">
+            <a asp-action="Index" class="breadcrumb-link">
+                <i class="bi bi-arrow-left"></i>
+                <span>Volver al listado</span>
+            </a>
+        </nav>
 
-    <!-- Información principal del producto -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h4 class="card-title">@Model.NombreProducto</h4>
-            <p class="text-muted">@Model.Descripcion</p>
+        <!-- Product Main Section -->
+        <div class="product-details-container">
 
-            <dl class="row mt-3">
-                <dt class="col-sm-4">ID del Producto</dt>
-                <dd class="col-sm-8">@Model.IdProducto</dd>
+            <!-- Product Images - Instagram Style Grid -->
+            <div class="product-images-section">
+                @if (Model.IdImagen != null && Model.IdImagen.Any())
+                {
+                    <div class="instagram-grid" id="productImagesGrid">
+                        @{
+                            var imagenes = Model.IdImagen.ToList();
+                            var totalImages = imagenes.Count;
+                        }
 
-                <dt class="col-sm-4">Precio</dt>
-                <dd class="col-sm-8">$@Model.Precio</dd>
+                        <!-- Navigation Arrows for Multiple Images -->
+                        @if (totalImages > 1)
+                        {
+                            <div class="instagram-nav-arrows">
+                                <button class="instagram-nav-arrow" id="prevImageBtn" onclick="previousImage()">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button class="instagram-nav-arrow" id="nextImageBtn" onclick="nextImageGrid()">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                        }
 
-                <dt class="col-sm-4">Stock</dt>
-                <dd class="col-sm-8">@Model.Stock unidades</dd>
+                        <!-- Image Counter -->
+                        @if (totalImages > 1)
+                        {
+                            <div class="instagram-counter" id="imageCounter">
+                                1 / @totalImages
+                            </div>
+                        }
 
-                <dt class="col-sm-4">Valoración Promedio</dt>
-                <dd class="col-sm-8">
-                    <!-- Reseñas para valoracion -->
+                        @if (totalImages == 1)
+                        {
+                            <!-- Single Image -->
+                            <div class="instagram-item single">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[0].UrlImagen)"
+                                     alt="Imagen del producto"
+                                     class="instagram-image"
+                                     onclick="openLightbox(0)" />
+                            </div>
+                        }
+                        else if (totalImages == 2)
+                        {
+                            <!-- Two Images -->
+                            @for (int i = 0; i < 2; i++)
+                            {
+                                <div class="instagram-item half" data-image-index="@i">
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[i].UrlImagen)"
+                                         alt="Imagen del producto"
+                                         class="instagram-image"
+                                         onclick="openLightbox(@i)" />
+                                </div>
+                            }
+                        }
+                        else if (totalImages == 3)
+                        {
+                            <!-- Three Images -->
+                            <div class="instagram-item large" data-image-index="0">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[0].UrlImagen)"
+                                     alt="Imagen del producto"
+                                     class="instagram-image"
+                                     onclick="openLightbox(0)" />
+                            </div>
+                            @for (int i = 1; i < 3; i++)
+                            {
+                                <div class="instagram-item small" data-image-index="@i">
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[i].UrlImagen)"
+                                         alt="Imagen del producto"
+                                         class="instagram-image"
+                                         onclick="openLightbox(@i)" />
+                                </div>
+                            }
+                        }
+                        else if (totalImages >= 4)
+                        {
+                            <!-- Four or More Images -->
+                            <div class="instagram-item large" data-image-index="0">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[0].UrlImagen)"
+                                     alt="Imagen del producto"
+                                     class="instagram-image"
+                                     onclick="openLightbox(0)" />
+                            </div>
+                            <div class="instagram-item medium" data-image-index="1">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[1].UrlImagen)"
+                                     alt="Imagen del producto"
+                                     class="instagram-image"
+                                     onclick="openLightbox(1)" />
+                            </div>
+                            <div class="instagram-item small" data-image-index="2">
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[2].UrlImagen)"
+                                     alt="Imagen del producto"
+                                     class="instagram-image"
+                                     onclick="openLightbox(2)" />
+                            </div>
+                            @if (totalImages > 4)
+                            {
+                                <div class="instagram-item small overlay" data-image-index="3">
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[3].UrlImagen)"
+                                         alt="Imagen del producto"
+                                         class="instagram-image"
+                                         onclick="openLightbox(3)" />
+                                    <div class="image-overlay" onclick="openLightbox(3)">
+                                        <span class="overlay-text">+@(totalImages - 4)</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="instagram-item small" data-image-index="3">
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[3].UrlImagen)"
+                                         alt="Imagen del producto"
+                                         class="instagram-image"
+                                         onclick="openLightbox(3)" />
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <!-- No Images Placeholder -->
+                    <div class="instagram-grid">
+                        <div class="instagram-item single">
+                            <div class="product-no-image">
+                                <i class="bi bi-image"></i>
+                                <span>Sin imágenes disponibles</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Product Information -->
+            <div class="product-info-section">
+
+                <!-- Product Header -->
+                <div class="product-header">
+                    <h1 class="product-title">@Model.NombreProducto</h1>
+                    <p class="product-description">@Model.Descripcion</p>
+
+                    <!-- Rating (tu lógica exacta) -->
                     @if (Model.Resenas != null && Model.Resenas.Any())
                     {
                         int totalValoraciones = (int)Model.Resenas.Sum(r => r.Valoracion);
@@ -36,115 +169,388 @@
                         bool media = (promedio - estrellas) >= 0.5m;
                         int vacias = 5 - estrellas - (media ? 1 : 0);
 
-                        <div class="mb-4">
-                            <p>
+                        <div class="product-rating-display">
+                            <div class="star-rating large">
                                 @for (int i = 0; i < estrellas; i++)
                                 {
-                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="bi bi-star-fill"></i>
                                 }
                                 @if (media)
                                 {
-                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                    <i class="bi bi-star-half"></i>
                                 }
                                 @for (int i = 0; i < vacias; i++)
                                 {
-                                    <i class="far fa-star text-warning"></i>
+                                    <i class="bi bi-star"></i>
                                 }
-
-                                <span class="ms-2">(@promedio.ToString("0.0"))</span>
-                            </p>
+                            </div>
+                            <span class="rating-text large">(@promedio.ToString("0.0"))</span>
                         </div>
                     }
-                </dd>
+                </div>
 
-                <dt class="col-sm-4">Categoría</dt>
-                <dd class="col-sm-8">@Model.IdCategoriaNavigation?.NombreCategoria</dd>
+                <!-- Product Details -->
+                <div class="product-details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">ID del Producto</span>
+                        <span class="detail-value">@Model.IdProducto</span>
+                    </div>
 
-                <dt class="col-sm-4">Estado</dt>
-                <dd class="col-sm-8">@Model.Estado</dd>
-            </dl>
-        </div>
-    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Precio</span>
+                        <span class="detail-value price">$@Model.Precio</span>
+                    </div>
 
-    <!-- Imágenes del producto -->
-    @if (Model.IdImagen != null && Model.IdImagen.Any())
-    {
-        <div class="mb-4">
-            <h5>Imágenes</h5>
-            <div class="d-flex flex-wrap gap-3">
-                @foreach (var img in Model.IdImagen)
+                    <div class="detail-item">
+                        <span class="detail-label">Stock</span>
+                        <span class="detail-value stock @(Model.Stock > 10 ? "in-stock" : Model.Stock > 0 ? "low-stock" : "out-of-stock")">
+                            @if (Model.Stock > 10)
+                            {
+                                <i class="bi bi-check-circle"></i>
+                                <span>@Model.Stock unidades</span>
+                            }
+                            else if (Model.Stock > 0)
+                            {
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <span>¡Últimas @Model.Stock unidades!</span>
+                            }
+                            else
+                            {
+                                <i class="bi bi-x-circle"></i>
+                                <span>Agotado</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Valoración Promedio</span>
+                        <span class="detail-value">
+                            @if (Model.Resenas != null && Model.Resenas.Any())
+                            {
+                                int totalValoraciones = (int)Model.Resenas.Sum(r => r.Valoracion);
+                                int cantidad = Model.Resenas.Count();
+                                decimal promedio = (decimal)totalValoraciones / cantidad;
+
+                                int estrellas = (int)Math.Floor(promedio);
+                                bool media = (promedio - estrellas) >= 0.5m;
+                                int vacias = 5 - estrellas - (media ? 1 : 0);
+
+                                <div class="star-rating">
+                                    @for (int i = 0; i < estrellas; i++)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    @if (media)
+                                    {
+                                        <i class="bi bi-star-half"></i>
+                                    }
+                                    @for (int i = 0; i < vacias; i++)
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                </div>
+                                <span class="rating-text">(@promedio.ToString("0.0"))</span>
+                            }
+                            else
+                            {
+                                <span class="text-gray-500">Sin valoraciones</span>
+                            }
+                        </span>
+                    </div>
+
+                    @if (Model.IdCategoriaNavigation?.NombreCategoria != null)
+                    {
+                        <div class="detail-item">
+                            <span class="detail-label">Categoría</span>
+                            <span class="detail-value category">@Model.IdCategoriaNavigation.NombreCategoria</span>
+                        </div>
+                    }
+
+                   @*  <div class="detail-item">
+                        <span class="detail-label">Estado</span>
+                        <span class="detail-value status">
+                            <span class="status-badge @(Model.Estado?.ToLower() == "activo" ? "active" : "inactive")">
+                                @Model.Estado
+                            </span>
+                        </span>
+                    </div> *@
+                </div>
+
+                <!-- Tags -->
+                @if (Model.IdEtiqueta != null && Model.IdEtiqueta.Any())
                 {
-                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(img.UrlImagen)"
-                         alt="Imagen del producto"
-                         class="img-thumbnail"
-                         style="max-width: 300px;" />
+                    <div class="product-tags">
+                        <h3 class="tags-title">Etiquetas</h3>
+                        <div class="tags-container">
+                            @foreach (var tag in Model.IdEtiqueta)
+                            {
+                                <span class="product-tag">#@tag.NombreEtiqueta</span>
+                            }
+                        </div>
+                    </div>
                 }
+
+                <!-- Action Buttons -->
+                <div class="product-actions">
+                    @if (Model.Stock > 0)
+                    {
+                        <button class="btn btn-primary btn-lg" onclick="addToCart(@Model.IdProducto)">
+                            <i class="bi bi-bag-plus"></i>
+                            <span>Agregar al Carrito</span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary btn-lg" disabled>
+                            <i class="bi bi-exclamation-circle"></i>
+                            <span>No Disponible</span>
+                        </button>
+                    }
+
+                    <button class="btn btn-nude btn-lg" onclick="toggleWishlist(@Model.IdProducto)">
+                        <i class="bi bi-heart"></i>
+                        <span>Favoritos</span>
+                    </button>
+                </div>
             </div>
         </div>
-    }
+    </div>
+</section>
 
-    <!-- Etiquetas -->
-    @if (Model.IdEtiqueta != null && Model.IdEtiqueta.Any())
-    {
-        <div class="mb-4">
-            <h5>Etiquetas</h5>
-            <ul class="list-inline">
-                @foreach (var tag in Model.IdEtiqueta)
+<!-- Reviews Section - Full Width Below Product Details -->
+@if (Model.Resenas != null && Model.Resenas.Any())
+{
+    <section class="section bg-gray-100 reviews-section-wrapper">
+        <div class="container container-narrow">
+            <div class="section-header">
+                <h2 class="section-title">Reseñas</h2>
+                <p class="section-subtitle">Lo que dicen nuestros clientes sobre este producto</p>
+            </div>
+
+            <div class="reviews-container">
+                @foreach (var review in Model.Resenas)
                 {
-                    <li class="list-inline-item badge bg-secondary">@tag.NombreEtiqueta</li>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="review-meta">
+                                <h4 class="review-author">@review.IdUsuarioNavigation?.NombreUsuario</h4>
+                                <div class="review-rating">
+                                    @{
+                                        var valor = review.Valoracion;
+                                        var estrellasReview = (int)Math.Floor((double)valor);
+                                        var mediaReview = ((double)valor - estrellasReview) >= 0.5;
+                                        var vaciasReview = 5 - estrellasReview - (mediaReview ? 1 : 0);
+                                    }
+
+                                    <div class="star-rating">
+                                        @for (int i = 0; i < estrellasReview; i++)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        @if (mediaReview)
+                                        {
+                                            <i class="bi bi-star-half"></i>
+                                        }
+                                        @for (int i = 0; i < vaciasReview; i++)
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    </div>
+                                    <span class="review-date">@review.Fecha</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p><strong>Usuario:</strong> @review.IdUsuarioNavigation?.NombreUsuario</p>
+                            <p><strong>Comentario:</strong> @review.Comentario</p>
+                            <p><strong>Fecha:</strong> @review.Fecha</p>
+                            <p>
+                                <strong>Valoración:</strong>
+                                <span class="ms-2">(@valor)</span>
+                            </p>
+                        </div>
+                    </div>
                 }
-            </ul>
+            </div>
+
+            <div class="text-center mt-8">
+                <a asp-controller="Resenas" asp-action="Create" asp-route-idProducto="@Model.IdProducto" asp-route-idUsuario="6" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar nueva reseña</span>
+                </a>
+            </div>
         </div>
-    }
+    </section>
+}
 
-    <!-- Reseñas -->
-    @if (Model.Resenas != null && Model.Resenas.Any())
-    {
-        <div class="mb-4">
-            <h5>Reseñas</h5>
-            @foreach (var review in Model.Resenas)
-            {
-                <div class="border rounded p-3 mb-3 bg-light">
-                    <p><strong>Usuario:</strong> @review.IdUsuarioNavigation?.NombreUsuario</p>
-                    <p><strong>Comentario:</strong> @review.Comentario</p>
-                    <p><strong>Fecha:</strong> @review.Fecha</p>
-                    <p>
-                        <strong>Valoración:</strong>
-                        @{
-                            var valor = review.Valoracion;
-                            var estrellas = (int)Math.Floor((double)valor);
-                            var media = ((double)valor - estrellas) >= 0.5;
-                            var vacías = 5 - estrellas - (media ? 1 : 0);
-                        }
-
-                        @for (int i = 0; i < estrellas; i++)
-                        {
-                            <i class="fas fa-star text-warning"></i>
-                        }
-                        @if (media)
-                        {
-                            <i class="fas fa-star-half-alt text-warning"></i>
-                        }
-                        @for (int i = 0; i < vacías; i++)
-                        {
-                            <i class="far fa-star text-warning"></i>
-                        }
-
-                        <span class="ms-2">(@valor)</span>
-                    </p>
-                </div>
-            }
-        </div>
-    }
-    <a asp-controller="Resenas" asp-action="Create" asp-route-idProducto="@Model.IdProducto" asp-route-idUsuario="6"
-       class="btn btn-success">
-        <i class="fas fa-plus-circle"></i> Agregar nueva reseña
-    </a>
-
-    <!-- Botón volver -->
-    <div class="mt-4">
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
+<!-- Image Lightbox Modal -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+    <div class="lightbox-container">
+        <button class="lightbox-close" onclick="closeLightbox()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <button class="lightbox-prev" onclick="prevImage()">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="lightbox-next" onclick="nextImage()">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+        <img class="lightbox-image" id="lightboxImage" src="" alt="">
+        <div class="lightbox-counter" id="lightboxCounter"></div>
     </div>
 </div>
+
+<script>
+    // Image Lightbox and Instagram Grid Navigation
+    let currentImageIndex = 0;
+    let currentGridIndex = 0;
+    let productImages = [];
+    let totalGridImages = 0;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Collect all product images for lightbox
+        const images = document.querySelectorAll('.instagram-image');
+        productImages = Array.from(images).map(img => img.src);
+
+        // Get total images for grid navigation
+        const imageItems = document.querySelectorAll('.instagram-item[data-image-index]');
+        totalGridImages = imageItems.length;
+
+        // Initialize grid navigation
+        updateImageDisplay();
+    });
+
+    // Grid Navigation Functions
+    function previousImage() {
+        if (totalGridImages <= 1) return;
+
+        currentGridIndex = (currentGridIndex - 1 + totalGridImages) % totalGridImages;
+        updateImageDisplay();
+    }
+
+    function nextImageGrid() {
+        if (totalGridImages <= 1) return;
+
+        currentGridIndex = (currentGridIndex + 1) % totalGridImages;
+        updateImageDisplay();
+    }
+
+    function updateImageDisplay() {
+        const imageItems = document.querySelectorAll('.instagram-item[data-image-index]');
+        const counter = document.getElementById('imageCounter');
+        const prevBtn = document.getElementById('prevImageBtn');
+        const nextBtn = document.getElementById('nextImageBtn');
+
+        // Update visibility of images
+        imageItems.forEach((item, index) => {
+            if (index === currentGridIndex) {
+                item.style.opacity = '1';
+                item.style.transform = 'scale(1)';
+                item.style.zIndex = '10';
+            } else {
+                item.style.opacity = '0.7';
+                item.style.transform = 'scale(0.95)';
+                item.style.zIndex = '1';
+            }
+        });
+
+        // Update counter
+        if (counter) {
+            counter.textContent = `${currentGridIndex + 1} / ${totalGridImages}`;
+        }
+
+        // Update navigation buttons
+        if (prevBtn && nextBtn) {
+            prevBtn.classList.toggle('disabled', totalGridImages <= 1);
+            nextBtn.classList.toggle('disabled', totalGridImages <= 1);
+        }
+    }
+
+    // Lightbox Functions
+    function openLightbox(index) {
+        currentImageIndex = index;
+        const lightbox = document.getElementById('lightboxOverlay');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const counter = document.getElementById('lightboxCounter');
+
+        lightboxImage.src = productImages[currentImageIndex];
+        counter.textContent = `${currentImageIndex + 1} / ${productImages.length}`;
+
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightboxOverlay');
+        lightbox.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function nextImage() {
+        currentImageIndex = (currentImageIndex + 1) % productImages.length;
+        document.getElementById('lightboxImage').src = productImages[currentImageIndex];
+        document.getElementById('lightboxCounter').textContent = `${currentImageIndex + 1} / ${productImages.length}`;
+    }
+
+    function prevImage() {
+        currentImageIndex = (currentImageIndex - 1 + productImages.length) % productImages.length;
+        document.getElementById('lightboxImage').src = productImages[currentImageIndex];
+        document.getElementById('lightboxCounter').textContent = `${currentImageIndex + 1} / ${productImages.length}`;
+    }
+
+    // Product Actions
+    function addToCart(productId) {
+        showNotification('¡Producto agregado al carrito!', 'success');
+    }
+
+    function toggleWishlist(productId) {
+        showNotification('Producto agregado a favoritos', 'success');
+    }
+
+    // Notification system
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        const lightbox = document.getElementById('lightboxOverlay');
+        if (lightbox.classList.contains('active')) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                prevImage();
+            } else if (e.key === 'ArrowRight') {
+                nextImage();
+            }
+        } else {
+            // Grid navigation when lightbox is not active
+            if (e.key === 'ArrowLeft') {
+                previousImage();
+            } else if (e.key === 'ArrowRight') {
+                nextImageGrid();
+            }
+        }
+    });
+</script>
