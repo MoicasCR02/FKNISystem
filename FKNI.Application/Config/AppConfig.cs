@@ -13,6 +13,7 @@ public class AppConfig
 }
 public class SmtpConfiguration
 {
+    public int? idUser { get; set; } = default!;
     public string UserName { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string Server { get; set; } = default!;

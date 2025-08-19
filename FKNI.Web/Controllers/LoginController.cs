@@ -36,6 +36,7 @@ namespace FKNI.Web.Controllers
 
         public async Task<IActionResult> LogIn(ViewModelLogin viewModelLogin)
         {
+            ModelState.Remove("IdUser"); // Ignora ese camp
 
             if (!ModelState.IsValid)
             {
@@ -61,7 +62,8 @@ namespace FKNI.Web.Controllers
             List<Claim> claims = new List<Claim>() {
 
                 new Claim(ClaimTypes.Name, usuarioDTO.NombreUsuario),
-                new Claim(ClaimTypes.Role, usuarioDTO.IdRolNavigation.NombreRol!)
+                new Claim(ClaimTypes.Role, usuarioDTO.IdRolNavigation.NombreRol!),
+                new Claim(ClaimTypes.Actor, usuarioDTO.IdUsuario.ToString())
             };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

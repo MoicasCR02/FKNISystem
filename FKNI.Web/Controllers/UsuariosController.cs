@@ -8,9 +8,11 @@ namespace FKNI.Web.Controllers
     public class UsuariosController : Controller
     {
         private readonly IServiceUsuarios _serviceUsuarios;
-        public UsuariosController(IServiceUsuarios serviceUsuarios)
+        private readonly IServiceCarrito _serviceCarrito;
+        public UsuariosController(IServiceUsuarios serviceUsuarios, IServiceCarrito serviceCarrito)
         {
             _serviceUsuarios = serviceUsuarios;
+            _serviceCarrito = serviceCarrito;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -46,7 +48,19 @@ namespace FKNI.Web.Controllers
             try
             {
                 await _serviceUsuarios.AddAsync(dto);
-                
+                // Crear carrito para el nuevo usuario
+                var collection = await _serviceUsuarios.ListAsync();
+                var ultimoUsuario = collection.OrderByDescending(p => p.IdUsuario).FirstOrDefault();
+
+                if(ultimoUsuario != null)
+                {
+                    var carritoDTO = new CarritoDTO
+                    {
+                        IdUsuario = ultimoUsuario.IdUsuario
+                    };
+                    await _serviceCarrito.AddAsync(carritoDTO);
+                }
+        
                 if (User.IsInRole("Administrador"))
                 {
                     return RedirectToAction("Index", "Usuarios");

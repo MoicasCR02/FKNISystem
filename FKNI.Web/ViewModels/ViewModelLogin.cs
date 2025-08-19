@@ -7,6 +7,7 @@ namespace FKNI.Web.ViewModels
         [Display(Name = "Email Usuario")]
         [Required(ErrorMessage = "{0} es requerido")]
         [DataType(DataType.EmailAddress)]
+        public string idUser { get; set; } = default!;
         public string User { get; set; } = default!;
         [StringLength(15, MinimumLength = 6, ErrorMessage = "Error en política de largo de contraseña")]
         [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Solamente números y letras")]

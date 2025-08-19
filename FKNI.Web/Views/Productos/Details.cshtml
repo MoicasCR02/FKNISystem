@@ -136,7 +136,10 @@
             }
         </div>
     }
-    <a asp-controller="Resenas" asp-action="Create" asp-route-idProducto="@Model.IdProducto" asp-route-idUsuario="6"
+    @{
+        var idUsuario = User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value;
+    }
+    <a asp-controller="Resenas" asp-action="Create" asp-route-idProducto="@Model.IdProducto" asp-route-idUsuario="@idUsuario"
        class="btn btn-success">
         <i class="fas fa-plus-circle"></i> Agregar nueva reseña
     </a>

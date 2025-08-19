@@ -1,0 +1,36 @@
+﻿using FKNI.Infraestructure.Data;
+using FKNI.Infraestructure.Models;
+using FKNI.Infraestructure.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FKNI.Infraestructure.Repository.Implementations
+{
+    public class RepositoryCarrito : IRepositoryCarrito
+    {
+        private readonly FKNIContext _context;
+        public RepositoryCarrito(FKNIContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Carrito> FindByIdAsync(int id_usuario)
+        {
+            var @object = await _context.Set<Carrito>()
+                .Where(x => x.IdUsuario == id_usuario)
+                .Include(x => x.IdUsuarioNavigation)
+                .FirstAsync();
+            return @object!;
+        }
+        public async Task<int> AddAsync(Carrito entity)
+        {
+            await _context.Set<Carrito>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdCarrito;
+        }
+    }
+}
