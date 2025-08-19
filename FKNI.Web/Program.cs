@@ -46,6 +46,7 @@ builder.Services.AddTransient<IRepositoryResenas, RepositoryResenas>();
 builder.Services.AddTransient<IRepositoryPromociones, RepositoryPromociones>();
 builder.Services.AddTransient<IRepositoryPedidos, RepositoryPedidos>();
 builder.Services.AddTransient<IRepositoryCarrito, RepositoryCarrito>();
+builder.Services.AddTransient<IRepositoryDetalleCarrito, RepositoryDetalleCarrito>();
 //Services
 builder.Services.AddTransient<IServiceUsuarios, ServiceUsuarios>();
 builder.Services.AddTransient<IServiceProductos, ServiceProductos>();
@@ -56,6 +57,7 @@ builder.Services.AddTransient<IServiceResenas, ServiceResenas>();
 builder.Services.AddTransient<IServicePromociones, ServicePromociones>();
 builder.Services.AddTransient<IServicePedidos, ServicePedidos>();
 builder.Services.AddTransient<IServiceCarrito, ServiceCarrito>();
+builder.Services.AddTransient<IServiceDetalleCarrito, ServiceDetalleCarrito>();
 //Configurar Automapper
 builder.Services.AddAutoMapper(config =>
 {

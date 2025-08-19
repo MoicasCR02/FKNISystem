@@ -104,7 +104,6 @@
                           <li class="nav-item">
                             @{var idUsuario = User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value;}
                             <a class="nav-link text-dark" asp-area="" asp-controller="Carrito" asp-action="Index" asp-route-id="@idUsuario">Carrito</a>
-
                         </li>
                         }
 

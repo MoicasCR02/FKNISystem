@@ -1,19 +1,25 @@
-﻿using FKNI.Application.Services.Interfaces;
+﻿using FKNI.Application.DTOs;
+using FKNI.Application.Services.Implementations;
+using FKNI.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FKNI.Web.Controllers
 {
     public class CarritoController : Controller
     {
         private readonly IServiceCarrito _serviceCarrito;
+        private readonly IServiceDetalleCarrito _serviceDetalleCarrito;
+        private readonly IServiceProductos _serviceProductos;
+
         //private readonly FKNIContext _context;
 
-        public CarritoController(IServiceCarrito servicePCarrito)
+        public CarritoController(IServiceCarrito servicePCarrito, IServiceDetalleCarrito serviceDetalleCarrito, IServiceProductos serviceProductos)
         {
             _serviceCarrito = servicePCarrito;
-
-
+            _serviceDetalleCarrito = serviceDetalleCarrito;
+            _serviceProductos = serviceProductos;
         }
         [HttpGet]
         // GET: CarritoController
@@ -41,67 +47,27 @@ namespace FKNI.Web.Controllers
             }
         }
 
-        // GET: CarritoController/Details/5
-        public ActionResult Details(int id)
-        {
-
-            return View();
-        }
-
-        // POST: CarritoController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create()
+        public async Task<JsonResult> AgregarCarrito(int id_producto, int id_usuario)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                var carrito = await _serviceCarrito.FindByIdAsync(id_usuario);
 
-        // GET: CarritoController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+                var detallecarritoDTO = new DetalleCarritoDTO
+                {
+                    IdCarrito = carrito.IdCarrito,
+                    IdProducto = id_producto,
+                    Cantidad = 1,
+                };
 
-        // POST: CarritoController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                await _serviceDetalleCarrito.AddAsync(detallecarritoDTO);
 
-        // GET: CarritoController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CarritoController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, mensaje = "Producto agregado al carrito" });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Json(new { success = false, mensaje = "Error al agregar al carrito", error = ex.Message });
             }
         }
     }
