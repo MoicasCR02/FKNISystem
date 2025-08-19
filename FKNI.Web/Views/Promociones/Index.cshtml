@@ -4,80 +4,139 @@
     ViewData["Title"] = "Promociones";
 }
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">Lista de Promociones</h2>
-        <a asp-action="Create" class="btn btn-success">
-            <i class="fas fa-plus-circle"></i> Crear nueva promoción
-        </a>
+<section class="section">
+    <div class="container">
+        <!-- Header -->
+        <div class="section-header d-flex justify-between items-center">
+            <div>
+                <h2 class="section-title m-0">Lista de Promociones</h2>
+                <p class="section-subtitle m-0">Gestión de promociones y descuentos activos</p>
+            </div>
+            <div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Crear nueva promoción
+                </a>
+            </div>
+        </div>
+
+        <!-- Tabla dentro de card -->
+        <div class="card shadow-md">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="text-start">ID</th>
+                                <th class="text-start">Tipo</th>
+                                <th class="text-start">Producto</th>
+                                <th class="text-start">Categoría</th>
+                                <th class="text-start">Descuento (%)</th>
+                                <th class="text-start">Inicio</th>
+                                <th class="text-start">Fin</th>
+                                <th class="text-start">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-start">
+                                        <span class="badge bg-nude text-black">@item.IdPromocion</span>
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="promo-type-container">
+                                            <i class="bi bi-tag"></i>
+                                            <span>@item.TipoPromocion</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="product-info-mini">
+                                            <i class="bi bi-box"></i>
+                                            <span>@item.IdProductoNavigation?.NombreProducto</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="category-info">
+                                            <i class="bi bi-collection"></i>
+                                            <span>@item.IdCategoriaNavigation?.NombreCategoria</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-start">
+                                        <span class="discount-badge">@item.Descuento%</span>
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="date-info">
+                                            <i class="bi bi-calendar-plus"></i>
+                                            <span>@item.FechaInicio</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="date-info">
+                                            <i class="bi bi-calendar-x"></i>
+                                            <span>@item.FechaFin</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-start">
+                                        @{
+                                            var hoy = DateTime.Today;
+                                            string estadoClass;
+                                            string estadoTexto;
+                                            string estadoIcon;
+
+                                            if (item.FechaInicio <= hoy && item.FechaFin >= hoy)
+                                            {
+                                                // Vigente
+                                                estadoClass = "status-active";
+                                                estadoTexto = "Vigente";
+                                                estadoIcon = "bi-check-circle";
+                                            }
+                                            else if (item.FechaFin < hoy)
+                                            {
+                                                // Vencida
+                                                estadoClass = "status-expired";
+                                                estadoTexto = "Vencida";
+                                                estadoIcon = "bi-x-circle";
+                                            }
+                                            else
+                                            {
+                                                // Pendiente (futura)
+                                                estadoClass = "status-pending";
+                                                estadoTexto = "Pendiente";
+                                                estadoIcon = "bi-clock";
+                                            }
+                                        }
+                                        <span class="promo-status-badge @estadoClass">
+                                            <i class="bi @estadoIcon"></i>
+                                            <span>@estadoTexto</span>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex gap-2">
+                                            <a asp-action="Edit" asp-route-id="@item.IdPromocion" class="btn btn-secondary btn-sm" title="Editar">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@item.IdPromocion" class="btn btn-nude btn-sm" title="Detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.IdPromocion" class="btn btn-ghost btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar esta promoción?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @if (!(Model?.Any() ?? false))
+                    {
+                        <div class="text-center text-gray-600 py-4">
+                            <i class="bi bi-percent me-2"></i>
+                            No hay promociones registradas.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover table-striped shadow rounded">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Tipo</th>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th>Descuento (%)</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
-                    <th>Estado</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.IdPromocion</td>
-                        <td>@item.TipoPromocion</td>
-                        <td>@item.IdProductoNavigation?.NombreProducto</td>
-                        <td>@item.IdCategoriaNavigation?.NombreCategoria</td>
-                        <td>@item.Descuento %</td>
-                        <td>@item.FechaInicio</td>
-                        <td>@item.FechaFin</td>
-                        @{
-                            var hoy = DateTime.Today;
-                            string colorFondo;
-
-                            if (item.FechaInicio <= hoy && item.FechaFin >= hoy)
-                            {
-                                // Vigente
-                                colorFondo = "#60FCBC"; // Rojo vibrante
-                            }
-                            else if (item.FechaFin < hoy)
-                            {
-                                // Aplicado (vencida)
-                                colorFondo = "#FF4545"; // Gris suave
-                            }
-                            else
-                            {
-                                // Pendiente (futura)
-                                colorFondo = "#BCCEFF"; // Azul claro
-                            }
-                        }
-
-                        <td style="background-color:@colorFondo">
-                            @item.FechaFin
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.IdPromocion" class="btn btn-outline-primary btn-sm" title="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.IdPromocion" class="btn btn-outline-info btn-sm" title="Detalles">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.IdPromocion" class="btn btn-outline-danger btn-sm" title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+</section>

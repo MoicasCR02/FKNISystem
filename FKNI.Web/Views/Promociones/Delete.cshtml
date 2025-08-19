@@ -4,59 +4,225 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<!-- Delete Promotion Header -->
+<section class="section bg-nude-light">
+    <div class="container container-narrow">
+        <div class="section-header">
+            <h1 class="section-title">Eliminar Promoción</h1>
+            <p class="section-subtitle">¿Estás seguro de que quieres eliminar esta promoción?</p>
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>PromocionesDTO</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdPromocion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdPromocion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoPromocion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoPromocion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdProducto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdProducto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCategoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCategoria)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descuento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descuento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaFin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaFin)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+        <!-- Warning Badge -->
+        <div class="delete-warning-container">
+            <div class="delete-warning-badge">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>ACCIÓN IRREVERSIBLE</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Delete Content -->
+<section class="section">
+    <div class="container container-narrow content-with-footer-space">
+
+        <!-- Promotion Summary Card -->
+        <div class="delete-summary-card mb-10">
+            <div class="delete-summary-header">
+                <div class="delete-icon">
+                    <i class="bi bi-trash"></i>
+                </div>
+                <div class="delete-summary-info">
+                    <h2 class="delete-title">Promoción #@Html.DisplayFor(model => model.IdPromocion)</h2>
+                    <p class="delete-subtitle">Esta acción eliminará permanentemente la promoción</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promotion Details Card -->
+        <div class="card shadow-lg delete-details-card">
+            <div class="card-header">
+                <div class="card-header-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <h3 class="card-header-title">Información de la Promoción</h3>
+            </div>
+
+            <div class="card-body">
+                <div class="delete-details-grid">
+                    <div class="delete-detail-item">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.IdPromocion)
+                        </dt>
+                        <dd class="delete-detail-value">
+                            @Html.DisplayFor(model => model.IdPromocion)
+                        </dd>
+                    </div>
+
+                    <div class="delete-detail-item">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.TipoPromocion)
+                        </dt>
+                        <dd class="delete-detail-value promo-type-display">
+                            <i class="bi bi-tag"></i>
+                            @Html.DisplayFor(model => model.TipoPromocion)
+                        </dd>
+                    </div>
+
+                    <div class="delete-detail-item">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.IdProducto)
+                        </dt>
+                        <dd class="delete-detail-value">
+                            @Html.DisplayFor(model => model.IdProducto)
+                        </dd>
+                    </div>
+
+                    <div class="delete-detail-item">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.IdCategoria)
+                        </dt>
+                        <dd class="delete-detail-value">
+                            @Html.DisplayFor(model => model.IdCategoria)
+                        </dd>
+                    </div>
+
+                    <div class="delete-detail-item discount-highlight">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.Descuento)
+                        </dt>
+                        <dd class="delete-detail-value discount-display">
+                            <span class="discount-number">@Html.DisplayFor(model => model.Descuento)%</span>
+                        </dd>
+                    </div>
+
+                    <div class="delete-detail-item">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.FechaInicio)
+                        </dt>
+                        <dd class="delete-detail-value date-display">
+                            <i class="bi bi-calendar-plus"></i>
+                            @Html.DisplayFor(model => model.FechaInicio)
+                        </dd>
+                    </div>
+
+                    <div class="delete-detail-item">
+                        <dt class="delete-detail-label">
+                            @Html.DisplayNameFor(model => model.FechaFin)
+                        </dt>
+                        <dd class="delete-detail-value date-display">
+                            <i class="bi bi-calendar-x"></i>
+                            @Html.DisplayFor(model => model.FechaFin)
+                        </dd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Actions -->
+        <div class="delete-actions">
+            <a asp-action="Index" class="btn btn-ghost btn-lg">
+                <i class="bi bi-arrow-left"></i>
+                <span>Cancelar</span>
+            </a>
+
+            <form asp-action="Delete" class="delete-form">
+                <button type="submit" class="btn btn-danger btn-lg delete-confirm-btn" id="deleteBtn">
+                    <i class="bi bi-trash"></i>
+                    <span class="btn-text">Eliminar Promoción</span>
+                    <div id="spinner" class="btn-spinner">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </div>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add entrance animations
+        const detailItems = document.querySelectorAll('.delete-detail-item');
+        detailItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('fade-in');
+            }, index * 100);
+        });
+
+        // Enhanced delete confirmation
+        const deleteForm = document.querySelector('.delete-form');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const btnText = document.querySelector('.btn-text');
+        const spinner = document.getElementById('spinner');
+
+        deleteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Double confirmation with modern styling
+            Swal.fire({
+                title: '⚠️ ¿Eliminar Promoción?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: '🗑️ Sí, eliminar',
+                cancelButtonText: '❌ Cancelar',
+                background: '#FFFFFF',
+                customClass: {
+                    popup: 'swal-nude-style'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    deleteBtn.disabled = true;
+                    deleteBtn.classList.add('loading');
+                    btnText.textContent = 'Eliminando...';
+                    spinner.style.display = 'block';
+
+                    // Submit form
+                    this.submit();
+
+                    // Show success message
+                    setTimeout(() => {
+                        showNotification('🗑️ Promoción eliminada exitosamente', 'success');
+                    }, 500);
+                }
+            });
+        });
+
+        // Add warning pulse to discount
+        const discountDisplay = document.querySelector('.discount-display');
+        if (discountDisplay) {
+            setInterval(() => {
+                discountDisplay.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    discountDisplay.style.transform = 'scale(1)';
+                }, 200);
+            }, 3000);
+        }
+    });
+
+    // Notification system
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+</script>

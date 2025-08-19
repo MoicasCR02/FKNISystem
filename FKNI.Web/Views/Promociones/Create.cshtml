@@ -6,114 +6,253 @@
     ViewData["Title"] = "Create";
 }
 
-<style>
-    ul.ui-autocomplete {
-        z-index: 1100;
-    }
-</style>
-
-<h1>Create</h1>
-
-<h4>PromocionesDTO</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" id="myForm"
-              data-ajax="true"
-              data-ajax-method="POST"
-              data-ajax-begin="onBegin"
-              data-ajax-failure="onFailure"
-              data-ajax-success="onSuccess"
-              data-ajax-complete="onComplete">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="TipoPromocion" class="form-label">Tipo Promoción</label>
-                @Html.DropDownListFor(m => m.TipoPromocion,
-                new List<SelectListItem>
-                                {
-                                new SelectListItem { Text = "Seleccione un tipo de promoción", Value = "" },
-                                new SelectListItem { Text = "Producto", Value = "producto" },
-                                new SelectListItem { Text = "Categoría", Value = "categoria" }
-                                },
-                                new { @class = "form-select", required = "required" }
-                                )
-                <span class="text-danger" id="errorCategoria"></span>
-                <span asp-validation-for="TipoPromocion" class="text-danger"></span>
-            </div>
-
-            <div class="form-group" id="selectorProducto" style="display:none;">
-                <label asp-for="BuscarProducto" class="control-label" ></label>
-                <input asp-for="BuscarProducto" class="form-control form-control-sm" />
-                <span asp-validation-for="BuscarProducto" class="text-danger"></span>
-                <label id="NombreProducto" class="control-label fw-bold">-</label>
-                <img id="imgProducto"
-                     class="imagen-uniforme"
-                     alt="Imagen del producto" />
-            </div>
-
-            <div class="mb-3" id="selectorCategoria" style="display:none;">
-                <label asp-for="IdCategoria" class="form-label">Categoría</label>
-                @Html.DropDownListFor(m => m.IdCategoria,
-                                new SelectList(ViewBag.ListCategoria, "IdCategoria", "NombreCategoria"),
-                                "Seleccione una categoría",
-                                new { @class = "form-select", required = "required" })
-                <span class="text-danger" id="errorCategoria"></span>
-                <span asp-validation-for="IdCategoria" class="text-danger"></span>
-
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Descuento" class="control-label"></label>
-                <input asp-for="Descuento" class="form-control" />
-                <span asp-validation-for="Descuento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
-               <input asp-for="FechaInicio" class="form-control" type="date" value="@ViewBag.FechaInicio" />
-                <span asp-validation-for="FechaInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaFin" class="control-label"></label>
-                <input asp-for="FechaFin" class="form-control" type="date" value="@ViewBag.FechaFin" />
-                <span asp-validation-for="FechaFin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<!-- Create Promotion Header -->
+<section class="section bg-nude-light">
+    <div class="container container-narrow">
+        <div class="section-header">
+            <h1 class="section-title">Crear Promoción</h1>
+            <p class="section-subtitle">Configura descuentos especiales para productos o categorías</p>
+        </div>
     </div>
-</div>
+</section>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<!-- Promotion Form -->
+<section class="section">
+    <div class="container container-narrow content-with-footer-space">
+
+        <!-- Welcome Card -->
+        <div class="promotion-welcome-card mb-8">
+            <div class="welcome-content">
+                <div class="welcome-icon">
+                    <i class="bi bi-percent"></i>
+                </div>
+                <div class="welcome-text">
+                    <h3 class="welcome-title">¡Crea Ofertas Irresistibles!</h3>
+                    <p class="welcome-subtitle">Aumenta las ventas con promociones estratégicas y descuentos atractivos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form asp-action="Create" id="myForm" class="modern-form"
+                      data-ajax="true"
+                      data-ajax-method="POST"
+                      data-ajax-begin="onBegin"
+                      data-ajax-failure="onFailure"
+                      data-ajax-success="onSuccess"
+                      data-ajax-complete="onComplete">
+
+                    <div asp-validation-summary="ModelOnly" class="form-error mb-6"></div>
+
+                    <!-- Promotion Type Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-lightning"></i>
+                            Tipo de Promoción
+                        </h3>
+
+                        <div class="form-group">
+                            <label asp-for="TipoPromocion" class="form-label">
+                                <i class="bi bi-tag"></i>
+                                Tipo Promoción
+                            </label>
+                            @Html.DropDownListFor(m => m.TipoPromocion,
+                            new List<SelectListItem>
+                                                        {
+                                                        new SelectListItem { Text = "Seleccione un tipo de promoción", Value = "" },
+                                                        new SelectListItem { Text = "🎯 Producto Específico", Value = "producto" },
+                                                        new SelectListItem { Text = "📂 Categoría Completa", Value = "categoria" }
+                                                        },
+                                                        new { @class = "form-select", required = "required" }
+                                                        )
+                            <small class="form-help">
+                                <i class="bi bi-info-circle"></i>
+                                Elige si la promoción aplica a un producto específico o toda una categoría
+                            </small>
+                            <span class="form-error" id="errorCategoria"></span>
+                            <span asp-validation-for="TipoPromocion" class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Product Selector Section -->
+                    <div class="form-section product-selector-section" id="selectorProducto" style="display:none;">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-search"></i>
+                            Seleccionar Producto
+                        </h3>
+
+                        <div class="form-group">
+                            <label asp-for="BuscarProducto" class="form-label">
+                                <i class="bi bi-box-seam"></i>
+                                Buscar Producto
+                            </label>
+                            <input asp-for="BuscarProducto" class="form-input autocomplete-input" placeholder="Escribe para buscar productos..." />
+                            <small class="form-help">
+                                <i class="bi bi-keyboard"></i>
+                                Escribe el nombre del producto y selecciona de la lista
+                            </small>
+                            <span asp-validation-for="BuscarProducto" class="form-error"></span>
+                        </div>
+
+                        <!-- Product Preview -->
+                        <div class="product-preview-card" id="productPreview" style="display:none;">
+                            <div class="product-preview-header">
+                                <h4 class="preview-title">Producto Seleccionado</h4>
+                            </div>
+                            <div class="product-preview-content">
+                                <div class="product-preview-image">
+                                    <img id="imgProducto" alt="Imagen del producto" />
+                                </div>
+                                <div class="product-preview-info">
+                                    <label id="NombreProducto" class="product-preview-name">-</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Selector Section -->
+                    <div class="form-section category-selector-section" id="selectorCategoria" style="display:none;">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-collection"></i>
+                            Seleccionar Categoría
+                        </h3>
+
+                        <div class="form-group">
+                            <label asp-for="IdCategoria" class="form-label">
+                                <i class="bi bi-folder"></i>
+                                Categoría
+                            </label>
+                            @Html.DropDownListFor(m => m.IdCategoria,
+                                                        new SelectList(ViewBag.ListCategoria, "IdCategoria", "NombreCategoria"),
+                                                        "Seleccione una categoría",
+                                                        new { @class = "form-select", required = "required" })
+                            <small class="form-help">
+                                <i class="bi bi-info-circle"></i>
+                                La promoción se aplicará a todos los productos de esta categoría
+                            </small>
+                            <span class="form-error" id="errorCategoria2"></span>
+                            <span asp-validation-for="IdCategoria" class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Discount Section -->
+                    <div class="form-section discount-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-percent"></i>
+                            Configuración del Descuento
+                        </h3>
+
+                        <div class="form-group">
+                            <label asp-for="Descuento" class="form-label">
+                                <i class="bi bi-calculator"></i>
+                                Descuento (%)
+                            </label>
+                            <input asp-for="Descuento" class="form-input discount-input" type="number" min="1" max="99" placeholder="25" />
+                            <small class="form-help">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Ingresa un porcentaje entre 1% y 99%
+                            </small>
+                            <span asp-validation-for="Descuento" class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Dates Section -->
+                    <div class="form-section dates-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-calendar-range"></i>
+                            Período de Validez
+                        </h3>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label asp-for="FechaInicio" class="form-label">
+                                    <i class="bi bi-calendar-plus"></i>
+                                    Fecha de Inicio
+                                </label>
+                                <input asp-for="FechaInicio" class="form-input" type="date" value="@ViewBag.FechaInicio" />
+                                <span asp-validation-for="FechaInicio" class="form-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaFin" class="form-label">
+                                    <i class="bi bi-calendar-x"></i>
+                                    Fecha de Fin
+                                </label>
+                                <input asp-for="FechaFin" class="form-input" type="date" value="@ViewBag.FechaFin" />
+                                <span asp-validation-for="FechaFin" class="form-error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a asp-action="Index" class="btn btn-ghost btn-lg">
+                            <i class="bi bi-arrow-left"></i>
+                            Volver a la lista
+                        </a>
+                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-lg btn-submit">
+                            <i class="bi bi-check-circle"></i>
+                            <span class="btn-text">Crear Promoción</span>
+                            <div id="spinner" class="btn-spinner">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <script>
-
-         // Control de selector
-            document.getElementById("TipoPromocion").addEventListener("change", function () {
+        // Tu lógica original exacta - Control de selector
+        document.getElementById("TipoPromocion").addEventListener("change", function () {
             const value = this.value;
 
             if (value === "producto") {
                 document.getElementById("selectorProducto").style.display = "block";
                 document.getElementById("selectorCategoria").style.display = "none";
+                // Show product preview card
+                showSection('product');
             }
             else if (value === "categoria") {
                 document.getElementById("selectorProducto").style.display = "none";
                 document.getElementById("selectorCategoria").style.display = "block";
+                // Show category section
+                showSection('category');
             }
             else {
                 // Si no se ha elegido nada, oculta ambos
                 document.getElementById("selectorProducto").style.display = "none";
                 document.getElementById("selectorCategoria").style.display = "none";
+                hideAllSections();
             }
         });
 
-        /**************************/
-        // Busca el cliente por nombre+apellido1+apellido2 //
-        /**************************/
+        // Enhanced section visibility
+        function showSection(type) {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.add('section-visible');
+            });
 
+            if (type === 'product') {
+                document.querySelector('.product-selector-section').classList.add('section-active');
+                document.querySelector('.category-selector-section').classList.remove('section-active');
+            } else if (type === 'category') {
+                document.querySelector('.category-selector-section').classList.add('section-active');
+                document.querySelector('.product-selector-section').classList.remove('section-active');
+            }
+        }
+
+        function hideAllSections() {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('section-visible', 'section-active');
+            });
+        }
+
+        // Tu lógica original exacta - Autocomplete con jQuery
         $("#BuscarProducto").autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -122,98 +261,148 @@
                     dataType: "json",
                     data: { filtro: request.term },
                     success: function (data) {
-
                         response($.map(data, function (item) {
-                            const imagenes = item.IdImagen; // Convierte el JSON a un objeto JavaScript
-                            // Acceder al primer objeto del array
+                            const imagenes = item.IdImagen;
                             const primerObjeto = imagenes[0];
-                            
-                            // Acceder a la edad del segundo objeto
+
                             console.log("Item recibido:", item);
                             if (Array.isArray(imagenes) && imagenes.length > 0 && imagenes[0].UrlImagen) {
                                 mostrar = primerObjeto.UrlImagen;
                             } else {
-                                mostrar = null; // o mensaje de error
+                                mostrar = null;
                             }
                             return {
-                                label: item.NombreProducto + "completado", // texto que se muestra en la lista
-                                value: item.IdProducto,     // valor que se asigna al input
-                                nombre: item.NombreProducto, // propiedad extra para mostrar el nombre en el label
+                                label: item.NombreProducto + "completado",
+                                value: item.IdProducto,
+                                nombre: item.NombreProducto,
                                 imagen: mostrar
                             };
                         }));
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
-                       console.log(mostrar);
+                        console.log(mostrar);
                     }
                 });
             },
             select: function (event, ui) {
-                // Asignar el IdProducto (valor) al input
+                // Tu lógica original exacta
                 $("#BuscarProducto").val(ui.item.value);
-                // Mostrar el nombre del producto en la etiqueta
                 $("#NombreProducto").text(ui.item.label);
                 console.log(ui.item);
+
                 if (ui.item.imagen) {
-                $("#imgProducto").attr("src", "data:image/png;base64," + ui.item.imagen);
+                    $("#imgProducto").attr("src", "data:image/png;base64," + ui.item.imagen);
+                    // Show product preview card
+                    document.getElementById("productPreview").style.display = "block";
                 } else {
                     alert("La imagen no existe, no se puede seleccionar");
-                    $("#imgProducto").attr("src", ""); // limpiar
+                    $("#imgProducto").attr("src", "");
+                    document.getElementById("productPreview").style.display = "none";
                 }
-                    }
+            }
         });
 
-
-        /**************************/
-        // Limpiar cajas de texto cuando tenga el foco
-        /**************************/
+        // Tu lógica original exacta - Limpiar cajas de texto
         $("#BuscarProducto").focus(function () {
-            // Limpia la caja de texto
             $("#BuscarProducto").val("");
-            $("#NombreProducto").html("*")
+            $("#NombreProducto").html("*");
+            document.getElementById("productPreview").style.display = "none";
         });
 
-        //Controles de AJAX
+        // Tu lógica original exacta - Controles de AJAX
         function onBegin() {
-            console.log("onBegin")
+            console.log("onBegin");
+            // Show loading state
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnText = document.querySelector('.btn-text');
+            const spinner = document.getElementById('spinner');
+
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('loading');
+            btnText.textContent = 'Creando...';
+            spinner.style.display = 'block';
         }
 
         function onFailure(response) {
-            console.log("onFailure")
+            console.log("onFailure");
             Swal.fire({
                 title: "Error!",
                 text: response.responseText,
                 icon: "error"
             });
+
+            // Reset button state
+            resetButtonState();
         }
 
         function onSuccess(response) {
-            console.log("onSuccess")
+            console.log("onSuccess");
             document.getElementById("myForm").reset();
-            document.getElementById("NombreProducto").innerHTML = ""
-            
+            document.getElementById("NombreProducto").innerHTML = "";
+            document.getElementById("productPreview").style.display = "none";
+            hideAllSections();
 
             Swal.fire({
                 icon: "success",
-                title: "Orden salvada ...",
+                title: "Promoción creada exitosamente!",
                 showConfirmButton: false,
                 timer: 1500
             });
-            location.reload();
 
+            setTimeout(() => {
+                location.reload();
+            }, 1600);
         }
 
         function onComplete() {
-            console.log("Fin del proceso")
+            console.log("Fin del proceso");
+            resetButtonState();
         }
+
         function onClearForm() {
             document.getElementById("myForm").reset();
-            document.getElementById("NombreProducto").innerHTML = ""
-            
-
+            document.getElementById("NombreProducto").innerHTML = "";
+            document.getElementById("productPreview").style.display = "none";
+            hideAllSections();
         }
+
+        function resetButtonState() {
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnText = document.querySelector('.btn-text');
+            const spinner = document.getElementById('spinner');
+
+            btnSubmit.disabled = false;
+            btnSubmit.classList.remove('loading');
+            btnText.textContent = 'Crear Promoción';
+            spinner.style.display = 'none';
+        }
+
+        // Enhanced discount input
+        document.addEventListener('DOMContentLoaded', function() {
+            const discountInput = document.querySelector('.discount-input');
+            const discountPreview = document.createElement('div');
+            discountPreview.className = 'discount-preview';
+            discountInput.parentNode.appendChild(discountPreview);
+
+            discountInput.addEventListener('input', function() {
+                const value = this.value;
+                if (value && value > 0 && value <= 99) {
+                    discountPreview.innerHTML = `
+                        <div class="preview-discount">
+                            <i class="bi bi-tag-fill"></i>
+                            <span>Descuento del ${value}%</span>
+                        </div>
+                    `;
+                    discountPreview.style.display = 'block';
+                } else {
+                    discountPreview.style.display = 'none';
+                }
+            });
+        });
     </script>
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

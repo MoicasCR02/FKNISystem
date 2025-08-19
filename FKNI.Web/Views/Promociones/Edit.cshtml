@@ -4,79 +4,250 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<!-- Edit Promotion Header -->
+<section class="section bg-nude-light">
+    <div class="container container-narrow">
+        <div class="section-header">
+            <h1 class="section-title">Editar Promoción</h1>
+            <p class="section-subtitle">Modifica los detalles de esta promoción especial</p>
+        </div>
 
-            <!-- IdPromocion solo lectura -->
-            <div class="form-group">
-                <label asp-for="IdPromocion" class="control-label"></label>
-                <input asp-for="IdPromocion" class="form-control" readonly />
+        <!-- Edit Status Badge -->
+        <div class="edit-status-container">
+            <div class="edit-status-badge">
+                <i class="bi bi-pencil-square"></i>
+                <span>MODO EDICIÓN</span>
             </div>
-
-            <!-- TipoPromocion solo lectura -->
-            <div class="form-group">
-                <label asp-for="TipoPromocion" class="control-label"></label>
-                <input asp-for="TipoPromocion" class="form-control" readonly />
-            </div>
-
-            <!-- Mostrar solo si es tipo Producto -->
-            @if (Model.TipoPromocion?.ToLower() == "producto")
-            {
-                <div class="form-group">
-                    <label asp-for="IdProducto" class="control-label"></label>
-                    <input asp-for="IdProducto" class="form-control" readonly />
-                </div>
-            }
-
-            <!-- Mostrar solo si es tipo Categoría -->
-            @if (Model.TipoPromocion?.ToLower() == "categoría" || Model.TipoPromocion?.ToLower() == "categoria")
-            {
-                <div class="form-group">
-                    <label asp-for="IdCategoria" class="control-label"></label>
-                    <input asp-for="IdCategoria" class="form-control" readonly />
-                </div>
-                <div class="form-group">
-                    <label>Nombre de la Categoría</label>
-                    <input value="@Model.NombreCategoria" class="form-control" readonly />
-                </div>
-            }
-
-            <!-- Campos editables -->
-            <div class="form-group">
-                <label asp-for="Descuento" class="control-label"></label>
-                <input asp-for="Descuento" class="form-control" />
-                <span asp-validation-for="Descuento" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" type="date" class="form-control" />
-                <span asp-validation-for="FechaInicio" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="FechaFin" class="control-label"></label>
-                <input asp-for="FechaFin" type="date" class="form-control" />
-                <span asp-validation-for="FechaFin" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-3">
-                <input type="submit" value="Guardar" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 
-<div>
-    <a asp-action="Index">Volver a la lista</a>
-</div>
+<!-- Edit Form -->
+<section class="section">
+    <div class="container container-narrow content-with-footer-space">
+
+        <!-- Promotion Overview Card -->
+        <div class="edit-overview-card mb-8">
+            <div class="overview-content">
+                <div class="overview-icon">
+                    <i class="bi bi-gear"></i>
+                </div>
+                <div class="overview-text">
+                    <h3 class="overview-title">Editando Promoción #@Model.IdPromocion</h3>
+                    <p class="overview-subtitle">Los campos en gris son de solo lectura por seguridad</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form asp-action="Edit" class="modern-form" id="editForm">
+                    <div asp-validation-summary="ModelOnly" class="form-error mb-6"></div>
+
+                    <!-- Read-Only Information Section -->
+                    <div class="form-section readonly-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-lock"></i>
+                            Información No Modificable
+                        </h3>
+
+                        <!-- IdPromocion solo lectura -->
+                        <div class="form-group">
+                            <label asp-for="IdPromocion" class="form-label readonly-label">
+                                <i class="bi bi-hash"></i>
+                                ID de Promoción
+                            </label>
+                            <input asp-for="IdPromocion" class="form-input readonly-input" readonly />
+                        </div>
+
+                        <!-- TipoPromocion solo lectura -->
+                        <div class="form-group">
+                            <label asp-for="TipoPromocion" class="form-label readonly-label">
+                                <i class="bi bi-tag"></i>
+                                Tipo de Promoción
+                            </label>
+                            <input asp-for="TipoPromocion" class="form-input readonly-input" readonly />
+                        </div>
+
+                        <!-- Mostrar solo si es tipo Producto -->
+                        @if (Model.TipoPromocion?.ToLower() == "producto")
+                        {
+                            <div class="form-group">
+                                <label asp-for="IdProducto" class="form-label readonly-label">
+                                    <i class="bi bi-box"></i>
+                                    ID del Producto
+                                </label>
+                                <input asp-for="IdProducto" class="form-input readonly-input" readonly />
+                            </div>
+                        }
+
+                        <!-- Mostrar solo si es tipo Categoría -->
+                        @if (Model.TipoPromocion?.ToLower() == "categoría" || Model.TipoPromocion?.ToLower() == "categoria")
+                        {
+                            <div class="form-group">
+                                <label asp-for="IdCategoria" class="form-label readonly-label">
+                                    <i class="bi bi-collection"></i>
+                                    ID de Categoría
+                                </label>
+                                <input asp-for="IdCategoria" class="form-input readonly-input" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label readonly-label">
+                                    <i class="bi bi-folder"></i>
+                                    Nombre de la Categoría
+                                </label>
+                                <input value="@Model.NombreCategoria" class="form-input readonly-input" readonly />
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Editable Fields Section -->
+                    <div class="form-section editable-section">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-pencil"></i>
+                            Campos Modificables
+                        </h3>
+
+                        <!-- Descuento editable -->
+                        <div class="form-group">
+                            <label asp-for="Descuento" class="form-label editable-label">
+                                <i class="bi bi-percent"></i>
+                                Descuento (%)
+                            </label>
+                            <input asp-for="Descuento" class="form-input editable-input discount-input" type="number" min="1" max="99" />
+                            <small class="form-help">
+                                <i class="bi bi-info-circle"></i>
+                                Modifica el porcentaje de descuento (1% - 99%)
+                            </small>
+                            <span asp-validation-for="Descuento" class="form-error"></span>
+                        </div>
+
+                        <!-- Fechas editables -->
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label asp-for="FechaInicio" class="form-label editable-label">
+                                    <i class="bi bi-calendar-plus"></i>
+                                    Fecha de Inicio
+                                </label>
+                                <input asp-for="FechaInicio" type="date" class="form-input editable-input" />
+                                <span asp-validation-for="FechaInicio" class="form-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FechaFin" class="form-label editable-label">
+                                    <i class="bi bi-calendar-x"></i>
+                                    Fecha de Fin
+                                </label>
+                                <input asp-for="FechaFin" type="date" class="form-input editable-input" />
+                                <span asp-validation-for="FechaFin" class="form-error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a asp-action="Index" class="btn btn-ghost btn-lg">
+                            <i class="bi bi-arrow-left"></i>
+                            Volver a la lista
+                        </a>
+                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-lg btn-submit">
+                            <i class="bi bi-save"></i>
+                            <span class="btn-text">Guardar Cambios</span>
+                            <div id="spinner" class="btn-spinner">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('editForm');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnText = document.querySelector('.btn-text');
+            const spinner = document.getElementById('spinner');
+            const discountInput = document.querySelector('.discount-input');
+
+            // Enhanced discount preview
+            if (discountInput) {
+                const discountPreview = document.createElement('div');
+                discountPreview.className = 'discount-preview-edit';
+                discountInput.parentNode.appendChild(discountPreview);
+
+                function updateDiscountPreview() {
+                    const value = discountInput.value;
+                    if (value && value > 0 && value <= 99) {
+                        discountPreview.innerHTML = `
+                            <div class="preview-discount-edit">
+                                <i class="bi bi-tag-fill"></i>
+                                <span>Nuevo descuento: ${value}%</span>
+                            </div>
+                        `;
+                        discountPreview.style.display = 'block';
+                    } else {
+                        discountPreview.style.display = 'none';
+                    }
+                }
+
+                discountInput.addEventListener('input', updateDiscountPreview);
+                updateDiscountPreview(); // Initialize
+            }
+
+            // Form submission enhancement
+            form.addEventListener('submit', function (e) {
+                if (!form.checkValidity()) return;
+
+                // Show loading state
+                btnSubmit.disabled = true;
+                btnSubmit.classList.add('loading');
+                btnText.textContent = 'Guardando...';
+                spinner.style.display = 'block';
+
+                // Show success notification
+                setTimeout(() => {
+                    showNotification('💾 Cambios guardados exitosamente', 'success');
+                }, 500);
+            });
+
+            // Add entrance animations
+            const formSections = document.querySelectorAll('.form-section');
+            formSections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.classList.add('fade-in');
+                }, index * 300);
+            });
+        });
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+    </script>
 }

@@ -4,72 +4,112 @@
     ViewData["Title"] = "Reseñas";
 }
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">Lista de Reseñas</h2>
-        <a asp-action="Create" class="btn btn-success">
-            <i class="fas fa-plus-circle"></i> Agregar nueva reseña
-        </a>
-    </div>
+<section class="section">
+    <div class="container">
+        <!-- Header -->
+        <div class="section-header d-flex justify-between items-center">
+            <div>
+                <h2 class="section-title m-0">Lista de Reseñas</h2>
+                <p class="section-subtitle m-0">Gestión de reseñas y valoraciones de productos</p>
+            </div>
+            <div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Agregar nueva reseña
+                </a>
+            </div>
+        </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover table-striped shadow rounded">
-            <thead class="table-dark">
-                <tr>
-                    <th>Usuario</th>
-                    <th>Producto</th>
-                    <th>Fecha</th>
-                    <th>Comentario</th>
-                    <th>Valoración</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.IdUsuarioNavigation?.NombreUsuario</td>
-                        <td>@item.IdProductoNavigation?.NombreProducto</td>
-                        <td>@item.Fecha</td>
-                        <td>@item.Comentario</td>
-                        <td>
-                            @if (item.Valoracion.HasValue)
+        <!-- Tabla dentro de card -->
+        <div class="card shadow-md">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="text-start">Usuario</th>
+                                <th class="text-start">Producto</th>
+                                <th class="text-start">Fecha</th>
+                                <th class="text-start">Comentario</th>
+                                <th class="text-start">Valoración</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
                             {
-                                var valor = item.Valoracion.Value; // Use .Value to access the nullable decimal
-                                var fullStars = (int)Math.Floor((double)valor); // Explicitly cast 'valor' to double
-                                var halfStar = (valor - fullStars) >= 0.5m; // Ensure decimal literal with 'm'
-                                var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                                <tr>
+                                    <td class="text-start">@item.IdUsuarioNavigation?.NombreUsuario</td>
+                                    <td class="text-start">@item.IdProductoNavigation?.NombreProducto</td>
+                                    <td class="text-start">@item.Fecha</td>
+                                    <td class="text-start">
+                                        <div class="comment-preview">
+                                            @if (!string.IsNullOrEmpty(item.Comentario))
+                                            {
+                                                @(item.Comentario.Length > 50 ? item.Comentario.Substring(0, 50) + "..." : item.Comentario)
+                                            }
+                                            else
+                                            {
+                                                <span class="text-gray-500">Sin comentario</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="rating-display">
+                                            @if (item.Valoracion.HasValue)
+                                            {
+                                                var valor = item.Valoracion.Value;
+                                                var fullStars = (int)Math.Floor((double)valor);
+                                                var halfStar = (valor - fullStars) >= 0.5m;
+                                                var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
-                                @for (int i = 0; i < fullStars; i++)
-                                {
-                                    <i class="fas fa-star text-warning"></i>
-                                }
-                                @if (halfStar)
-                                {
-                                    <i class="fas fa-star-half-alt text-warning"></i>
-                                }
-                                @for (int i = 0; i < emptyStars; i++)
-                                {
-                                    <i class="far fa-star text-warning"></i>
-                                }
+                                                <div class="stars-container">
+                                                    @for (int i = 0; i < fullStars; i++)
+                                                    {
+                                                        <i class="bi bi-star-fill star-filled"></i>
+                                                    }
+                                                    @if (halfStar)
+                                                    {
+                                                        <i class="bi bi-star-half star-filled"></i>
+                                                    }
+                                                    @for (int i = 0; i < emptyStars; i++)
+                                                    {
+                                                        <i class="bi bi-star star-empty"></i>
+                                                    }
+                                                </div>
+                                                <span class="rating-value">(@valor)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-gray-200 text-black">Sin valoración</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex gap-2">
+                                            <a asp-action="Edit" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-secondary btn-sm" title="Editar">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Details" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-nude btn-sm" title="Detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-ghost btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar esta reseña?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
                             }
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a asp-action="Edit" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-sm btn-outline-primary" title="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a asp-action="Details" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-sm btn-outline-info" title="Detalles">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </tbody>
+                    </table>
+                    @if (!(Model?.Any() ?? false))
+                    {
+                        <div class="text-center text-gray-600 py-4">
+                            <i class="bi bi-chat-text me-2"></i>
+                            No hay reseñas registradas.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>

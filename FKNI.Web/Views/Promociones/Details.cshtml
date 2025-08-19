@@ -4,48 +4,248 @@
     ViewData["Title"] = "Detalles de la Promoción";
 }
 
-<div class="container my-5">
-    <h2 class="text-primary mb-4">Detalles de la Promoción</h2>
+<!-- Promotion Details Header -->
+<section class="section bg-nude-light">
+    <div class="container container-narrow">
+        <div class="section-header">
+            <h1 class="section-title">Detalles de la Promoción</h1>
+            <p class="section-subtitle">Información completa sobre esta oferta especial</p>
+        </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-4">ID de Promoción</dt>
-                <dd class="col-sm-8">@Model.IdPromocion</dd>
+        <!-- Promotion Status Display -->
+        <div class="promotion-status-container">
+            @{
+                var hoy = DateTime.Today;
+                string statusClass;
+                string statusText;
+                string statusIcon;
 
-                <dt class="col-sm-4">Tipo de Promoción</dt>
-                <dd class="col-sm-8">@Model.TipoPromocion</dd>
-
-                @if (Model.IdProductoNavigation != null)
+                if (Model.FechaInicio <= hoy && Model.FechaFin >= hoy)
                 {
-                    <dt class="col-sm-4">Producto Asociado</dt>
-                    <dd class="col-sm-8">@Model.IdProductoNavigation.NombreProducto</dd>
+                    statusClass = "status-active";
+                    statusText = "🔥 PROMOCIÓN ACTIVA";
+                    statusIcon = "bi-check-circle";
                 }
-
-                @if (Model.IdCategoriaNavigation != null)
+                else if (Model.FechaFin < hoy)
                 {
-                    <dt class="col-sm-4">Categoría Asociada</dt>
-                    <dd class="col-sm-8">@Model.IdCategoriaNavigation.NombreCategoria</dd>
+                    statusClass = "status-expired";
+                    statusText = "⏰ PROMOCIÓN VENCIDA";
+                    statusIcon = "bi-x-circle";
                 }
-
-                <dt class="col-sm-4">Descuento</dt>
-                <dd class="col-sm-8">@Model.Descuento %</dd>
-
-                <dt class="col-sm-4">Fecha de Inicio</dt>
-                <dd class="col-sm-8">@Model.FechaInicio?.ToString("d")</dd>
-
-                <dt class="col-sm-4">Fecha de Fin</dt>
-                <dd class="col-sm-8">@Model.FechaFin?.ToString("d")</dd>
-            </dl>
+                else
+                {
+                    statusClass = "status-pending";
+                    statusText = "⏳ PROMOCIÓN PENDIENTE";
+                    statusIcon = "bi-clock";
+                }
+            }
+            <div class="promotion-status-badge @statusClass">
+                <i class="bi @statusIcon"></i>
+                <span>@statusText</span>
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="mt-4">
-        <a asp-action="Edit" asp-route-id="@Model.IdPromocion" class="btn btn-outline-primary me-2">
-            <i class="fas fa-pen"></i> Editar
-        </a>
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Volver al listado
-        </a>
+<!-- Promotion Details Content -->
+<section class="section">
+    <div class="container container-narrow content-with-footer-space">
+
+        <!-- Main Promotion Info -->
+        <div class="promotion-main-card mb-10">
+            <div class="promotion-main-header">
+                <div class="promotion-icon">
+                    <i class="bi bi-percent"></i>
+                </div>
+                <div class="promotion-main-info">
+                    <h2 class="promotion-title">Promoción #@Model.IdPromocion</h2>
+                    <div class="promotion-discount-display">
+                        <span class="discount-percentage">@Model.Descuento%</span>
+                        <span class="discount-label">DE DESCUENTO</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promotion Details Grid -->
+        <div class="promotion-details-container">
+
+            <!-- Basic Information -->
+            <div class="detail-section">
+                <div class="detail-section-header">
+                    <div class="section-icon bg-brown">
+                        <i class="bi bi-info-circle"></i>
+                    </div>
+                    <h3 class="section-title-text">Información Básica</h3>
+                </div>
+
+                <div class="detail-items">
+                    <div class="detail-item">
+                        <span class="detail-label">ID de Promoción</span>
+                        <span class="detail-value">@Model.IdPromocion</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Tipo de Promoción</span>
+                        <span class="detail-value promo-type">
+                            @if (Model.TipoPromocion?.ToLower() == "producto")
+                            {
+                                <i class="bi bi-box"></i>
+                                <span>Producto Específico</span>
+                            }
+                            else if (Model.TipoPromocion?.ToLower() == "categoria")
+                            {
+                                <i class="bi bi-collection"></i>
+                                <span>Categoría Completa</span>
+                            }
+                            else
+                            {
+                                <span>@Model.TipoPromocion</span>
+                            }
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target Information -->
+            <div class="detail-section">
+                <div class="detail-section-header">
+                    <div class="section-icon bg-terracotta">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3 class="section-title-text">Aplica a</h3>
+                </div>
+
+                <div class="detail-items">
+                    @if (Model.IdProductoNavigation != null)
+                    {
+                        <div class="detail-item">
+                            <span class="detail-label">Producto Asociado</span>
+                            <span class="detail-value product-target">
+                                <i class="bi bi-box-seam"></i>
+                                <span>@Model.IdProductoNavigation.NombreProducto</span>
+                            </span>
+                        </div>
+                    }
+
+                    @if (Model.IdCategoriaNavigation != null)
+                    {
+                        <div class="detail-item">
+                            <span class="detail-label">Categoría Asociada</span>
+                            <span class="detail-value category-target">
+                                <i class="bi bi-folder"></i>
+                                <span>@Model.IdCategoriaNavigation.NombreCategoria</span>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Dates and Validity -->
+            <div class="detail-section">
+                <div class="detail-section-header">
+                    <div class="section-icon bg-nude">
+                        <i class="bi bi-calendar-range"></i>
+                    </div>
+                    <h3 class="section-title-text">Período de Validez</h3>
+                </div>
+
+                <div class="detail-items">
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha de Inicio</span>
+                        <span class="detail-value date-start">
+                            <i class="bi bi-calendar-plus"></i>
+                            <span>@(Model.FechaInicio?.ToString("d") ?? "No especificada")</span>
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha de Fin</span>
+                        <span class="detail-value date-end">
+                            <i class="bi bi-calendar-x"></i>
+                            <span>@(Model.FechaFin?.ToString("d") ?? "No especificada")</span>
+                        </span>
+                    </div>
+
+                    @if (Model.FechaInicio.HasValue && Model.FechaFin.HasValue)
+                    {
+                        var duracion = (Model.FechaFin.Value - Model.FechaInicio.Value).Days;
+                        <div class="detail-item">
+                            <span class="detail-label">Duración</span>
+                            <span class="detail-value duration">
+                                <i class="bi bi-hourglass"></i>
+                                <span>@duracion días</span>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="promotion-actions">
+            <a asp-action="Edit" asp-route-id="@Model.IdPromocion" class="btn btn-primary btn-lg">
+                <i class="bi bi-pencil-square"></i>
+                <span>Editar Promoción</span>
+            </a>
+            <a asp-action="Index" class="btn btn-ghost btn-lg">
+                <i class="bi bi-arrow-left"></i>
+                <span>Volver al listado</span>
+            </a>
+        </div>
     </div>
-</div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add entrance animations
+        const sections = document.querySelectorAll('.detail-section');
+        sections.forEach((section, index) => {
+            setTimeout(() => {
+                section.classList.add('fade-in');
+            }, index * 200);
+        });
+
+        // Add interactive effects
+        const detailItems = document.querySelectorAll('.detail-item');
+        detailItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(8px)';
+                this.style.background = 'rgba(139, 69, 19, 0.02)';
+            });
+
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+                this.style.background = 'transparent';
+            });
+        });
+
+        // // Success notification
+        // setTimeout(() => {
+        //     showNotification('📋 Detalles de la promoción cargados', 'success');
+        // }, 1000);
+    });
+
+    // Notification system
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+</script>
