@@ -86,15 +86,15 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="d-inline-flex gap-2">
-                                            <a asp-action="Edit" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-secondary btn-sm" title="Editar">
+                                            @* <a asp-action="Edit" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-secondary btn-sm" title="Editar">
                                                 <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                            </a> *@
                                             <a asp-action="Details" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-nude btn-sm" title="Detalles">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <a asp-action="Delete" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-ghost btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar esta reseña?')">
+                                            @* <a asp-action="Delete" asp-route-id_usuario="@item.IdUsuario" asp-route-id_producto="@item.IdProducto" class="btn btn-ghost btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar esta reseña?')">
                                                 <i class="bi bi-trash"></i>
-                                            </a>
+                                            </a> *@
                                         </div>
                                     </td>
                                 </tr>

@@ -1,83 +1,240 @@
-﻿@model FKNI.Application.DTOs.PedidosDTO  
+﻿@model FKNI.Application.DTOs.PedidosDTO
+@{
+    ViewData["Title"] = "Detalles del Pedido";
+}
 
-@{  
-    ViewData["Title"] = "Detalles del Pedido";  
-}  
+<!-- Order Status Container (basado en promotion-status-container) -->
+<div class="promotion-status-container">
+    <div class="promotion-status-badge status-active">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Pedido Procesado</span>
+    </div>
+</div>
 
-<div class="container my-5">  
-    <h2 class="text-primary mb-4">Detalles del Pedido</h2>  
+<!-- Main Order Card (basado en promotion-main-card) -->
+<div class="promotion-main-card">
+    <div class="promotion-main-header">
+        <div class="promotion-icon">
+            <i class="fas fa-receipt"></i>
+        </div>
+        <div class="promotion-title-info">
+            <h1 class="promotion-title">Detalles del Pedido</h1>
+            <div class="promotion-discount-display">
+                <span class="discount-percentage">#@Model.IdPedido</span>
+                <span class="discount-label">Order</span>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <div class="card shadow-sm mb-4">  
-        <div class="card-body">  
-            <dl class="row">  
-                <dt class="col-sm-4">ID del Pedido</dt>  
-                <dd class="col-sm-8">@Model.IdPedido</dd>  
-
-                <dt class="col-sm-4">Fecha del Pedido</dt>  
+<div class="container my-5">
+    <h2 class="text-primary mb-4" style="display: none;">Detalles del Pedido</h2>
+    <div class="card shadow-sm mb-4" style="display: none;">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">ID del Pedido</dt>
+                <dd class="col-sm-8">@Model.IdPedido</dd>
+                <dt class="col-sm-4">Fecha del Pedido</dt>
                 <dd class="col-sm-8">@Model.FechaPedido?.ToShortDateString()</dd>
+                <dt class="col-sm-4">Método de Entrega</dt>
+                <dd class="col-sm-8">@Model.MetodoEntrega</dd>
+            </dl>
+        </div>
+    </div>
+    <h4 class="text-secondary mb-3" style="display: none;">Información del Cliente</h4>
+    <div class="card shadow-sm mb-4" style="display: none;">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">Nombre del Cliente</dt>
+                <dd class="col-sm-8">@Model.IdClienteNavigation?.NombreUsuario</dd>
+                <dt class="col-sm-4">Dirección de Envío</dt>
+                <dd class="col-sm-8">@Model.DireccionEnvio</dd>
+            </dl>
+        </div>
+    </div>
+    <h4 class="text-secondary mb-3" style="display: none;">Productos del Pedido</h4>
+    <div class="card shadow-sm mb-4" style="display: none;">
+        <div class="card-body">
+            @if (Model.DetallePedidoProducto != null && Model.DetallePedidoProducto.Any())
+            {
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var producto in Model.DetallePedidoProducto)
+                        {
+                            // FIX: Corrected the property access to calculate subtotal dynamically
+                            var subtotal = (producto.IdProductoNavigation?.Precio ?? 0) * producto.Cantidad;
+                            <tr>
+                                <td>@producto.IdProductoNavigation?.NombreProducto</td>
+                                <td>$@producto.IdProductoNavigation?.Precio</td>
+                                <td>@producto.Cantidad</td>
+                                <td>$@subtotal</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No hay productos registrados en este pedido.</p>
+            }
+        </div>
+    </div>
+    <div class="d-flex justify-content-between" style="display: none !important;">
+        <a asp-action="Edit" asp-route-id="@Model.IdPedido" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
+</div>
 
-                <dt class="col-sm-4">Método de Entrega</dt>  
-                <dd class="col-sm-8">@Model.MetodoEntrega</dd>  
-            </dl>  
-        </div>  
-    </div>  
+<!-- Order Details Container (basado en promotion-details-container) -->
+<div class="promotion-details-container">
 
-    <h4 class="text-secondary mb-3">Información del Cliente</h4>  
-    <div class="card shadow-sm mb-4">  
-        <div class="card-body">  
-            <dl class="row">  
-                <dt class="col-sm-4">Nombre del Cliente</dt>  
-                <dd class="col-sm-8">@Model.IdClienteNavigation?.NombreUsuario</dd>  
+    <!-- Order Info Section -->
+    <div class="detail-section fade-in">
+        <div class="detail-section-header">
+            <div class="section-icon" style="background: var(--color-brown-primary);">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <h3 class="section-title-text">Información del Pedido</h3>
+        </div>
+        <div class="detail-items">
+            <div class="detail-item">
+                <span class="detail-label">ID del Pedido</span>
+                <span class="detail-value">
+                    <i class="fas fa-hashtag"></i>
+                    @Model.IdPedido
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha del Pedido</span>
+                <span class="detail-value date-start">
+                    <i class="fas fa-calendar-alt"></i>
+                    @Model.FechaPedido?.ToShortDateString()
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Método de Entrega</span>
+                <span class="detail-value">
+                    <i class="fas fa-truck"></i>
+                    @Model.MetodoEntrega
+                </span>
+            </div>
+        </div>
+    </div>
 
-                <dt class="col-sm-4">Dirección de Envío</dt>  
-                <dd class="col-sm-8">@Model.DireccionEnvio</dd>  
-            </dl>  
-        </div>  
-    </div>  
+    <!-- Customer Info Section -->
+    <div class="detail-section fade-in">
+        <div class="detail-section-header">
+            <div class="section-icon" style="background: var(--color-terracotta);">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 class="section-title-text">Información del Cliente</h3>
+        </div>
+        <div class="detail-items">
+            <div class="detail-item">
+                <span class="detail-label">Nombre del Cliente</span>
+                <span class="detail-value">
+                    <i class="fas fa-user-circle"></i>
+                    @Model.IdClienteNavigation?.NombreUsuario
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Dirección de Envío</span>
+                <span class="detail-value">
+                    <i class="fas fa-map-marker-alt"></i>
+                    @Model.DireccionEnvio
+                </span>
+            </div>
+        </div>
+    </div>
 
-    <h4 class="text-secondary mb-3">Productos del Pedido</h4>  
-    <div class="card shadow-sm mb-4">  
-        <div class="card-body">  
-            @if (Model.DetallePedidoProducto != null && Model.DetallePedidoProducto.Any())  
-            {  
-                <table class="table table-bordered table-striped align-middle">  
-                    <thead class="table-dark">  
-                        <tr>  
-                            <th>Producto</th>  
-                            <th>Precio</th>  
-                            <th>Cantidad</th>  
-                            <th>Subtotal</th>  
-                        </tr>  
-                    </thead>  
-                    <tbody>  
-                        @foreach (var producto in Model.DetallePedidoProducto)  
-                        {  
-                            // FIX: Corrected the property access to calculate subtotal dynamically  
-                            var subtotal = (producto.IdProductoNavigation?.Precio ?? 0) * producto.Cantidad;  
+    <!-- Products Section -->
+    <div class="detail-section fade-in">
+        <div class="detail-section-header">
+            <div class="section-icon" style="background: #3B82F6;">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <h3 class="section-title-text">Productos del Pedido</h3>
+        </div>
+        <div class="detail-items">
+            @if (Model.DetallePedidoProducto != null && Model.DetallePedidoProducto.Any())
+            {
+                <!-- Modern Products Table -->
+                <div class="products-table-container">
+                    <div class="table-header">
+                        <div class="header-cell">Producto</div>
+                        <div class="header-cell">Precio</div>
+                        <div class="header-cell">Cantidad</div>
+                        <div class="header-cell">Subtotal</div>
+                    </div>
+                    <div class="table-body">
+                        @foreach (var producto in Model.DetallePedidoProducto)
+                        {
+                            var subtotal = (producto.IdProductoNavigation?.Precio ?? 0) * producto.Cantidad;
+                            <div class="table-row">
+                                <div class="table-cell product-cell">
+                                    <div class="product-info-mini">
+                                        <div class="product-icon">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                        <span class="product-name">@producto.IdProductoNavigation?.NombreProducto</span>
+                                    </div>
+                                </div>
+                                <div class="table-cell price-cell">
+                                    <span class="price-value">$@producto.IdProductoNavigation?.Precio</span>
+                                </div>
+                                <div class="table-cell quantity-cell">
+                                    <span class="quantity-badge">@producto.Cantidad</span>
+                                </div>
+                                <div class="table-cell subtotal-cell">
+                                    <span class="subtotal-value">$@subtotal</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- Table Footer with Total -->
+                    <div class="table-footer">
+                        <div class="total-section">
+                            <span class="total-label">Total del Pedido</span>
+                            <span class="total-value">$@Model.DetallePedidoProducto?.Sum(p => (p.IdProductoNavigation?.Precio ?? 0) * p.Cantidad)</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-products-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <h5 class="empty-title">No hay productos</h5>
+                    <p class="empty-description">No hay productos registrados en este pedido.</p>
+                </div>
+            }
+        </div>
+    </div>
 
-                            <tr>  
-                                <td>@producto.IdProductoNavigation?.NombreProducto</td>  
-                                <td>$@producto.IdProductoNavigation?.Precio</td>  
-                                <td>@producto.Cantidad</td>  
-                                <td>$@subtotal</td>  
-                            </tr>  
-                        }  
-                    </tbody>  
-                </table>  
-            }  
-            else  
-            {  
-                <p class="text-muted">No hay productos registrados en este pedido.</p>  
-            }  
-        </div>  
-    </div>  
+</div>
 
-    <div class="d-flex justify-content-between">  
-        <a asp-action="Edit" asp-route-id="@Model.IdPedido" class="btn btn-primary">  
-            <i class="fas fa-edit"></i> Editar  
-        </a>  
-        <a asp-action="Index" class="btn btn-outline-secondary">  
-            <i class="fas fa-arrow-left"></i> Volver a la lista  
-        </a>  
-    </div>  
+<!-- Order Actions (basado en promotion-actions) -->
+<div class="promotion-actions">
+    <a asp-action="Edit" asp-route-id="@Model.IdPedido" class="btn btn-primary">
+        <i class="fas fa-edit"></i>
+        <span>Editar</span>
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        <span>Volver a la lista</span>
+    </a>
 </div>

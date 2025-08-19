@@ -1,27 +1,45 @@
 ﻿@model FKNI.Application.DTOs.ResenasDTO
-
 @{
     ViewData["Title"] = "Detalle de Reseña";
 }
 
-<div class="container my-5">
-    <h2 class="text-primary mb-4">Detalle de la Reseña</h2>
+<!-- Review Status Container (basado en promotion-status-container) -->
+<div class="promotion-status-container">
+   @*  <div class="promotion-status-badge status-active">
+        <i class="fas fa-star"></i>
+        <span>Reseña Verificada</span>
+    </div> *@
+</div>
 
-    <div class="card shadow-sm">
+<!-- Main Review Card (basado en promotion-main-card) -->
+<div class="promotion-main-card">
+    <div class="promotion-main-header">
+        <div class="promotion-icon">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="promotion-title-info">
+            <h1 class="promotion-title">Detalle de la Reseña</h1>
+            <div class="promotion-discount-display">
+                <span class="discount-percentage">⭐</span>
+             @*    <span class="discount-label">Review</span> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-primary mb-4" style="display: none;">Detalle de la Reseña</h2>
+    <div class="card shadow-sm" style="display: none;">
         <div class="card-body">
             <dl class="row">
                 <dt class="col-sm-4">Usuario</dt>
                 <dd class="col-sm-8">@Model.IdUsuarioNavigation?.NombreUsuario</dd>
-
                 <dt class="col-sm-4">Producto</dt>
                 <dd class="col-sm-8">@Model.IdProductoNavigation?.NombreProducto</dd>
-
                 <dt class="col-sm-4">Fecha</dt>
                 <dd class="col-sm-8">@Model.Fecha?.ToShortDateString()</dd>
-
                 <dt class="col-sm-4">Comentario</dt>
                 <dd class="col-sm-8">@Model.Comentario</dd>
-
                 <dt class="col-sm-4">Valoración</dt>
                 <dd class="col-sm-8">
                     @{
@@ -30,7 +48,6 @@
                         var half = ((double)valor - full) >= 0.5;
                         var empty = 5 - full - (half ? 1 : 0);
                     }
-
                     @for (int i = 0; i < full; i++)
                     {
                         <i class="fas fa-star text-warning"></i>
@@ -43,14 +60,12 @@
                     {
                         <i class="far fa-star text-warning"></i>
                     }
-
                     <span class="ms-2">(@valor)</span>
                 </dd>
             </dl>
         </div>
     </div>
-
-    <div class="mt-4">
+    <div class="mt-4" style="display: none;">
         <a asp-action="Edit" asp-route-id="/* id = Model.PrimaryKey */" class="btn btn-outline-primary me-2">
             <i class="fas fa-pen"></i> Editar
         </a>
@@ -58,4 +73,112 @@
             <i class="fas fa-arrow-left"></i> Volver al listado
         </a>
     </div>
+</div>
+
+<!-- Promotion Details Container (adaptado para reseña) -->
+<div class="promotion-details-container">
+
+    <!-- User & Product Info Section -->
+    <div class="detail-section fade-in">
+        <div class="detail-section-header">
+            <div class="section-icon" style="background: var(--color-brown-primary);">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 class="section-title-text">Información General</h3>
+        </div>
+        <div class="detail-items">
+            <div class="detail-item">
+                <span class="detail-label">Usuario</span>
+                <span class="detail-value">
+                    <i class="fas fa-user-circle"></i>
+                    @Model.IdUsuarioNavigation?.NombreUsuario
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Producto</span>
+                <span class="detail-value product-target">
+                    <i class="fas fa-box"></i>
+                    @Model.IdProductoNavigation?.NombreProducto
+                </span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha</span>
+                <span class="detail-value date-start">
+                    <i class="fas fa-calendar-alt"></i>
+                    @Model.Fecha?.ToShortDateString()
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Section -->
+    <div class="detail-section fade-in">
+        <div class="detail-section-header">
+            <div class="section-icon" style="background: #FBB040;">
+                <i class="fas fa-star"></i>
+            </div>
+            <h3 class="section-title-text">Valoración</h3>
+        </div>
+        <div class="detail-items">
+            <div class="detail-item">
+                <span class="detail-label">Puntuación</span>
+                <div class="detail-value">
+                    @{
+                        var valorActual = Model.Valoracion;
+                        var Lleno = (int)Math.Floor((double)valorActual);
+                        var mitad = ((double)valor - full) >= 0.5;
+                        var vacio = 5 - Lleno - (half ? 1 : 0);
+                    }
+                    <div class="rating-stars-container">
+                        @for (int i = 0; i < Lleno; i++)
+                        {
+                            <i class="fas fa-star text-warning star-filled"></i>
+                        }
+                        @if (mitad)
+                        {
+                            <i class="fas fa-star-half-alt text-warning star-filled"></i>
+                        }
+                        @for (int i = 0; i < vacio; i++)
+                        {
+                            <i class="far fa-star text-warning star-empty"></i>
+                        }
+                        <span class="ms-2 rating-score-text">(@valorActual)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Section -->
+    <div class="detail-section fade-in">
+        <div class="detail-section-header">
+            <div class="section-icon" style="background: var(--color-terracotta);">
+                <i class="fas fa-comment"></i>
+            </div>
+            <h3 class="section-title-text">Comentario</h3>
+        </div>
+        <div class="detail-items">
+            <div class="detail-item">
+                <span class="detail-label">Comentario del Cliente</span>
+                <div class="detail-value comment-display">
+                    <i class="fas fa-quote-left"></i>
+                    <span class="comment-text">@Model.Comentario</span>
+                    <i class="fas fa-quote-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Promotion Actions (adaptado para reseña) -->
+<div class="promotion-actions">
+    <a asp-action="Edit" asp-route-id="/* id = Model.PrimaryKey */" class="btn btn-primary">
+        <i class="fas fa-pen"></i>
+        <span>Editar</span>
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        <span>Volver al listado</span>
+    </a>
 </div>
