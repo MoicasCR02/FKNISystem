@@ -9,6 +9,7 @@ namespace FKNI.Application.Services.Interfaces
 {
     public interface IServiceDetalleCarrito
     {
+        Task<ICollection<DetalleCarritoDTO>> FindByIdAsync(int id_carrito);
         Task<int> AddAsync(DetalleCarritoDTO dto);
     }
 }
