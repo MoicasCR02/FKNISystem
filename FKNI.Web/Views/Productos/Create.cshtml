@@ -1,95 +1,156 @@
 ﻿@model FKNI.Application.DTOs.ProductosDTO
-
 @{
     ViewData["Title"] = "Crear Producto";
 }
 
-<style>
-    .contenido-ajustado-footer {
-        padding-bottom: 180px;
-    }
+<section class="section">
+    <div class="container container-narrow content-with-footer-space">
+        <header class="section-header">
+            <h2 class="section-title">Crear Producto</h2>
+            <p class="section-subtitle">Registra un nuevo producto con su información, imágenes y etiquetas.</p>
+        </header>
 
-    .img-thumb {
-        max-width: 120px;
-        max-height: 120px;
-    }
-</style>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form asp-action="Create" enctype="multipart/form-data" id="formCreateProducto" class="modern-form">
+                    @Html.AntiForgeryToken()
 
-<div class="container my-5 contenido-ajustado-footer">
-    <h2 class="text-primary mb-4">Crear Producto</h2>
+                    <div asp-validation-summary="ModelOnly" class="form-error mb-6"></div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form asp-action="Create" enctype="multipart/form-data" id="formCreateProducto">
-                @Html.AntiForgeryToken()
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Información Básica</h3>
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <!-- Nombre -->
+                        <div class="form-group">
+                            <label asp-for="NombreProducto" class="form-label">
+                                <i class="bi bi-tag"></i>
+                                Nombre del Producto
+                            </label>
+                            <input asp-for="NombreProducto" class="form-input" placeholder="Ej: Camiseta Urban Street" />
+                            <span asp-validation-for="NombreProducto" class="form-error"></span>
+                        </div>
 
-                <div class="mb-3">
-                    <label asp-for="NombreProducto" class="form-label"></label>
-                    <input asp-for="NombreProducto" class="form-control" />
-                    <span asp-validation-for="NombreProducto" class="text-danger"></span>
-                </div>
+                        <!-- Descripción -->
+                        <div class="form-group">
+                            <label asp-for="Descripcion" class="form-label">
+                                <i class="bi bi-card-text"></i>
+                                Descripción
+                            </label>
+                            <textarea asp-for="Descripcion" class="form-textarea" rows="4" placeholder="Describe las características, materiales y estilo de tu producto..."></textarea>
+                            <span asp-validation-for="Descripcion" class="form-error"></span>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Descripcion" class="form-label"></label>
-                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Descripcion" class="text-danger"></span>
-                </div>
+                    <!-- Pricing & Inventory Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Precio e Inventario</h3>
 
-                <div class="mb-3">
-                    <label asp-for="Precio" class="form-label"></label>
-                    <input asp-for="Precio" class="form-control" type="number" step="0.01" />
-                    <span asp-validation-for="Precio" class="text-danger"></span>
-                </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label asp-for="Precio" class="form-label">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    Precio (₡)
+                                </label>
+                                <input asp-for="Precio" type="number" step="0.01" class="form-input" placeholder="15000.00" />
+                                <span asp-validation-for="Precio" class="form-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Stock" class="form-label">
+                                    <i class="bi bi-boxes"></i>
+                                    Stock Disponible
+                                </label>
+                                <input asp-for="Stock" type="number" class="form-input" placeholder="50" />
+                                <span asp-validation-for="Stock" class="form-error"></span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Stock" class="form-label"></label>
-                    <input asp-for="Stock" class="form-control" type="number" />
-                    <span asp-validation-for="Stock" class="text-danger"></span>
-                </div>
+                    <!-- Classification Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Clasificación</h3>
 
-                <div class="mb-3">
-                    <label asp-for="IdCategoria" class="form-label"></label>
-                    @Html.DropDownListFor(m => m.IdCategoria,
-                    new SelectList(ViewBag.ListCategoria, "IdCategoria", "NombreCategoria"),
-                                        "Seleccione una categoría",
-                                        new { @class = "form-select" })
-                    <span asp-validation-for="IdCategoria" class="text-danger"></span>
-                </div>
+                        <!-- Categoría -->
+                        <div class="form-group">
+                            <label asp-for="IdCategoria" class="form-label">
+                                <i class="bi bi-collection"></i>
+                                Categoría
+                            </label>
+                            @Html.DropDownListFor(
+                            m => m.IdCategoria,
+                                                        new SelectList(ViewBag.ListCategoria, "IdCategoria", "NombreCategoria"),
+                                                        "Seleccione una categoría",
+                                                        new { @class = "form-select" }
+                                                        )
+                            <span asp-validation-for="IdCategoria" class="form-error"></span>
+                        </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Etiquetas</label>
-                    <select id="selectedEtiquetas" name="selectedEtiquetas"
-                            class="form-select" asp-items="ViewBag.ListEtiquetas"
-                            multiple="multiple"></select>
-                    <div class="form-text">Use Ctrl o Cmd para seleccionar varias.</div>
-                    <!-- Si agregás DataAnnotations o validación server, podés mostrar un error aquí -->
-                    <span id="errorEtiquetas" class="text-danger"></span>
-                </div>
+                        <!-- Etiquetas -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-tags"></i>
+                                Etiquetas
+                            </label>
+                            <select id="selectedEtiquetas" name="selectedEtiquetas"
+                                    class="form-select form-select-tags" asp-items="ViewBag.ListEtiquetas"
+                                    multiple="multiple"></select>
+                            <small class="form-help">
+                                <i class="bi bi-info-circle"></i>
+                                Use Ctrl o Cmd para seleccionar múltiples etiquetas
+                            </small>
+                            <span id="errorEtiquetas" class="form-error"></span>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="ImageFiles" class="form-label">Imágenes del producto</label>
-                    <input type="file" id="ImageFiles" name="ImageFiles" multiple accept="image/*" class="form-control" />
-                    <div class="form-text">Máximo 5 imágenes, 2 MB cada una.</div>
-                    <div id="previewList" class="mt-3 d-flex flex-wrap gap-3"></div>
-                    <span id="errorImagenes" class="text-danger"></span>
-                </div>
+                    <!-- Images Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Imágenes del Producto</h3>
 
-                <div class="mt-4 d-flex justify-content-between">
-                    <a asp-action="IndexAdmin" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left"></i> Cancelar
-                    </a>
-                    <button type="submit" id="btnSubmit" class="btn btn-primary">
-                        <span class="me-2"><i class="fas fa-save"></i></span>
-                        <span>Guardar producto</span>
-                        <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </form>
+                        <div class="form-group">
+                            <label for="ImageFiles" class="form-label">
+                                <i class="bi bi-image"></i>
+                                Cargar Imágenes
+                            </label>
+
+                            <!-- Custom File Upload -->
+                            <div class="file-upload-container">
+                                <input type="file" id="ImageFiles" name="ImageFiles" multiple accept="image/*" class="file-input-hidden" />
+                                <div class="file-upload-area" onclick="document.getElementById('ImageFiles').click()">
+                                    <div class="file-upload-icon">
+                                        <i class="bi bi-cloud-upload"></i>
+                                    </div>
+                                    <div class="file-upload-text">
+                                        <p class="upload-main-text">Arrastra imágenes aquí o haz click para seleccionar</p>
+                                        <p class="upload-sub-text">Máximo 5 imágenes, 2 MB cada una</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Image Preview Grid -->
+                            <div id="previewList" class="image-preview-grid"></div>
+                            <span id="errorImagenes" class="form-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Actions Section -->
+                    <div class="form-actions">
+                        <a asp-action="IndexAdmin" class="btn btn-ghost btn-lg">
+                            <i class="bi bi-arrow-left"></i>
+                            Cancelar
+                        </a>
+                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-lg btn-submit">
+                            <i class="bi bi-save"></i>
+                            <span class="btn-text">Guardar Producto</span>
+                            <div id="spinner" class="btn-spinner">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
@@ -98,49 +159,114 @@
         const form = document.getElementById('formCreateProducto');
         const btnSubmit = document.getElementById('btnSubmit');
         const spinner = document.getElementById('spinner');
+        const btnText = document.querySelector('.btn-text');
         const previewContainer = document.getElementById('previewList');
         const inputImgs = document.getElementById('ImageFiles');
         const errorImgs = document.getElementById('errorImagenes');
         const errorTags = document.getElementById('errorEtiquetas');
+        const fileUploadArea = document.querySelector('.file-upload-area');
 
-        // Preview imágenes
+        // Drag and Drop functionality
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+        });
+
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+            inputImgs.files = files;
+            handleFilePreview(files);
+        });
+
+        // File preview handling
         inputImgs.addEventListener('change', function (event) {
+            handleFilePreview(event.target.files);
+        });
+
+        function handleFilePreview(files) {
             previewContainer.innerHTML = '';
             errorImgs.textContent = '';
 
-            const files = Array.from(event.target.files);
-
-            // Validaciones: cantidad y tamaño
+            const fileArray = Array.from(files);
             const MAX_FILES = 5;
             const MAX_MB = 2;
             const MAX_BYTES = MAX_MB * 1024 * 1024;
 
-            if (files.length > MAX_FILES) {
-                errorImgs.textContent = `Máximo ${MAX_FILES} imágenes.`;
+            if (fileArray.length > MAX_FILES) {
+                errorImgs.textContent = `Máximo ${MAX_FILES} imágenes permitidas.`;
                 inputImgs.value = '';
                 return;
             }
-            for (const f of files) {
-                if (f.size > MAX_BYTES) {
-                    errorImgs.textContent = `Cada imagen debe pesar ≤ ${MAX_MB} MB.`;
+
+            for (const file of fileArray) {
+                if (file.size > MAX_BYTES) {
+                    errorImgs.textContent = `Cada imagen debe pesar máximo ${MAX_MB} MB.`;
                     inputImgs.value = '';
                     return;
                 }
             }
 
-            files.forEach(file => {
+            fileArray.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'img-thumbnail img-thumb';
-                    previewContainer.appendChild(img);
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'image-preview-item';
+                    previewItem.innerHTML = `
+                        <div class="preview-image-container">
+                            <img src="${e.target.result}" alt="Preview ${index + 1}">
+                            <div class="preview-overlay">
+                                <button type="button" class="remove-image-btn" onclick="removePreviewImage(this)">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="preview-info">
+                            <span class="file-name">${file.name}</span>
+                            <span class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                    `;
+                    previewContainer.appendChild(previewItem);
                 };
                 reader.readAsDataURL(file);
             });
-        });
 
-        // Validación adicional de etiquetas (si querés exigir al menos una)
+            // Update upload area text
+            updateUploadAreaText(fileArray.length);
+        }
+
+        function removePreviewImage(button) {
+            const previewItem = button.closest('.image-preview-item');
+            previewItem.remove();
+
+            // Reset file input
+            inputImgs.value = '';
+
+            // Update upload area text
+            const remainingPreviews = previewContainer.querySelectorAll('.image-preview-item').length;
+            updateUploadAreaText(remainingPreviews);
+        }
+
+        function updateUploadAreaText(count) {
+            const mainText = document.querySelector('.upload-main-text');
+            const subText = document.querySelector('.upload-sub-text');
+
+            if (count > 0) {
+                mainText.textContent = `${count} imagen${count > 1 ? 'es' : ''} seleccionada${count > 1 ? 's' : ''}`;
+                subText.textContent = `Haz click para agregar más (máximo 5)`;
+            } else {
+                mainText.textContent = 'Arrastra imágenes aquí o haz click para seleccionar';
+                subText.textContent = 'Máximo 5 imágenes, 2 MB cada una';
+            }
+        }
+
         function validateTags() {
             errorTags.textContent = '';
             const sel = document.getElementById('selectedEtiquetas');
@@ -151,18 +277,50 @@
             return true;
         }
 
-        // Prevenir doble submit + validaciones adicionales
+        // Enhanced form submission
         form.addEventListener('submit', function (e) {
             errorImgs.textContent = '';
+
             if (!validateTags()) {
                 e.preventDefault();
                 return;
             }
-            // Si la validación unobtrusive falla, no bloqueamos el doble submit
+
             if (!form.checkValidity()) return;
 
+            // Show loading state
             btnSubmit.disabled = true;
-            spinner.classList.remove('d-none');
+            btnSubmit.classList.add('loading');
+            btnText.textContent = 'Guardando...';
+            spinner.style.display = 'inline-block';
+
+            // Show success notification
+            setTimeout(() => {
+                showNotification('🎉 ¡Producto creado exitosamente!', 'success');
+            }, 500);
         });
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
     </script>
 }

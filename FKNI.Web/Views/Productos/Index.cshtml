@@ -4,142 +4,296 @@
     ViewData["Title"] = "Productos";
 }
 
-<style>
-    .imagen-uniforme {
-        width: 100%;
-        max-width: 250px;
-        height: 250px;
-        object-fit: cover;
-        border-radius: 0.375rem;
-        border: 1px solid #ddd;
-    }
+<!-- Products Header -->
+<section class="section bg-nude-light">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">Catálogo</h1>
+            <p class="section-subtitle">Diseños únicos que definen tu estilo</p>
+        </div>
 
-    .placeholder-imagen {
-        width: 100%;
-        max-width: 250px;
-        height: 250px;
-        background-color: #f0f0f0;
-        border: 1px dashed #ccc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #777;
-        font-size: 0.9rem;
-        border-radius: 0.375rem;
-        margin: 0 auto;
-    }
-</style>
-
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">Catálogo de Productos</h2>
+        <!-- Category Navigation -->
+        <div class="products-nav">
+            <div class="products-nav-container">
+                <button class="products-nav-item active" data-category="all">
+                    <span>Todos</span>
+                </button>
+                <button class="products-nav-item" data-category="discount">
+                    <span>Ofertas</span>
+                </button>
+                <button class="products-nav-item" data-category="featured">
+                    <span>Destacados</span>
+                </button>
+                <button class="products-nav-item" data-category="new">
+                    <span>Nuevos</span>
+                </button>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @foreach (var item in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
-                    @if (item.IdImagen?.Any() == true)
-                    {
-                        var imagenes = item.IdImagen.ToList();
-                        var idCarrusel = "carousel-" + item.IdProducto;
+<!-- Products Grid -->
+<section class="section">
+    <div class="container">
+        <div class="products-grid-container">
+            @foreach (var item in Model)
+            {
+                <div class="product-item np-hover-lift" data-category="@(item.Descuento > 0 ? "discount" : "all")">
+                    <!-- Product Images with Auto-Carousel -->
+                    <div class="product-image-container">
+                        @if (item.IdImagen?.Any() == true)
+                        {
+                            var imagenes = item.IdImagen.ToList();
+                            var idCarrusel = "carousel-" + item.IdProducto;
 
-                        <div id="@idCarrusel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-indicators">
-                                @for (int i = 0; i < imagenes.Count; i++)
+                            <div id="@idCarrusel" class="product-carousel" data-bs-interval="3000" data-bs-ride="carousel">
+                                <!-- Carousel Images -->
+                                <div class="product-carousel-inner">
+                                    @for (int i = 0; i < imagenes.Count; i++)
+                                    {
+                                        var img = imagenes[i];
+                                        <div class="product-carousel-slide @(i == 0 ? "active" : "")">
+                                            <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.IdProducto">
+                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(img.UrlImagen)"
+                                                     class="product-image"
+                                                     alt="Imagen del producto" />
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Carousel Controls -->
+                                @if (imagenes.Count > 1)
                                 {
-                                    <button type="button"
-                                            data-bs-target="#@idCarrusel"
-                                            data-bs-slide-to="@i"
-                                            class="@(i == 0 ? "active" : "")"
-                                            aria-current="@(i == 0 ? "true" : "false")"
-                                            aria-label="Slide @(i + 1)">
-                                    </button>
-                                }
-                            </div>
+                                    <div class="product-carousel-nav">
+                                        <button class="product-carousel-control product-carousel-prev" type="button" data-bs-target="#@idCarrusel" data-bs-slide="prev">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </button>
+                                        <button class="product-carousel-control product-carousel-next" type="button" data-bs-target="#@idCarrusel" data-bs-slide="next">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                    </div>
 
-                            <div class="carousel-inner">
-                                @for (int i = 0; i < imagenes.Count; i++)
-                                {
-                                    var img = imagenes[i];
-                                    <div class="carousel-item @(i == 0 ? "active" : "") text-center">
-                                        <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.IdProducto">
-                                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(img.UrlImagen)"
-                                                 class="imagen-uniforme"
-                                                 alt="Imagen del producto" />
-                                        </a>
+                                    <!-- Carousel Indicators -->
+                                    <div class="product-carousel-indicators">
+                                        @for (int i = 0; i < imagenes.Count; i++)
+                                        {
+                                            <button type="button"
+                                                    data-bs-target="#@idCarrusel"
+                                                    data-bs-slide-to="@i"
+                                                    class="product-carousel-dot @(i == 0 ? "active" : "")"
+                                                    aria-current="@(i == 0 ? "true" : "false")"
+                                                    aria-label="Slide @(i + 1)">
+                                            </button>
+                                        }
                                     </div>
                                 }
                             </div>
+                        }
+                        else
+                        {
+                            <!-- Placeholder para productos sin imagen -->
+                            <div class="product-image-placeholder">
+                                <div class="placeholder-content">
+                                    <i class="bi bi-image"></i>
+                                    <span>Sin imagen</span>
+                                </div>
+                            </div>
+                        }
 
-                            @if (imagenes.Count > 1)
-                            {
-                                <button class="carousel-control-prev" type="button" data-bs-target="#@idCarrusel" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Anterior</span>
+                        <!-- Quick Actions Overlay -->
+                        <div class="product-overlay">
+                            <div class="product-actions">
+                                <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.IdProducto"
+                                   class="btn btn-nude btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                    Ver Detalles
+                                </a>
+                                <button class="btn btn-primary btn-sm" onclick="addToCart(@item.IdProducto)">
+                                    <i class="bi bi-bag-plus"></i>
+                                    Agregar
                                 </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#@idCarrusel" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Siguiente</span>
-                                </button>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center mt-3">
-                            <div class="placeholder-imagen">
-                                Sin imagen
                             </div>
                         </div>
-                    }
 
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@item.NombreProducto</h5>
-                        <p class="card-text text-muted">@item.Descripcion</p>
-                        <p class="mb-1"><strong>Precio:</strong> ₡@item.Precio.ToString("N2")</p>
-                        <p class="mb-1"><strong>Descuento:</strong> @item.Descuento%</p>
-                        <p class="mb-1">
-                            <strong>Total con Descuento:</strong>
-                            ₡@((item.Precio - (item.Precio * (item.Descuento / 100))).ToString("N2"))
-                        </p>
-                        <div class="mb-3">
-                            <!-- Reseñas para valoracion -->
-                            @if (item.Resenas != null && item.Resenas.Any())
+                        <!-- Discount Badge -->
+                        @if (item.Descuento > 0)
+                        {
+                            <div class="product-badge">
+                                <span class="product-discount-badge">-@item.Descuento%</span>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Product Information -->
+                    <div class="product-info">
+                        <div class="product-header">
+                            <h3 class="product-title">
+                                <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.IdProducto" class="np-minimal-link">
+                                    @item.NombreProducto
+                                </a>
+                            </h3>
+
+                            @if (!string.IsNullOrEmpty(item.Descripcion))
                             {
-                                int totalValoraciones = (int)item.Resenas.Sum(r => r.Valoracion);
-                                int cantidad = item.Resenas.Count();
-                                decimal promedio = (decimal)totalValoraciones / cantidad;
+                                <p class="product-description">
+                                    @(item.Descripcion.Length > 80 ? item.Descripcion.Substring(0, 80) + "..." : item.Descripcion)
+                                </p>
+                            }
+                        </div>
 
-                                int estrellas = (int)Math.Floor(promedio);
-                                bool media = (promedio - estrellas) >= 0.5m;
-                                int vacias = 5 - estrellas - (media ? 1 : 0);
-
-                                <div class="mb-4">
-                                    <strong>Valoración</strong>
-                                    <p>
-                                        @for (int i = 0; i < estrellas; i++)
-                                        {
-                                            <i class="fas fa-star text-warning"></i>
-                                        }
-                                        @if (media)
-                                        {
-                                            <i class="fas fa-star-half-alt text-warning"></i>
-                                        }
-                                        @for (int i = 0; i < vacias; i++)
-                                        {
-                                            <i class="far fa-star text-warning"></i>
-                                        }
-
-                                        <span class="ms-2">(@promedio.ToString("0.0"))</span>
-                                    </p>
+                        <!-- Pricing Section -->
+                        <div class="product-pricing-section">
+                            @if (item.Descuento > 0)
+                            {
+                                <div class="pricing-with-discount">
+                                    <div class="pricing-original">
+                                        <span class="label-small">Precio original:</span>
+                                        <span class="product-price-original">₡@item.Precio.ToString("N2")</span>
+                                    </div>
+                                    <div class="pricing-discounted">
+                                        <span class="label-small">Con descuento (@item.Descuento%):</span>
+                                        <span class="product-price-current">₡@((item.Precio - (item.Precio * (item.Descuento / 100))).ToString("N2"))</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="pricing-regular">
+                                    <span class="label-small">Precio:</span>
+                                    <span class="product-price-current">₡@item.Precio.ToString("N2")</span>
                                 </div>
                             }
                         </div>
+
+                        <!-- Rating -->
+                        @if (item.Resenas != null && item.Resenas.Any())
+                        {
+                            int totalValoraciones = (int)item.Resenas.Sum(r => r.Valoracion);
+                            int cantidad = item.Resenas.Count();
+                            decimal promedio = (decimal)totalValoraciones / cantidad;
+
+                            int estrellas = (int)Math.Floor(promedio);
+                            bool media = (promedio - estrellas) >= 0.5m;
+                            int vacias = 5 - estrellas - (media ? 1 : 0);
+
+                            <div class="product-rating">
+                                <div class="star-rating">
+                                    @for (int i = 0; i < estrellas; i++)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    @if (media)
+                                    {
+                                        <i class="bi bi-star-half"></i>
+                                    }
+                                    @for (int i = 0; i < vacias; i++)
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                </div>
+                                <span class="rating-count">(@promedio.ToString("0.0"))</span>
+                            </div>
+                        }
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Category filter functionality
+        const categoryButtons = document.querySelectorAll('.products-nav-item');
+        const productItems = document.querySelectorAll('.product-item');
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.dataset.category;
+
+                // Update active button
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter products
+                productItems.forEach(item => {
+                    const itemCategory = item.dataset.category;
+                    const hasRating = item.querySelector('.product-rating');
+
+                    let shouldShow = false;
+
+                    if (category === 'all') {
+                        shouldShow = true;
+                    } else if (category === 'discount' && itemCategory === 'discount') {
+                        shouldShow = true;
+                    } else if (category === 'featured' && hasRating) {
+                        shouldShow = true;
+                    } else if (category === 'new' && Math.random() > 0.6) { // Simulación para nuevos
+                        shouldShow = true;
+                    }
+
+                    if (shouldShow) {
+                        item.style.display = 'block';
+                        item.classList.add('fade-in');
+                    } else {
+                        item.style.display = 'none';
+                        item.classList.remove('fade-in');
+                    }
+                });
+            });
+        });
+
+        // Pause carousel on hover for better UX
+        const carousels = document.querySelectorAll('.product-carousel');
+        carousels.forEach(carousel => {
+            carousel.addEventListener('mouseenter', function() {
+                const bsCarousel = bootstrap.Carousel.getInstance(this);
+                if (bsCarousel) {
+                    bsCarousel.pause();
+                }
+            });
+
+            carousel.addEventListener('mouseleave', function() {
+                const bsCarousel = bootstrap.Carousel.getInstance(this);
+                if (bsCarousel) {
+                    bsCarousel.cycle();
+                }
+            });
+        });
+    });
+
+    // Add to cart functionality
+    function addToCart(productId) {
+        // Simulate add to cart
+        showNotification('🛒 ¡Producto agregado al carrito!', 'success');
+
+        // Aquí implementarías la llamada real a tu API
+        // fetch('/Cart/Add', { method: 'POST', body: JSON.stringify({id: productId}) })
+    }
+
+    // Notification system (juvenil y moderno)
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.classList.add('show'), 100);
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+</script>
