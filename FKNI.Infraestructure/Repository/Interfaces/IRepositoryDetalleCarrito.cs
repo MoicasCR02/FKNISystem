@@ -9,6 +9,7 @@ namespace FKNI.Infraestructure.Repository.Interfaces
 {
     public interface IRepositoryDetalleCarrito
     {
+        Task<ICollection<DetalleCarrito>> FindByIdAsync(int id_carrito);
         Task<int> AddAsync(DetalleCarrito entity);
     }
 }

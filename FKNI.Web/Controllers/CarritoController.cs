@@ -27,11 +27,15 @@ namespace FKNI.Web.Controllers
         {
             try
             {
+
+                
                 if (id == null)
                 {
                     return RedirectToAction("IndexAdmin");
                 }
                 var @object = await _serviceCarrito.FindByIdAsync(id);
+                ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+
                 if (@object == null)
                 {
                     throw new Exception("Carrito no existente");

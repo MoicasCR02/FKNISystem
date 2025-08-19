@@ -1,30 +1,51 @@
-﻿@model FKNI.Application.DTOs.CarritoDTO
-
-@{
-    ViewData["Title"] = "Index";
+﻿@if (ViewBag.ListDetalleCarrito != null)
+{
+    <h4>Productos en el carrito</h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Imágenes</th>
+                <th>Nombre del producto</th>
+                <th>Cantidad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detalle in ViewBag.ListDetalleCarrito)
+            {
+                <tr>
+                    <td>
+                        <div class="product-carousel-inner">
+                            @{
+                                var imagenes = detalle.IdProductoNavigation.IdImagen;
+                            }
+                            @for (int i = 0; i < imagenes.Count; i++)
+                            {
+                                var img = imagenes[i];
+                                <div class="product-carousel-slide @(i == 0 ? "active" : "")">
+                                    <a asp-controller="Productos" asp-action="Details" asp-route-id="@detalle.IdProductoNavigation.IdProducto">
+                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(img.UrlImagen)"
+                                             class="product-image"
+                                             alt="Imagen del producto" />
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                    <td>@detalle.IdProductoNavigation.NombreProducto</td>
+                    <td>@detalle.Cantidad</td>
+                    <td>
+                        <form asp-controller="Carrito" asp-action="EliminarProducto" method="post">
+                            <input type="hidden" name="idProducto" value="@detalle.IdProductoNavigation.IdProducto" />
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-
-<h1>Index</h1>
-
-<div>
-    <h4>CarritoDTO</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCarrito)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCarrito)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdUsuarioNavigation.NombreUsuario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdUsuarioNavigation.NombreUsuario)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+else
+{
+    <p>No hay productos en el carrito.</p>
+}
