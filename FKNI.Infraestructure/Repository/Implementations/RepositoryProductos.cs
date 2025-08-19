@@ -68,8 +68,9 @@ namespace FKNI.Infraestructure.Repository.Implementations
             //Relación de muchos a muchos solo con llave primaria compuesta
             var etiquetas = await getEtiquetas(selectedEtiquetas);
             entity.IdEtiqueta = etiquetas;
-            entity.IdEtiqueta = etiquetas;
-            await _context.SaveChangesAsync();
+           // entity.IdEtiqueta = etiquetas;
+            await _context.Set<Productos>().AddAsync(entity);
+           // await _context.SaveChangesAsync();
             return entity.IdProducto;
         }
 
