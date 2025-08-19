@@ -2,104 +2,109 @@
     Layout = null;
     ViewData["Title"] = "Acceso denegado";
 }
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Libreria.Web</title>
-
+    <title>@ViewData["Title"] - FKNI.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <style>
-        body {
-            background: linear-gradient(135deg, #1d3557, #457b9d);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .card-header {
-            background: #e63946;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .card-body p {
-            color: #333;
-            font-size: 1.1rem;
-        }
-
-        .btn-danger {
-            background: #e63946;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: 0.3s ease-in-out;
-        }
-
-            .btn-danger:hover {
-                background: #b81f2c;
-                transform: translateY(-2px);
-            }
-
-        .icon {
-            font-size: 4rem;
-            color: #e63946;
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/nude-project-design.css" />
 </head>
+<body class="error-page-body">
+    <div class="error-page-container">
+        <div class="error-page-content">
 
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-xl-5">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="bi bi-shield-lock-fill"></i> Acceso denegado
+            <!-- Error Icon -->
+            <div class="error-icon-container">
+                <div class="error-icon">
+                    <i class="bi bi-shield-exclamation"></i>
+                </div>
+                <div class="error-pulse"></div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message-section">
+                <h1 class="error-title">Acceso Denegado</h1>
+                <p class="error-subtitle">
+                    Lo sentimos, no tienes permisos para acceder a esta sección
+                </p>
+                <p class="error-description">
+                    Tu solicitud ha sido bloqueada por razones de seguridad.
+                    Puedes regresar a la página anterior o iniciar sesión con una cuenta autorizada.
+                </p>
+            </div>
+
+            <!-- Error Actions -->
+            <div class="error-actions">
+                <button class="btn btn-primary btn-lg" onclick="history.back()">
+                    <i class="bi bi-arrow-left-circle"></i>
+                    <span>Regresar</span>
+                </button>
+                <a href="https://localhost:7137/Login/Index" class="btn btn-nude btn-lg">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Iniciar Sesión</span>
+                </a>
+            </div>
+
+            <!-- Additional Help -->
+            <div class="error-help">
+                <div class="help-card">
+                    <div class="help-icon">
+                        <i class="bi bi-question-circle"></i>
                     </div>
-                    <div class="card-body">
-                        <div class="icon">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                        </div>
-                        <p>
-                            Lo sentimos, tu acceso ha sido rechazado por razones de seguridad.
-                            <br />Puedes regresar a la página anterior o iniciar sesión con otra cuenta.
-                        </p>
-                        <div class="d-grid gap-2 mt-3">
-                            <a class="btn btn-danger" href="javascript:history.back()">
-                                <i class="bi bi-arrow-left-circle"></i> Regresar
-                            </a>
-                            <a class="btn btn-primary" href="https://localhost:7137/Login/Index">
-                                <i class="bi bi-box-arrow-in-right"></i> Ir a Iniciar Sesión
-                            </a>
-                        </div>
-                        <p class="mt-3">
+                    <div class="help-content">
+                        <h3 class="help-title">¿Necesitas ayuda?</h3>
+                        <p class="help-text">
                             ¿No tienes cuenta?
-                            <a href="https://localhost:7137/Usuarios/Create" class="text-decoration-none fw-bold text-primary">Regístrate aquí</a>
+                            <a href="https://localhost:7137/Usuarios/Create" class="help-link">
+                                Regístrate aquí
+                            </a>
+                        </p>
+                        <p class="help-text">
+                            ¿Problemas de acceso?
+                            <a href="mailto:soporte@fi.com" class="help-link">
+                                Contáctanos
+                            </a>
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="error-footer">
+                <p class="footer-text">
+                    <i class="bi bi-shield-check"></i>
+                    Fucking Industry - Protegiendo tu experiencia
+                </p>
             </div>
         </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add entrance animation
+            const content = document.querySelector('.error-page-content');
+            content.classList.add('fade-in');
+
+            // Add click animation to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.className = 'btn-ripple';
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

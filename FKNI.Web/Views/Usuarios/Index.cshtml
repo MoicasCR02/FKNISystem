@@ -4,80 +4,123 @@
     ViewData["Title"] = "Usuarios";
 }
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">Lista de Usuarios</h2>
-        <a asp-action="Create" class="btn btn-success">
-            <i class="fas fa-user-plus"></i> Crear nuevo usuario
-        </a>
-    </div>
+<section class="section">
+    <div class="container">
+        <!-- Header -->
+        <div class="section-header d-flex justify-between items-center">
+            <div>
+                <h2 class="section-title m-0">Lista de Usuarios</h2>
+                <p class="section-subtitle m-0">Gestión de usuarios registrados en la plataforma</p>
+            </div>
+            <div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-1"></i> Crear nuevo usuario
+                </a>
+            </div>
+        </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover table-bordered align-middle shadow-sm">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Usuario</th>
-                    <th>Correo</th>
-                    <th>Contraseña</th>
-                    <th>Fecha de Registro</th>
-                    <th>Teléfono</th>
-                    <th>Rol</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    var inputId = $"pass_{item.IdUsuario}";
-                    <tr>
-                        <td>@item.IdUsuario</td>
-                        <td>@item.NombreUsuario</td>
-                        <td>@item.Correo</td>
-                        <td>
-                            <div class="input-group">
-                                <input type="password" class="form-control form-control-sm" id="@inputId" value="@item.Contrasena" readonly />
-                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="togglePassword('@inputId', this)">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </td>
-                        <td>@item.FechaRegistro.ToShortDateString()</td>
-                        <td>@item.Telefono</td>
-                        <td>@item.IdRolNavigation?.NombreRol</td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-primary" title="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-info" title="Detalles">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <!-- Tabla dentro de card -->
+        <div class="card shadow-md">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="text-start">ID</th>
+                                <th class="text-start">Usuario</th>
+                                <th class="text-start">Correo</th>
+                                <th class="text-start">Contraseña</th>
+                                <th class="text-start">Fecha de Registro</th>
+                                <th class="text-start">Teléfono</th>
+                                <th class="text-start">Rol</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var inputId = $"pass_{item.IdUsuario}";
+                                <tr>
+                                    <td class="text-start">@item.IdUsuario</td>
+                                    <td class="text-start">@item.NombreUsuario</td>
+                                    <td class="text-start">@item.Correo</td>
+                                    <td class="text-start">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="password" class="form-input password-table-input" id="@inputId" value="@item.Contrasena" readonly />
+                                            <button type="button" class="btn btn-ghost btn-sm password-toggle-btn" onclick="togglePassword('@inputId', this)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="text-start">@item.FechaRegistro.ToShortDateString()</td>
+                                    <td class="text-start">@item.Telefono</td>
+                                    <td class="text-start">
+                                        @{
+                                            var roleClass = "";
+                                            switch (item.IdRolNavigation?.NombreRol?.ToLower())
+                                            {
+                                                case "administrador":
+                                                    roleClass = "bg-brown text-white";
+                                                    break;
+                                                case "cliente":
+                                                    roleClass = "bg-nude text-black";
+                                                    break;
+                                                case "vendedor":
+                                                    roleClass = "bg-terracotta text-white";
+                                                    break;
+                                                default:
+                                                    roleClass = "bg-gray-200 text-black";
+                                                    break;
+                                            }
+                                        }
+                                        <span class="badge @roleClass">@item.IdRolNavigation?.NombreRol</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex gap-2">
+                                            <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-secondary btn-sm" title="Editar">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@item.IdUsuario" class="btn btn-nude btn-sm" title="Detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.IdUsuario" class="btn btn-ghost btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @if (!(Model?.Any() ?? false))
+                    {
+                        <div class="text-center text-gray-600 py-4">
+                            <i class="bi bi-people me-2"></i>
+                            No hay usuarios registrados.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <script>
+        // Tu función original exacta - solo cambié Font Awesome por Bootstrap Icons
         function togglePassword(inputId, button) {
             const input = document.getElementById(inputId);
             const icon = button.querySelector("i");
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+                button.classList.add("active");
             } else {
                 input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+                button.classList.remove("active");
             }
         }
     </script>
