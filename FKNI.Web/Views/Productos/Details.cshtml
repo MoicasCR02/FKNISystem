@@ -375,19 +375,19 @@
                     </div>
                 }
             </div>
-
-            <div class="text-center mt-8">
-                @{
-                    var idUsuario = User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value;
-                }
-                <a asp-controller="Resenas" asp-action="Create" asp-route-idProducto="@Model.IdProducto" asp-route-idUsuario="@idUsuario" class="btn btn-primary btn-lg">
-                    <i class="bi bi-plus-circle"></i>
-                    <span>Agregar nueva reseña</span>
-                </a>
-            </div>
         </div>
     </section>
 }
+<div class="text-center mt-8">
+    @{
+        var idUsuario = User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value;
+    }
+    <a asp-controller="Resenas" asp-action="Create" asp-route-idProducto="@Model.IdProducto" asp-route-idUsuario="@idUsuario" class="btn btn-primary btn-lg">
+        <i class="bi bi-plus-circle"></i>
+        <span>Agregar nueva reseña</span>
+    </a>
+</div>
+
 
 <!-- Image Lightbox Modal -->
 <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">

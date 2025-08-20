@@ -170,13 +170,12 @@
                                 </div>
 
                                 <!-- Cart Link -->
-                               @*  @{var idUsuario = User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value;}
-                                <a class="nav-link text-dark cart-link" asp-area="" asp-controller="Carrito" asp-action="Index" asp-route-id="@idUsuario">
+                                <a class="nav-link text-dark cart-link" asp-area="" asp-controller="Carrito" asp-action="Index" asp-route-id="@User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value">
                                     <div class="cart-icon">
                                         <i class="fas fa-shopping-cart"></i>
                                     </div>
                                     <span>Carrito</span>
-                                </a> *@
+                                </a> 
                             }
                         </div>
                     </div>
