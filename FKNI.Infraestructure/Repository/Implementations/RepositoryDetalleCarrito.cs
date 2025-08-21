@@ -75,7 +75,7 @@ namespace FKNI.Infraestructure.Repository.Implementations
         public async Task<DetalleCarrito> DeleteAsync(int id_producto ,int id_carrito)
         {
             var existente = await FindByIdExists(id_carrito, id_producto);
-            if(existente.Cantidad == 0)
+            if(existente.Cantidad <= 1)
             {   
                 // Raw Query
                 //https://www.learnentityframeworkcore.com/raw-sql/execute-sql

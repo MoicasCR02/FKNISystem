@@ -42,7 +42,6 @@ namespace FKNI.Web.Controllers
                 ReferenceHandler = ReferenceHandler.IgnoreCycles
             });
             //return Json(collection);
-
         }
 
         public async Task<IActionResult> Index()

@@ -34,13 +34,26 @@ namespace FKNI.Web.Controllers
                     return RedirectToAction("IndexAdmin");
                 }
                 var @object = await _serviceCarrito.FindByIdAsync(id);
-                ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+                var detalles = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+
+                if (detalles.Count == 0)
+                {
+                    detalles = null;
+                    ViewBag.ListDetalleCarrito = detalles;
+                }
+                else
+                {
+                    ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+
+                }
+
 
                 if (@object == null)
                 {
                     throw new Exception("Carrito no existente");
 
                 }
+
 
                 return View(@object);
 
@@ -80,9 +93,6 @@ namespace FKNI.Web.Controllers
                 await _serviceDetalleCarrito.UpdateAsync(detallecarritoDTO);
                 }
 
-
-
-
                     return Json(new { success = true, mensaje = "Producto agregado al carrito" });
             }
             catch (Exception ex)
@@ -96,9 +106,11 @@ namespace FKNI.Web.Controllers
         {
             var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito);
 
-            ViewBag.Mensaje = eliminado.Cantidad == 0
+            ViewBag.Mensaje = eliminado == null
                 ? "Se eliminó el producto del carrito"
                 : "Se eliminó una cantidad del producto";
+
+            ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(id_carrito);
 
             return View("Index");
         }
