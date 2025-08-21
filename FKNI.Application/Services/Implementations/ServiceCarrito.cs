@@ -30,6 +30,13 @@ namespace FKNI.Application.Services.Implementations
             return objectMapped;
         }
 
+        public async Task<CarritoDTO> FindByIdCarritoAsync(int id_carrito)
+        {
+            var @object = await _repository.FindByIdAsync(id_carrito);
+            var objectMapped = _mapper.Map<CarritoDTO>(@object);
+            return objectMapped;
+        }
+
         public async Task<int> AddAsync(CarritoDTO dto)
         {
             // Map LibroDTO to Libro

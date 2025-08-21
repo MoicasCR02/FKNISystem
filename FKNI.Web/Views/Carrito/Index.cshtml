@@ -1,4 +1,16 @@
-﻿@if (ViewBag.ListDetalleCarrito != null)
+﻿@model FKNI.Application.DTOs.CarritoDTO
+
+@{
+    ViewData["Title"] = "Carrito";
+}
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensaje"]</div>
+}
+
+
+@if (ViewBag.ListDetalleCarrito != null)
 {
     <h4>Productos en el carrito</h4>
     <table class="table table-bordered table-striped">
@@ -35,9 +47,10 @@
                     <td>@detalle.IdProductoNavigation.NombreProducto</td>
                     <td>@detalle.Cantidad</td>
                     <td>
-                        <form asp-controller="Carrito" asp-action="EliminarProducto" method="post">
-                            <input type="hidden" name="idProducto" value="@detalle.IdProductoNavigation.IdProducto" />
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" name="id_producto" value="@detalle.IdProductoNavigation.IdProducto" />
+                            <input type="hidden" name="id_carrito" value="@detalle.IdCarrito" />
+                            <button type="submit" class="btn btn-danger">Eliminar del carrito</button>
                         </form>
                     </td>
                 </tr>

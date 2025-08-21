@@ -3,6 +3,7 @@ using FKNI.Application.DTOs;
 using FKNI.Application.Services.Interfaces;
 using FKNI.Infraestructure.Models;
 using FKNI.Infraestructure.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,13 @@ namespace FKNI.Application.Services.Implementations
             return objectMapped;
         }
 
+        public async Task<DetalleCarritoDTO> FindByExist(int id_carrito, int id_producto)
+        {
+            var @object = await _repository.FindByIdExists(id_carrito,id_producto);
+            var objectMapped = _mapper.Map<DetalleCarritoDTO>(@object);
+            return objectMapped;
+        }
+
 
         public async Task<int> AddAsync(DetalleCarritoDTO dto)
         {
@@ -37,6 +45,22 @@ namespace FKNI.Application.Services.Implementations
 
             // Return
             return await _repository.AddAsync(objectMapped);
+        }
+
+        public async Task UpdateAsync(DetalleCarritoDTO dto)
+        {
+            var entity = _mapper.Map<DetalleCarrito>(dto);
+            // Este mapea el dto al objeto existente SIN cambiar el Id
+            _mapper.Map(dto, entity);
+            await _repository.UpdateAsync(entity);
+        }
+
+        public async Task<DetalleCarritoDTO> DeleteAsync(int id_producto, int id_carrito)
+        {
+            var @object = await _repository.DeleteAsync(id_producto, id_carrito);
+            var objectMapped = _mapper.Map<DetalleCarritoDTO>(@object);
+            return objectMapped;
+            
         }
     }
 }

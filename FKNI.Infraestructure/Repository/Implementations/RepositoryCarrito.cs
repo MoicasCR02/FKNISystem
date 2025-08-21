@@ -23,7 +23,16 @@ namespace FKNI.Infraestructure.Repository.Implementations
             var @object = await _context.Set<Carrito>()
                 .Where(x => x.IdUsuario == id_usuario)
                 .Include(x => x.IdUsuarioNavigation)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
+            return @object!;
+        }
+
+        public async Task<Carrito> FindByIdCarritoAsync(int id_carrito)
+        {
+            var @object = await _context.Set<Carrito>()
+                .Where(x => x.IdCarrito == id_carrito)
+                .Include(x => x.IdUsuarioNavigation)
+                .FirstOrDefaultAsync();
             return @object!;
         }
         public async Task<int> AddAsync(Carrito entity)

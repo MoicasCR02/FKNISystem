@@ -57,22 +57,52 @@ namespace FKNI.Web.Controllers
             try
             {
                 var carrito = await _serviceCarrito.FindByIdAsync(id_usuario);
-
-                var detallecarritoDTO = new DetalleCarritoDTO
+                var existe = await _serviceDetalleCarrito.FindByExist(carrito.IdCarrito, id_producto);
+                if (existe == null)
                 {
-                    IdCarrito = carrito.IdCarrito,
-                    IdProducto = id_producto,
-                    Cantidad = 1,
-                };
+                    var detallecarritoDTO = new DetalleCarritoDTO
+                    {
+                        IdCarrito = carrito.IdCarrito,
+                        IdProducto = id_producto,
+                        Cantidad = 1,
+                    };
 
-                await _serviceDetalleCarrito.AddAsync(detallecarritoDTO);
+                    await _serviceDetalleCarrito.AddAsync(detallecarritoDTO);
+                }
+                else
+                {
+                    var detallecarritoDTO = new DetalleCarritoDTO
+                    {
+                        IdCarrito = existe.IdCarrito,
+                        IdProducto = id_producto,
+                        Cantidad = existe.Cantidad + 1,
+                    };
+                await _serviceDetalleCarrito.UpdateAsync(detallecarritoDTO);
+                }
 
-                return Json(new { success = true, mensaje = "Producto agregado al carrito" });
+
+
+
+                    return Json(new { success = true, mensaje = "Producto agregado al carrito" });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, mensaje = "Error al agregar al carrito", error = ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id_producto, int id_carrito)
+        {
+            var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito);
+
+            ViewBag.Mensaje = eliminado.Cantidad == 0
+                ? "Se eliminó el producto del carrito"
+                : "Se eliminó una cantidad del producto";
+
+            return View("Index");
+        }
+
+
     }
 }
