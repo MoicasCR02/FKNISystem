@@ -12,7 +12,7 @@ namespace FKNI.Application.Services.Implementations
 {
     public class ServiceDetallePedido : IServiceDetallePedido
     {
-        private readonly IRepositoryPagos _repository;
+        private readonly IRepositoryDetallePedido _repository;
         private readonly IMapper _mapper;
         public ServiceDetallePedido(IRepositoryDetallePedido repository, IMapper mapper)
         {
