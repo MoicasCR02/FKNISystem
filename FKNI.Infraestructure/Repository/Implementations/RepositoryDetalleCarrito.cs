@@ -70,11 +70,6 @@ namespace FKNI.Infraestructure.Repository.Implementations
         public async Task<DetalleCarrito> DeleteAsync(int id_producto ,int id_carrito, string talla)
         {
             var existente = await FindByIdExists(id_carrito, id_producto, talla);
-            if(existente != null){
-            
-
-
-            }
             if(existente.Cantidad <= 1)
             {   
                 // Raw Query

@@ -97,7 +97,8 @@
                 var impuestoProducto = subtotalProducto * impuestoRate;
                 var totalProducto = subtotalProducto + impuestoProducto;
 
-                <tr id="producto-@detalle.IdProducto">
+                <tr id="producto-@detalle.IdDetalleCarrito">
+                    <td class="idProducto" style="display: none;">@detalle.IdProducto</td>
                     <td>
                         <div class="product-carousel-inner">
                             @{
@@ -125,7 +126,7 @@
                     <td>@detalle.Talla</td>
                     <td>
                         <button class="btn btn-primary btn-sm"
-                                onclick="Eliminar(@detalle.IdProducto, @detalle.IdCarrito, '@Html.Raw(detalle.Talla)')">
+                                onclick="Eliminar(@detalle.IdProducto, @detalle.IdCarrito, '@Html.Raw(detalle.Talla)',@detalle.IdDetalleCarrito)">
                             <i class="bi bi-bag-plus"></i> Eliminar
                         </button>
                     </td>
@@ -163,7 +164,7 @@ else
 
 @section Scripts {
     <script>
-                function Eliminar(idProducto, idCarrito, talla) {
+                function Eliminar(idProducto, idCarrito, talla, IdDetalleCarrito) {
                     console.log(talla);
             const formData = new URLSearchParams();
             formData.append('id_producto', idProducto);
@@ -185,7 +186,7 @@ else
                 if (data.success) {
                     console.log(data);
                     showNotification(`🛒 ${data.mensaje}`, 'success');
-                const fila = document.getElementById(`producto-${idProducto}`);
+                const fila = document.getElementById(`producto-${IdDetalleCarrito}`);
                 if (data.cantidadRestante < 1) {
                 const filasRestantes = document.querySelectorAll('tbody tr');
                 actualizarTotalesGenerales(data);

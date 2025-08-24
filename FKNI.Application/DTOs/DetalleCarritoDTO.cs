@@ -9,6 +9,7 @@ namespace FKNI.Application.DTOs
 {
     public record DetalleCarritoDTO
     {
+        public int IdDetalleCarrito { get; set; }
         public int IdCarrito { get; set; }
 
         public int? IdProducto { get; set; }
