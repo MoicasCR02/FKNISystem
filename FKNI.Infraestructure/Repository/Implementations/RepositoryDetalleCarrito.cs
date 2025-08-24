@@ -68,7 +68,9 @@ namespace FKNI.Infraestructure.Repository.Implementations
 
             // Marcar solo la cantidad como modificada
             _context.Entry(entity).Property(e => e.Cantidad).IsModified = true;
-
+            _context.Entry(entity).Property(e => e.Subtotal).IsModified = true;
+            _context.Entry(entity).Property(e => e.TotalImpuesto).IsModified = true;
+            _context.Entry(entity).Property(e => e.Total).IsModified = true;
             await _context.SaveChangesAsync();
         }
 
@@ -85,9 +87,13 @@ namespace FKNI.Infraestructure.Repository.Implementations
             else
             {
                 existente.Cantidad = existente.Cantidad - 1;
+                existente.Subtotal = existente.Subtotal-existente.PrecioUnitario;
+                existente.TotalImpuesto  = existente.Subtotal * existente.Impuesto;
+                existente.Total = existente.Subtotal + existente.TotalImpuesto;
                 await UpdateAsync(existente);
             }
-            return existente;
+            var actualizado = await FindByIdExists(id_carrito, id_producto);
+            return actualizado;
         }
     }
 }

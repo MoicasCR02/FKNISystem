@@ -11,6 +11,16 @@ public partial class DetalleCarrito
 
     public int Cantidad { get; set; }
 
+    public double Subtotal { get; set; }
+
+    public double Impuesto { get; set; }
+
+    public double Total { get; set; }
+
+    public double PrecioUnitario { get; set; }
+
+    public double TotalImpuesto { get; set; }
+
     public virtual Carrito IdCarritoNavigation { get; set; } = null!;
 
     public virtual Productos IdProductoNavigation { get; set; } = null!;

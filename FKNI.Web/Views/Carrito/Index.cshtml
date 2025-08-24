@@ -4,11 +4,60 @@
     ViewData["Title"] = "Carrito";
 }
 
+<style>
+    .product-image {
+        width: 120px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .size-selector {
+        margin-top: 8px;
+    }
+
+    .size-dropdown {
+        width: 100%;
+        padding: 4px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .checkout-button {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        color: #fff;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 9999;
+    }
+
+    .notification-success {
+        background-color: #28a745;
+    }
+
+    .notification-error {
+        background-color: #dc3545;
+    }
+
+    .notification.show {
+        opacity: 1;
+    }
+</style>
+
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert alert-success">@TempData["Mensaje"]</div>
 }
-
 
 @if (ViewBag.ListDetalleCarrito != null)
 {
@@ -19,13 +68,36 @@
                 <th>Imágenes</th>
                 <th>Nombre del producto</th>
                 <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
+                <th>Impuesto (13%)</th>
+                <th>Total con impuesto</th>
+                <th>Talla</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
+            @{
+                decimal subtotalGeneral = 0;
+                decimal impuestoRate = 0.13m;
+
+                foreach (var detalle in ViewBag.ListDetalleCarrito)
+                {
+                    subtotalGeneral += detalle.Cantidad * detalle.IdProductoNavigation.Precio;
+                }
+
+                decimal impuestoGeneral = subtotalGeneral * impuestoRate;
+                decimal totalGeneral = subtotalGeneral + impuestoGeneral;
+            }
+
             @foreach (var detalle in ViewBag.ListDetalleCarrito)
             {
-                <tr>
+                var precioUnitario = detalle.IdProductoNavigation.Precio;
+                var subtotalProducto = detalle.Cantidad * precioUnitario;
+                var impuestoProducto = subtotalProducto * impuestoRate;
+                var totalProducto = subtotalProducto + impuestoProducto;
+
+                <tr id="producto-@detalle.IdProducto">
                     <td>
                         <div class="product-carousel-inner">
                             @{
@@ -45,20 +117,157 @@
                         </div>
                     </td>
                     <td>@detalle.IdProductoNavigation.NombreProducto</td>
-                    <td>@detalle.Cantidad</td>
+                    <td class="cantidad">@detalle.Cantidad</td>
+                    <td>₡@precioUnitario.ToString("N2")</td>
+                    <td class="subtotal">₡@subtotalProducto.ToString("N2")</td>
+                    <td class="impuesto">₡@impuestoProducto.ToString("N2")</td>
+                    <td class="total">₡@totalProducto.ToString("N2")</td>
                     <td>
-                        <form asp-action="Delete" method="post">
-                            <input type="hidden" name="id_producto" value="@detalle.IdProductoNavigation.IdProducto" />
-                            <input type="hidden" name="id_carrito" value="@detalle.IdCarrito" />
-                            <button type="submit" class="btn btn-danger">Eliminar del carrito</button>
-                        </form>
+                        <select class="size-dropdown">
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="Eliminar(@detalle.IdProducto,@detalle.IdCarrito)">
+                            <i class="bi bi-bag-plus"></i> Eliminar
+                        </button>
                     </td>
                 </tr>
             }
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" class="text-end fw-bold">Subtotal general:</td>
+                <td class="SubtotalProductos">₡@subtotalGeneral.ToString("N2")</td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-end fw-bold">Impuesto (13%):</td>
+                <td class="ImpuestoProductos">₡@impuestoGeneral.ToString("N2")</td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-end fw-bold">Total a pagar:</td>
+                <td class="TotalProductos">₡@totalGeneral.ToString("N2")</td>
+            </tr>
+        </tfoot>
     </table>
+
+
+
+    <div class="checkout-button">
+        <button class="btn btn-success" id="realizar-compra">
+            <i class="bi bi-cart-check"></i> Realizar compra
+        </button>
+    </div>
 }
 else
 {
     <p>No hay productos en el carrito.</p>
+}
+
+@section Scripts {
+    <script>
+                function Eliminar(idProducto, idCarrito) {
+            const formData = new URLSearchParams();
+            formData.append('id_producto', idProducto);
+            formData.append('id_carrito', idCarrito);
+
+            fetch('/Carrito/Delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString()
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la solicitud');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log(data);
+                    showNotification(`🛒 ${data.mensaje}`, 'success');
+                const fila = document.getElementById(`producto-${idProducto}`);
+                if (data.cantidadRestante < 1) {
+                const filasRestantes = document.querySelectorAll('tbody tr');
+                actualizarTotalesGenerales(data);
+                if (filasRestantes.length === 1) {
+                    // Esta es la última fila, así que eliminamos todo el carrito
+                document.querySelector('table')?.remove();
+                document.querySelector('h4')?.remove();
+                document.getElementById('realizar-compra')?.remove();
+
+                const mensaje = document.createElement('p');
+                mensaje.textContent = 'No hay productos en el carrito.';
+                mensaje.className = 'text-muted';
+
+                // Insertar el mensaje en un contenedor más lógico si existe
+                const contenedor = document.querySelector('.checkout-button')?.parentElement || document.body;
+                contenedor.appendChild(mensaje);
+                
+                } else {
+                    // Solo eliminar la fila actual
+                    fila?.remove();
+                }
+                } else {
+                    // Actualizar cantidad restante
+                    fila.querySelector('.cantidad').textContent = data.cantidadRestante;
+
+                    // Actualizar subtotal del producto
+                    fila.querySelector('.subtotal').textContent = `₡${data.subtotal.toFixed(2)}`;
+
+                    // Actualizar total del producto
+                    fila.querySelector('.total').textContent = `₡${data.total.toFixed(2)}`;
+
+                    // Actualizar impuesto del producto
+                    fila.querySelector('.impuesto').textContent = `₡${data.totalImpuesto.toFixed(2)}`;
+
+                    actualizarTotalesGenerales(data);
+
+
+                }           
+                } else {
+                    showNotification(`❌ ${data.mensaje}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('❌ No se pudo eliminar el producto', 'error');
+            });
+        }
+
+                function actualizarTotalesGenerales(data) {
+            document.querySelector('.SubtotalProductos').textContent = `₡${data.subtotalProductos.toFixed(2)}`;
+            document.querySelector('.ImpuestoProductos').textContent = `₡${data.totalImpuestoProductos.toFixed(2)}`;
+            document.querySelector('.TotalProductos').textContent = `₡${data.totalProductos.toFixed(2)}`;
+        }
+
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.classList.add('show'), 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+    </script>
 }
