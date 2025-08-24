@@ -11,7 +11,7 @@ namespace FKNI.Application.DTOs
     {
         public int IdCarrito { get; set; }
 
-        public int IdProducto { get; set; }
+        public int? IdProducto { get; set; }
 
         public int Cantidad { get; set; }
 
@@ -25,9 +25,11 @@ namespace FKNI.Application.DTOs
 
         public double TotalImpuesto { get; set; }
 
+        public string? Talla { get; set; }
+
         public virtual Carrito IdCarritoNavigation { get; set; } = null!;
 
-        public virtual Productos IdProductoNavigation { get; set; } = null!;
+        public virtual Productos? IdProductoNavigation { get; set; }
     }
 }
  

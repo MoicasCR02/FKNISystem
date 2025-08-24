@@ -66,12 +66,12 @@ namespace FKNI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AgregarCarrito(int id_producto, int id_usuario)
+        public async Task<JsonResult> AgregarCarrito(int id_producto, int id_usuario, string talla)
         {
             try
             {
                 var carrito = await _serviceCarrito.FindByIdAsync(id_usuario);
-                var existe = await _serviceDetalleCarrito.FindByExist(carrito.IdCarrito, id_producto);
+                var existe = await _serviceDetalleCarrito.FindByExist(carrito.IdCarrito, id_producto, talla);
                 var producto = await _serviceProductos.FindByIdAsync(id_producto);
                 if (existe == null)
                 {
@@ -81,6 +81,7 @@ namespace FKNI.Web.Controllers
                         IdProducto = id_producto,
                         Cantidad = 1,
                         PrecioUnitario = (int)producto.Precio,
+                        Talla = talla
                     };
 
                     detallecarritoDTO.Subtotal = (int)producto.Precio;
@@ -92,11 +93,13 @@ namespace FKNI.Web.Controllers
                 }
                 else
                 {
+                    
                     var detallecarritoDTO = new DetalleCarritoDTO
                     {
                         IdCarrito = existe.IdCarrito,
                         IdProducto = id_producto,
                         Cantidad = existe.Cantidad + 1,
+                        Talla = existe.Talla
                     };
                     detallecarritoDTO.Subtotal = existe.Subtotal + existe.PrecioUnitario;
                     detallecarritoDTO.TotalImpuesto = detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto;
@@ -113,12 +116,12 @@ namespace FKNI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int id_producto, int id_carrito)
+        public async Task<IActionResult> Delete(int id_producto, int id_carrito, string talla)
         {
             var Subtotal = 0d;
             var TotalImpuesto = 0d;
             var Total = 0d;
-            var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito);
+            var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito,talla);
 
             ViewBag.Mensaje = eliminado == null
                     ? "Se eliminó el producto del carrito"
@@ -141,7 +144,7 @@ namespace FKNI.Web.Controllers
             }
             else
             {
-                return Json(new { success = true, mensaje = "Cantidad eliminada  del carrito", cantidadRestante = eliminado.Cantidad, subtotal = eliminado.Subtotal
+                return Json(new { success = true, mensaje = "Cantidad Eliminada  del carrito", cantidadRestante = eliminado.Cantidad, subtotal = eliminado.Subtotal
                     , total = eliminado.Total, totalImpuesto = eliminado.TotalImpuesto, SubtotalProductos = Subtotal, TotalImpuestoProductos = TotalImpuesto, TotalProductos = Total});
             }
         }

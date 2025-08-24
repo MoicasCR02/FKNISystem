@@ -29,10 +29,10 @@ namespace FKNI.Infraestructure.Repository.Implementations
         }
 
 
-        public async Task<DetalleCarrito?> FindByIdExists(int id_carrito, int id_producto)
+        public async Task<DetalleCarrito?> FindByIdExists(int id_carrito, int id_producto, string talla)
         {
             var @object = await _context.Set<DetalleCarrito>()
-                .Where(x => x.IdCarrito == id_carrito && x.IdProducto == id_producto)
+                .Where(x => x.IdCarrito == id_carrito && x.IdProducto == id_producto && x.Talla == talla)
                 .Include(x => x.IdProductoNavigation).ThenInclude(r => r.IdImagen)
                 .FirstOrDefaultAsync();
 
@@ -44,44 +44,42 @@ namespace FKNI.Infraestructure.Repository.Implementations
         {
             await _context.Set<DetalleCarrito>().AddAsync(entity);
             await _context.SaveChangesAsync();
-            return entity.IdCarrito;
+            return entity.IdDetalleCarrito;
         }
 
         public async Task UpdateAsync(DetalleCarrito entity)
         {
-            var local = _context.Set<DetalleCarrito>()
-                .Local
-                .FirstOrDefault(x => x.IdCarrito == entity.IdCarrito && x.IdProducto == entity.IdProducto);
+            var existing = await _context.DetalleCarrito
+                .FirstOrDefaultAsync(x => x.IdCarrito == entity.IdCarrito && x.IdProducto == entity.IdProducto && x.Talla == entity.Talla);
 
-            if (local != null)
+            if (existing == null)
             {
-                _context.Entry(local).State = EntityState.Detached;
+                // Opcional: lanzar excepción o manejar el caso
+                throw new InvalidOperationException("No existe el detalle del carrito a actualizar.");
             }
 
-            _context.Attach(entity);
+            // Actualizar solo los campos deseados
+            existing.Cantidad = entity.Cantidad;
+            existing.Subtotal = entity.Subtotal;
+            existing.TotalImpuesto = entity.TotalImpuesto;
+            existing.Total = entity.Total;
 
-            // Evitar modificar claves o relaciones
-            _context.Entry(entity).Property(e => e.IdCarrito).IsModified = false;
-            _context.Entry(entity).Property(e => e.IdProducto).IsModified = false;
-            _context.Entry(entity).Reference(e => e.IdProductoNavigation).IsModified = false;
-            _context.Entry(entity).Reference(e => e.IdCarritoNavigation).IsModified = false;
-
-            // Marcar solo la cantidad como modificada
-            _context.Entry(entity).Property(e => e.Cantidad).IsModified = true;
-            _context.Entry(entity).Property(e => e.Subtotal).IsModified = true;
-            _context.Entry(entity).Property(e => e.TotalImpuesto).IsModified = true;
-            _context.Entry(entity).Property(e => e.Total).IsModified = true;
             await _context.SaveChangesAsync();
         }
 
-        public async Task<DetalleCarrito> DeleteAsync(int id_producto ,int id_carrito)
+        public async Task<DetalleCarrito> DeleteAsync(int id_producto ,int id_carrito, string talla)
         {
-            var existente = await FindByIdExists(id_carrito, id_producto);
+            var existente = await FindByIdExists(id_carrito, id_producto, talla);
+            if(existente != null){
+            
+
+
+            }
             if(existente.Cantidad <= 1)
             {   
                 // Raw Query
                 //https://www.learnentityframeworkcore.com/raw-sql/execute-sql
-                int rowAffected = _context.Database.ExecuteSql($"Delete DetalleCarrito where id_producto = {id_producto} and id_carrito = {id_carrito}");
+                int rowAffected = _context.Database.ExecuteSql($"Delete DetalleCarrito where id_producto = {id_producto} and id_carrito = {id_carrito} and talla = {talla}");
                 await Task.FromResult(1);
             }
             else
@@ -92,7 +90,7 @@ namespace FKNI.Infraestructure.Repository.Implementations
                 existente.Total = existente.Subtotal + existente.TotalImpuesto;
                 await UpdateAsync(existente);
             }
-            var actualizado = await FindByIdExists(id_carrito, id_producto);
+            var actualizado = await FindByIdExists(id_carrito, id_producto, talla);
             return actualizado;
         }
     }

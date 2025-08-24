@@ -27,7 +27,7 @@ namespace FKNI.Application.DTOs
 
         public bool? Estado { get; set; }
 
-        public virtual ICollection<DetalleCarrito> DetalleCarrito { get; set; } = new List<DetalleCarrito>();
+        
 
         public virtual ICollection<DetallePedidoProducto> DetallePedidoProducto { get; set; } = new List<DetallePedidoProducto>();
 
@@ -45,6 +45,8 @@ namespace FKNI.Application.DTOs
 
         public List<int> ExistingImageIds { get; set; } = new List<int>(); // ← IDs de imágenes ya guardadas
 
-       
+        public virtual ICollection<DetalleCarrito> DetalleCarrito { get; set; } = new List<DetalleCarrito>();
+
+
     }
 }

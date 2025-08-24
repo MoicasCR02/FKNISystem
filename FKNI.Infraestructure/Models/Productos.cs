@@ -35,7 +35,6 @@ public partial class Productos
     public virtual ICollection<Resenas> Resenas { get; set; } = new List<Resenas>();
 
     public virtual ICollection<Etiquetas> IdEtiqueta { get; set; } = new List<Etiquetas>();
-
     [NotMapped]
     public decimal Descuento { get; set; } = 0;
 }

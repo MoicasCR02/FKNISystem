@@ -115,12 +115,11 @@
                             }
                             <div id="usuario-data" data-idusuario="@idUsuario" style="display:none;"></div>
                             <!-- Botón para agregar al carrito -->
-                            <button class="btn btn-primary btn-sm" onclick="addToCart(@item.IdProducto)">
+@*                             <button class="btn btn-primary btn-sm" onclick="addToCart(@item.IdProducto)">
                                 <i class="bi bi-bag-plus"></i> Agregar
-                            </button>
-
-
+                            </button> *@
                             </div>
+                            <!-- Botones de talla -->
                         </div>
 
                         <!-- Discount Badge -->
@@ -131,7 +130,19 @@
                             </div>
                         }
                     </div>
-
+                    <div class="size-buttons mb-2">
+                            <label class="form-label d-block">Talla:</label>
+                            <div class="btn-group" role="group" aria-label="Selector de talla">
+                                @foreach (var talla in new[] { "XS", "S", "M", "L", "XL" })
+                                {
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm me-1"
+                                            onclick="addToCart(@item.IdProducto, '@talla')">
+                                        @talla
+                                    </button>
+                                }
+                            </div>
+                        </div>
                     <!-- Product Information -->
                     <div class="product-info">
                         <div class="product-header">
@@ -272,13 +283,13 @@
         });
     });
 
-   function addToCart(idProducto) {
+   function addToCart(idProducto, talla) {
   const idUsuario = document.getElementById('usuario-data').dataset.idusuario;
 
   const formData = new URLSearchParams();
   formData.append('id_producto', idProducto);
   formData.append('id_usuario', idUsuario);
-
+  formData.append('talla', talla);
   fetch('/Carrito/AgregarCarrito', {
     method: 'POST',
     headers: {

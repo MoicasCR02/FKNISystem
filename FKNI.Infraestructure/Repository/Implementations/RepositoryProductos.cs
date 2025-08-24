@@ -70,7 +70,7 @@ namespace FKNI.Infraestructure.Repository.Implementations
             entity.IdEtiqueta = etiquetas;
            // entity.IdEtiqueta = etiquetas;
             await _context.Set<Productos>().AddAsync(entity);
-           // await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return entity.IdProducto;
         }
 

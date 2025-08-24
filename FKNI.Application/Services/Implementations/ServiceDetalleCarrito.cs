@@ -30,9 +30,9 @@ namespace FKNI.Application.Services.Implementations
             return objectMapped;
         }
 
-        public async Task<DetalleCarritoDTO> FindByExist(int id_carrito, int id_producto)
+        public async Task<DetalleCarritoDTO> FindByExist(int id_carrito, int id_producto,string talla)
         {
-            var @object = await _repository.FindByIdExists(id_carrito,id_producto);
+            var @object = await _repository.FindByIdExists(id_carrito,id_producto,talla);
             var objectMapped = _mapper.Map<DetalleCarritoDTO>(@object);
             return objectMapped;
         }
@@ -55,9 +55,9 @@ namespace FKNI.Application.Services.Implementations
             await _repository.UpdateAsync(entity);
         }
 
-        public async Task<DetalleCarritoDTO> DeleteAsync(int id_producto, int id_carrito)
+        public async Task<DetalleCarritoDTO> DeleteAsync(int id_producto, int id_carrito, string talla)
         {
-            var @object = await _repository.DeleteAsync(id_producto, id_carrito);
+            var @object = await _repository.DeleteAsync(id_producto, id_carrito, talla);
             var objectMapped = _mapper.Map<DetalleCarritoDTO>(@object);
             return objectMapped;
             

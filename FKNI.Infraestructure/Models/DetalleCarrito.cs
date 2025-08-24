@@ -5,9 +5,11 @@ namespace FKNI.Infraestructure.Models;
 
 public partial class DetalleCarrito
 {
-    public int IdCarrito { get; set; }
+    public int IdDetalleCarrito { get; set; }
 
-    public int IdProducto { get; set; }
+    public int? IdCarrito { get; set; }
+
+    public int? IdProducto { get; set; }
 
     public int Cantidad { get; set; }
 
@@ -21,7 +23,9 @@ public partial class DetalleCarrito
 
     public double TotalImpuesto { get; set; }
 
-    public virtual Carrito IdCarritoNavigation { get; set; } = null!;
+    public string? Talla { get; set; }
 
-    public virtual Productos IdProductoNavigation { get; set; } = null!;
+    public virtual Carrito? IdCarritoNavigation { get; set; }
+
+    public virtual Productos? IdProductoNavigation { get; set; }
 }
