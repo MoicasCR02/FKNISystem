@@ -49,6 +49,7 @@ builder.Services.AddTransient<IRepositoryCarrito, RepositoryCarrito>();
 builder.Services.AddTransient<IRepositoryDetalleCarrito, RepositoryDetalleCarrito>();
 builder.Services.AddTransient<IRepositoryDetallePedido, RepositoryDetallePedido>();
 builder.Services.AddTransient<IRepositoryPagos, RepositoryPagos>();
+builder.Services.AddTransient<IRepositoryDetallePedidoProducto, RepositoryDetallePedidoProducto>();
 //Services
 builder.Services.AddTransient<IServiceUsuarios, ServiceUsuarios>();
 builder.Services.AddTransient<IServiceProductos, ServiceProductos>();
@@ -62,6 +63,7 @@ builder.Services.AddTransient<IServiceCarrito, ServiceCarrito>();
 builder.Services.AddTransient<IServiceDetalleCarrito, ServiceDetalleCarrito>();
 builder.Services.AddTransient<IServiceDetallePedido, ServiceDetallePedido>();
 builder.Services.AddTransient<IServicePagos, ServicePagos>();
+builder.Services.AddTransient<IServiceDetallePedidoProducto, ServiceDetallePedidoProducto>();
 //Configurar Automapper
 builder.Services.AddAutoMapper(config =>
 {
@@ -77,6 +79,7 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile<DetalleCarritoProfile>();
     config.AddProfile<DetallePedidoProfile>();
     config.AddProfile<PagosProfile>();
+    config.AddProfile<DetallePedidoProductoProfile>();
 });
 // Configuar Conexión a la Base de Datos SQL
 builder.Services.AddDbContext<FKNIContext>(options =>

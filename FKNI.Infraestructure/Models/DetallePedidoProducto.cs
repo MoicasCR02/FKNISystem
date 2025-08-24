@@ -5,13 +5,16 @@ namespace FKNI.Infraestructure.Models;
 
 public partial class DetallePedidoProducto
 {
-    public int IdPedido { get; set; }
+    public int IdDetallePedido { get; set; }
 
-    public int IdProducto { get; set; }
+    public int? IdPedido { get; set; }
+
+    public int? IdProducto { get; set; }
 
     public int? Cantidad { get; set; }
 
-    public virtual Pedidos IdPedidoNavigation { get; set; } = null!;
+    public virtual Pedidos? IdPedidoNavigation { get; set; }
 
-    public virtual Productos IdProductoNavigation { get; set; } = null!;
+    public virtual Productos? IdProductoNavigation { get; set; }
 }
+

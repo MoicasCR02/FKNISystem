@@ -52,6 +52,10 @@
     .notification.show {
         opacity: 1;
     }
+
+    .modal-xl-custom {
+        max-width: 95vw; /* más ancho que modal-xl */
+    }
 </style>
 
 @if (TempData["Mensaje"] != null)
@@ -152,10 +156,115 @@
 
 
     <div class="checkout-button">
-        <button class="btn btn-success" id="realizar-compra">
+        <button class="btn btn-success" id="realizar-compra" data-bs-toggle="modal" data-bs-target="#modalResumenCompra">
             <i class="bi bi-cart-check"></i> Realizar compra
         </button>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalResumenCompra" tabindex="-1" aria-labelledby="modalResumenCompraLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl-custom modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalResumenCompraLabel">Resumen de compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- 🛒 Resumen del carrito -->
+                        <div class="col-md-8">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Imágenes</th>
+                                        <th>Nombre del producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio unitario</th>
+                                        <th>Subtotal</th>
+                                        <th>Impuesto (13%)</th>
+                                        <th>Total con impuesto</th>
+                                        <th>Talla</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var detalle in ViewBag.ListDetalleCarrito)
+                                        {
+                                            var precioUnitario = detalle.IdProductoNavigation.Precio;
+                                            var subtotalProducto = detalle.Cantidad * precioUnitario;
+                                            var impuestoProducto = subtotalProducto * 0.13m;
+                                            var totalProducto = subtotalProducto + impuestoProducto;
+                                            var imagenes = detalle.IdProductoNavigation.IdImagen;
+                                            <tr>
+                                                <td>
+                                                    @if (imagenes?.Count > 0)
+                                                    {
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[0].UrlImagen)"
+                                                             class="product-image"
+                                                             alt="Imagen del producto" />
+                                                    }
+                                                </td>
+                                                <td>@detalle.IdProductoNavigation.NombreProducto</td>
+                                                <td>@detalle.Cantidad</td>
+                                                <td>₡@precioUnitario.ToString("N2")</td>
+                                                <td>₡@subtotalProducto.ToString("N2")</td>
+                                                <td>₡@impuestoProducto.ToString("N2")</td>
+                                                <td>₡@totalProducto.ToString("N2")</td>
+                                                <td>@detalle.Talla</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="text-end fw-bold">Subtotal general:</td>
+                                        <td colspan="2">₡@subtotalGeneral.ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-end fw-bold">Impuesto (13%):</td>
+                                        <td colspan="2">₡@impuestoGeneral.ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-end fw-bold">Total a pagar:</td>
+                                        <td colspan="2">₡@totalGeneral.ToString("N2")</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- 👤 Datos del usuario -->
+                        <div class="col-md-4">
+                            <h5>Datos del usuario</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre de usuario</label>
+                                <input type="text" class="form-control" value="Juan Pérez" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" value="juan.perez@email.com" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" value="8888-8888" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Dirección de envío</label>
+                                <input type="text" class="form-control" value="San José, Costa Rica" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success">Confirmar compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 }
 else
 {

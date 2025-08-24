@@ -46,7 +46,7 @@ public partial class FKNIContext : DbContext
     {
         modelBuilder.Entity<Carrito>(entity =>
         {
-            entity.HasKey(e => e.IdCarrito).HasName("PK__Carrito__83A2AD9CA3D829F5");
+            entity.HasKey(e => e.IdCarrito).HasName("PK__Carrito__83A2AD9C7B91B57E");
 
             entity.Property(e => e.IdCarrito).HasColumnName("id_carrito");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
@@ -58,7 +58,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Categorias>(entity =>
         {
-            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__CD54BC5A4F3C014C");
+            entity.HasKey(e => e.IdCategoria).HasName("PK__Categori__CD54BC5A6D41ADCE");
 
             entity.Property(e => e.IdCategoria).HasColumnName("id_categoria");
             entity.Property(e => e.NombreCategoria)
@@ -68,7 +68,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<DetalleCarrito>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleCarrito).HasName("PK__DetalleC__2353157221BCEAF3");
+            entity.HasKey(e => e.IdDetalleCarrito).HasName("PK__DetalleC__23531572564DDF85");
 
             entity.Property(e => e.IdDetalleCarrito).HasColumnName("id_detalleCarrito");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
@@ -95,7 +95,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<DetallePedido>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle).HasName("PK__DetalleP__4F1332DE8C539403");
+            entity.HasKey(e => e.IdDetalle).HasName("PK__DetalleP__4F1332DE4BB45144");
 
             entity.Property(e => e.IdDetalle).HasColumnName("id_detalle");
             entity.Property(e => e.IdPedido).HasColumnName("id_pedido");
@@ -116,26 +116,25 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<DetallePedidoProducto>(entity =>
         {
-            entity.HasKey(e => new { e.IdPedido, e.IdProducto }).HasName("PK__DetalleP__A0035549B899AC10");
+            entity.HasKey(e => e.IdDetallePedido).HasName("PK__DetalleP__C08768CFBD68A041");
 
+            entity.Property(e => e.IdDetallePedido).HasColumnName("id_detalle_pedido");
+            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
             entity.Property(e => e.IdPedido).HasColumnName("id_pedido");
             entity.Property(e => e.IdProducto).HasColumnName("id_producto");
-            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
 
             entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.DetallePedidoProducto)
                 .HasForeignKey(d => d.IdPedido)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__DetallePe__id_pe__5CD6CB2B");
 
             entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.DetallePedidoProducto)
                 .HasForeignKey(d => d.IdProducto)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__DetallePe__id_pr__5DCAEF64");
         });
 
         modelBuilder.Entity<Estados>(entity =>
         {
-            entity.HasKey(e => e.IdEstado).HasName("PK__Estados__86989FB2BA2BBFD1");
+            entity.HasKey(e => e.IdEstado).HasName("PK__Estados__86989FB281B3A3E5");
 
             entity.Property(e => e.IdEstado).HasColumnName("id_estado");
             entity.Property(e => e.NombreEstado)
@@ -145,7 +144,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Etiquetas>(entity =>
         {
-            entity.HasKey(e => e.IdEtiqueta).HasName("PK__Etiqueta__FA0DD2AD1ACEB47E");
+            entity.HasKey(e => e.IdEtiqueta).HasName("PK__Etiqueta__FA0DD2AD16E96604");
 
             entity.Property(e => e.IdEtiqueta).HasColumnName("id_etiqueta");
             entity.Property(e => e.NombreEtiqueta)
@@ -155,7 +154,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Imagenes>(entity =>
         {
-            entity.HasKey(e => e.IdImagen).HasName("PK__Imagenes__27CC26892C47E3F3");
+            entity.HasKey(e => e.IdImagen).HasName("PK__Imagenes__27CC2689852370CE");
 
             entity.Property(e => e.IdImagen).HasColumnName("id_imagen");
             entity.Property(e => e.IdProducto).HasColumnName("id_producto");
@@ -168,7 +167,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Pagos>(entity =>
         {
-            entity.HasKey(e => e.IdPago).HasName("PK__Pagos__0941B074EAA6CA4B");
+            entity.HasKey(e => e.IdPago).HasName("PK__Pagos__0941B074DB46C9B2");
 
             entity.Property(e => e.IdPago).HasColumnName("id_pago");
             entity.Property(e => e.CostoEnvio)
@@ -184,7 +183,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Pedidos>(entity =>
         {
-            entity.HasKey(e => e.IdPedido).HasName("PK__Pedidos__6FF01489CAA920AA");
+            entity.HasKey(e => e.IdPedido).HasName("PK__Pedidos__6FF01489D9AE8D7C");
 
             entity.Property(e => e.IdPedido).HasColumnName("id_pedido");
             entity.Property(e => e.DireccionEnvio).HasColumnName("direccion_envio");
@@ -214,7 +213,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Productos>(entity =>
         {
-            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__FF341C0DA5DAA02E");
+            entity.HasKey(e => e.IdProducto).HasName("PK__Producto__FF341C0D320C7E2D");
 
             entity.Property(e => e.IdProducto).HasColumnName("id_producto");
             entity.Property(e => e.Descripcion).HasColumnName("descripcion");
@@ -251,7 +250,7 @@ public partial class FKNIContext : DbContext
                         .HasConstraintName("FK__ProductoE__id_pr__35BCFE0A"),
                     j =>
                     {
-                        j.HasKey("IdProducto", "IdEtiqueta").HasName("PK__Producto__3094C12716FF409C");
+                        j.HasKey("IdProducto", "IdEtiqueta").HasName("PK__Producto__3094C127A14DDB76");
                         j.IndexerProperty<int>("IdProducto").HasColumnName("id_producto");
                         j.IndexerProperty<int>("IdEtiqueta").HasColumnName("id_etiqueta");
                     });
@@ -259,7 +258,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Promociones>(entity =>
         {
-            entity.HasKey(e => e.IdPromocion).HasName("PK__Promocio__F89308E069EFFC41");
+            entity.HasKey(e => e.IdPromocion).HasName("PK__Promocio__F89308E059CC0095");
 
             entity.Property(e => e.IdPromocion).HasColumnName("id_promocion");
             entity.Property(e => e.Descuento)
@@ -284,7 +283,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Resenas>(entity =>
         {
-            entity.HasKey(e => new { e.IdUsuario, e.IdProducto }).HasName("PK__Resenas__81CD456DDB03BEF9");
+            entity.HasKey(e => new { e.IdUsuario, e.IdProducto }).HasName("PK__Resenas__81CD456D3D639271");
 
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.IdProducto).HasColumnName("id_producto");
@@ -311,7 +310,7 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Roles>(entity =>
         {
-            entity.HasKey(e => e.IdRol).HasName("PK__Roles__6ABCB5E0693E0C8C");
+            entity.HasKey(e => e.IdRol).HasName("PK__Roles__6ABCB5E02201336F");
 
             entity.Property(e => e.IdRol).HasColumnName("id_rol");
             entity.Property(e => e.NombreRol)
@@ -321,9 +320,9 @@ public partial class FKNIContext : DbContext
 
         modelBuilder.Entity<Usuarios>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuarios__4E3E04AD449A774A");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuarios__4E3E04ADFADEC366");
 
-            entity.HasIndex(e => e.Correo, "UQ__Usuarios__2A586E0B045AE663").IsUnique();
+            entity.HasIndex(e => e.Correo, "UQ__Usuarios__2A586E0B7FCBA16D").IsUnique();
 
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.Contrasena)
