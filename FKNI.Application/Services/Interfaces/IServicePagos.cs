@@ -11,5 +11,6 @@ namespace FKNI.Application.Services.Interfaces
     {
         Task<PagosDTO> FindByIdAsync(int id_pago);
         Task<ICollection<PagosDTO>> ListAsync();
+        Task<int> AddAsync(PagosDTO dto);
     }
 }

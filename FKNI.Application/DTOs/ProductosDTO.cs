@@ -27,10 +27,6 @@ namespace FKNI.Application.DTOs
 
         public bool? Estado { get; set; }
 
-        
-
-        public virtual ICollection<DetallePedidoProducto> DetallePedidoProducto { get; set; } = new List<DetallePedidoProducto>();
-
         [JsonIgnore]
         public virtual Categorias? IdCategoriaNavigation { get; set; }
 

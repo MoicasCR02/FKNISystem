@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FKNI.Application.DTOs;
 using FKNI.Application.Services.Interfaces;
+using FKNI.Infraestructure.Models;
 using FKNI.Infraestructure.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,14 @@ namespace FKNI.Application.Services.Implementations
             var collection = _mapper.Map<ICollection<PagosDTO>>(list);
             // Return lista
             return collection;
+        }
+
+        public async Task<int> AddAsync(PagosDTO dto)
+        {
+            // Map LibroDTO to Libro
+            var objectMapped = _mapper.Map<Pagos>(dto);
+            // Return
+            return await _repository.AddAsync(objectMapped);
         }
     }
 }

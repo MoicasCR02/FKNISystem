@@ -17,11 +17,11 @@ namespace FKNI.Infraestructure.Repository.Implementations
         {
             _context = context;
         }
-        public async Task<DetallePedido> FindByIdAsync(int id_Detalle)
+        public async Task<DetallePedido> FindByIdAsync(int id_pedido)
         {
             //Obtener un Libro con su autor y las lista de categorías
             var @object = await _context.Set<DetallePedido>()
-                                .Where(x => x.IdDetalle == id_Detalle).FirstAsync();
+                                .Where(x => x.IdPedido == id_pedido).FirstAsync();
             return @object!;
         }
         public async Task<ICollection<DetallePedido>> ListAsync()
@@ -29,6 +29,13 @@ namespace FKNI.Infraestructure.Repository.Implementations
             //Listar los libros incluyendo su autor, ordenado de forma descendente
             var collection = await _context.Set<DetallePedido>().ToListAsync();
             return collection;
+        }
+
+        public async Task<int> AddAsync(DetallePedido entity)
+        {
+            await _context.Set<DetallePedido>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdDetallePedido;
         }
     }
 }

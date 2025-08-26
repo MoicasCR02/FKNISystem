@@ -30,5 +30,12 @@ namespace FKNI.Infraestructure.Repository.Implementations
             var collection = await _context.Set<Pagos>().ToListAsync();
             return collection;
         }
+
+        public async Task<int> AddAsync(Pagos entity)
+        {
+            await _context.Set<Pagos>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdPago;
+        }
     }
 }

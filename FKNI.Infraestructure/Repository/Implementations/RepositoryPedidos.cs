@@ -25,7 +25,6 @@ namespace FKNI.Infraestructure.Repository.Implementations
                                 .Include(x => x.IdClienteNavigation)
                                 .Include(x => x.IdEstadoNavigation)
                                 .Include(x => x.IdPagoNavigation)
-                                .Include(x => x.DetallePedidoProducto).ThenInclude(dp => dp.IdProductoNavigation) // Incluye la navegación al producto
                                 .Include(x => x.DetallePedido)
                                 .FirstAsync();
             return @object!;
@@ -37,11 +36,17 @@ namespace FKNI.Infraestructure.Repository.Implementations
                                 .Include(x => x.IdClienteNavigation)
                                 .Include(x => x.IdEstadoNavigation)
                                 .Include(x => x.IdPagoNavigation)
-                                .Include(x => x.DetallePedidoProducto).ThenInclude(dp => dp.IdProductoNavigation) // Incluye la navegación al producto
                                 .OrderByDescending(x => x.IdPedido)
                                 .Include(x => x.DetallePedido)
                                 .ToListAsync();
             return collection;
+        }
+
+        public async Task<int> AddAsync(Pedidos entity)
+        {
+            await _context.Set<Pedidos>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity.IdPedido;
         }
     }
 }

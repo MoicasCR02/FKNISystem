@@ -34,7 +34,6 @@ namespace FKNI.Infraestructure.Repository.Implementations
                                 .Where(x => x.IdProducto == id_producto)
                                 .Include(x => x.IdCategoriaNavigation)
                                 .Include(x => x.IdEtiqueta)
-                                .Include(x => x.DetallePedidoProducto)
                                 .Include(x => x.Resenas).ThenInclude(r => r.IdUsuarioNavigation)
                                 .Include(x => x.IdImagen)
                                 .FirstAsync();
@@ -45,7 +44,6 @@ namespace FKNI.Infraestructure.Repository.Implementations
             var collection = await _context.Set<Productos>()
                                 .Include(x => x.IdCategoriaNavigation)
                                 .Include(x => x.IdEtiqueta)
-                                .Include(x => x.DetallePedidoProducto)
                                 .Include(x => x.Resenas).ThenInclude(r => r.IdUsuarioNavigation)
                                 .Include(x => x.IdImagen)
                                 .ToListAsync();

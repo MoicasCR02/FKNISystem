@@ -1,0 +1,168 @@
+﻿<div class="modal-header">
+    <h5 class="modal-title" id="modalResumenCompraLabel">Resumen de compra</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <!-- 🛒 Resumen del carrito -->
+        <div class="col-md-8">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Imágenes</th>
+                        <th>Nombre del producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                        <th>Impuesto (13%)</th>
+                        <th>Total con impuesto</th>
+                        <th>Talla</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        decimal subtotalGeneral = 0;
+                        decimal impuestoRate = 0.13m;
+
+                        foreach (var detalle in ViewBag.ListDetalleCarrito)
+                        {
+                            subtotalGeneral += detalle.Cantidad * detalle.IdProductoNavigation.Precio;
+                        }
+
+                        decimal impuestoGeneral = subtotalGeneral * impuestoRate;
+                        decimal totalGeneral = subtotalGeneral + impuestoGeneral;
+                    }
+                    @{
+                        foreach (var detalle in ViewBag.ListDetalleCarrito)
+                        {
+                            var precioUnitario = detalle.IdProductoNavigation.Precio;
+                            var subtotalProducto = detalle.Cantidad * precioUnitario;
+                            var impuestoProducto = subtotalProducto * 0.13m;
+                            var totalProducto = subtotalProducto + impuestoProducto;
+                            var imagenes = detalle.IdProductoNavigation.IdImagen;
+                            <tr>
+                                <td>
+                                    @if (imagenes?.Count > 0)
+                                    {
+                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[0].UrlImagen)"
+                                             class="product-image"
+                                             alt="Imagen del producto" />
+                                    }
+                                </td>
+                                <td>@detalle.IdProductoNavigation.NombreProducto</td>
+                                <td>@detalle.Cantidad</td>
+                                <td>₡@precioUnitario.ToString("N2")</td>
+                                <td>₡@subtotalProducto.ToString("N2")</td>
+                                <td>₡@impuestoProducto.ToString("N2")</td>
+                                <td>₡@totalProducto.ToString("N2")</td>
+                                <td>@detalle.Talla</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-end fw-bold">Subtotal general:</td>
+                        <td colspan="2">₡@subtotalGeneral.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end fw-bold">Impuesto (13%):</td>
+                        <td colspan="2">₡@impuestoGeneral.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end fw-bold">Total a pagar:</td>
+                        <td colspan="2">₡@totalGeneral.ToString("N2")</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- 👤 Datos del usuario -->
+        <div class="col-md-4">
+            <div class="col-md-6">
+                <h4 class="mb-3">🧑 Datos del usuario</h4>
+                <div class="mb-3">
+                    <label class="form-label">Nombre de usuario</label>
+                    <input type="text" class="form-control" value="@ViewBag.Usuario.NombreUsuario" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" value="@ViewBag.Usuario.Correo" readonly />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Teléfono</label>
+                    <input type="text" class="form-control" value="@ViewBag.Usuario.Telefono" readonly />
+                </div>
+
+                <h4 class="mt-4 mb-3">📦 Dirección de envío</h4>
+                <div class="mb-3">
+                    <label class="form-label">Selecciona tu dirección</label>
+                    <select class="form-select">
+                        <option value="Casa">Casa - Alajuela, Costa Rica</option>
+                        <option value="Trabajo">Trabajo - San José, Costa Rica</option>
+                        <option value="Otro">Otro - Heredia, Costa Rica</option>
+                    </select>
+                </div>
+
+                <h4 class="mt-4 mb-3">🚚 Detalles del envío</h4>
+                <div class="form-group mb-3">
+                    <label class="control-label">Método de entrega</label>
+                    <input type="text" class="form-control" value="Domicilio" readonly />
+                </div>
+                <div class="form-group mb-3">
+                    <label class="control-label">Estado</label>
+                    <input type="text" class="form-control" value="Preparación" readonly />
+                </div>
+                <div class="form-group mb-3">
+                    <label class="control-label">Costo de envío</label>
+                    <input type="text" class="form-control" value="₡2600.00" readonly />
+                </div>
+
+                <h4 class="mt-4 mb-3">💰 Pago</h4>
+                <div class="form-group mb-3">
+                    <label class="control-label">Método de pago</label>
+                    <input type="text" class="form-control" value="Tarjeta" readonly />
+                </div>
+                <div class="form-group mb-3">
+                    <label class="control-label">Fecha de pago</label>
+                    <input type="text" class="form-control" value="@DateTime.Now.ToString("dd/MM/yyyy")" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Número de tarjeta</label>
+                    <input type="text" class="form-control" placeholder="•••• •••• •••• ••••" />
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Expiración</label>
+                        <input type="text" class="form-control" placeholder="MM / YY" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Código de seguridad</label>
+                        <input type="text" class="form-control" placeholder="CVV" />
+                    </div>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="termsCheck">
+                    <label class="form-check-label" for="termsCheck">
+                        Acepto los términos y condiciones, política de privacidad y aviso legal.
+                    </label>
+                </div>
+
+                <button type="button" class="btn btn-warning w-100 fw-bold" id="btnPagar" onclick="realizarCompra()">
+                    💳 Pagar ahora
+                </button>
+                <button type="button" class="btn btn-info" onclick="probarConexion()">
+                    🔍 Probar conexión con el backend
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+
+</script>
+}

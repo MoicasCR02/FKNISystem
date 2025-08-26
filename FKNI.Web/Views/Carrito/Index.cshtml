@@ -63,9 +63,23 @@
     <div class="alert alert-success">@TempData["Mensaje"]</div>
 }
 
+@{
+    decimal subtotalGeneral = 0;
+    decimal impuestoRate = 0.13m;
+
+    foreach (var detalle in ViewBag.ListDetalleCarrito)
+    {
+        subtotalGeneral += detalle.Cantidad * detalle.IdProductoNavigation.Precio;
+    }
+
+    decimal impuestoGeneral = subtotalGeneral * impuestoRate;
+    decimal totalGeneral = subtotalGeneral + impuestoGeneral;
+}
+
 @if (ViewBag.ListDetalleCarrito != null)
 {
     <h4>Productos en el carrito</h4>
+   
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -81,18 +95,7 @@
             </tr>
         </thead>
         <tbody>
-            @{
-                decimal subtotalGeneral = 0;
-                decimal impuestoRate = 0.13m;
-
-                foreach (var detalle in ViewBag.ListDetalleCarrito)
-                {
-                    subtotalGeneral += detalle.Cantidad * detalle.IdProductoNavigation.Precio;
-                }
-
-                decimal impuestoGeneral = subtotalGeneral * impuestoRate;
-                decimal totalGeneral = subtotalGeneral + impuestoGeneral;
-            }
+            
 
             @foreach (var detalle in ViewBag.ListDetalleCarrito)
             {
@@ -153,113 +156,21 @@
         </tfoot>
     </table>
 
-
+    <input type="hidden" id="idUsuario" value="@ViewBag.Usuario.IdUsuario" />
 
     <div class="checkout-button">
-        <button class="btn btn-success" id="realizar-compra" data-bs-toggle="modal" data-bs-target="#modalResumenCompra">
+        <button class="btn btn-success" id="realizar-compra">
             <i class="bi bi-cart-check"></i> Realizar compra
         </button>
-    </div>
+    </div>  
 
     <!-- Modal -->
     <div class="modal fade" id="modalResumenCompra" tabindex="-1" aria-labelledby="modalResumenCompraLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl-custom modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalResumenCompraLabel">Resumen de compra</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+            <div class="modal-content" id="contenido-modal-compra">
+                
 
-                <div class="modal-body">
-                    <div class="row">
-                        <!-- 🛒 Resumen del carrito -->
-                        <div class="col-md-8">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Imágenes</th>
-                                        <th>Nombre del producto</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio unitario</th>
-                                        <th>Subtotal</th>
-                                        <th>Impuesto (13%)</th>
-                                        <th>Total con impuesto</th>
-                                        <th>Talla</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        foreach (var detalle in ViewBag.ListDetalleCarrito)
-                                        {
-                                            var precioUnitario = detalle.IdProductoNavigation.Precio;
-                                            var subtotalProducto = detalle.Cantidad * precioUnitario;
-                                            var impuestoProducto = subtotalProducto * 0.13m;
-                                            var totalProducto = subtotalProducto + impuestoProducto;
-                                            var imagenes = detalle.IdProductoNavigation.IdImagen;
-                                            <tr>
-                                                <td>
-                                                    @if (imagenes?.Count > 0)
-                                                    {
-                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenes[0].UrlImagen)"
-                                                             class="product-image"
-                                                             alt="Imagen del producto" />
-                                                    }
-                                                </td>
-                                                <td>@detalle.IdProductoNavigation.NombreProducto</td>
-                                                <td>@detalle.Cantidad</td>
-                                                <td>₡@precioUnitario.ToString("N2")</td>
-                                                <td>₡@subtotalProducto.ToString("N2")</td>
-                                                <td>₡@impuestoProducto.ToString("N2")</td>
-                                                <td>₡@totalProducto.ToString("N2")</td>
-                                                <td>@detalle.Talla</td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="6" class="text-end fw-bold">Subtotal general:</td>
-                                        <td colspan="2">₡@subtotalGeneral.ToString("N2")</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6" class="text-end fw-bold">Impuesto (13%):</td>
-                                        <td colspan="2">₡@impuestoGeneral.ToString("N2")</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6" class="text-end fw-bold">Total a pagar:</td>
-                                        <td colspan="2">₡@totalGeneral.ToString("N2")</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                        <!-- 👤 Datos del usuario -->
-                        <div class="col-md-4">
-                            <h5>Datos del usuario</h5>
-                            <div class="mb-3">
-                                <label class="form-label">Nombre de usuario</label>
-                                <input type="text" class="form-control" value="Juan Pérez" readonly />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" value="juan.perez@email.com" readonly />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" value="8888-8888" readonly />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Dirección de envío</label>
-                                <input type="text" class="form-control" value="San José, Costa Rica" readonly />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success">Confirmar compra</button>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -273,6 +184,84 @@ else
 
 @section Scripts {
     <script>
+        function realizarCompra() {
+            const detalles = [];
+
+            @foreach (var detalle in ViewBag.ListDetalleCarrito)
+            {
+                    <text>
+                    detalles.push({
+                            IdDetalleCarrito: @detalle.IdDetalleCarrito
+                    });
+                    </text>
+            }
+
+            const resumenTotales = {
+                subtotalGeneral: @subtotalGeneral.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+                TotalImpuestoGeneral: @impuestoGeneral.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+                TotalGeneral: @totalGeneral.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)
+            };
+            const idCliente = parseInt(document.getElementById("idUsuario").value, 10);
+
+            const compra = {
+                Pago: {
+                    MetodoPago: "Tarjeta",
+                    CostoEnvio: 2600,
+                    FechaPago: new Date().toISOString(),
+                    Subtotal: resumenTotales.subtotalGeneral,
+                    Impuesto: resumenTotales.TotalImpuestoGeneral,
+                    TotalConImpuesto: resumenTotales.TotalGeneral
+                },
+                Pedido: {
+                    IdCliente: idCliente,
+                    MetodoEntrega: "Domicilio",
+                    DireccionEnvio: document.querySelector("select.form-select").value,
+                    IdEstado: 1
+                },
+                Detalles: detalles
+            };
+
+            console.log(compra);
+
+            fetch("/RealizarCompra/Create", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(compra)
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert("Compra exitosa");
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("modalResumenCompra"));
+                    modal.hide();
+                } else {
+                    alert("Error al registrar la compra");
+                }
+            })
+            .catch(err => {
+                console.error("Error en el fetch:", err);
+                alert("No se pudo conectar con el servidor");
+            });
+        }
+
+        //Enviar Compra
+
+        /// Funcion siguiente
+
+        document.getElementById("realizar-compra").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const idUsuario = document.getElementById("idUsuario").value;
+
+            fetch(`/Carrito/ResumenCarrito?id_usuario=${idUsuario}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById("contenido-modal-compra").innerHTML = html;
+
+                    const modal = new bootstrap.Modal(document.getElementById("modalResumenCompra"));
+                    modal.show();
+                });
+        });
+
                 function Eliminar(idProducto, idCarrito, talla, IdDetalleCarrito) {
                     console.log(talla);
             const formData = new URLSearchParams();
@@ -331,8 +320,6 @@ else
                     fila.querySelector('.impuesto').textContent = `₡${data.totalImpuesto.toFixed(2)}`;
 
                     actualizarTotalesGenerales(data);
-
-
                 }           
                 } else {
                     showNotification(`❌ ${data.mensaje}`, 'error');

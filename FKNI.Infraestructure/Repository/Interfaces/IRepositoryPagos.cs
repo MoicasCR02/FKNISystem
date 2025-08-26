@@ -11,5 +11,6 @@ namespace FKNI.Infraestructure.Repository.Interfaces
     {
         Task<Pagos> FindByIdAsync(int id_pago);
         Task<ICollection<Pagos>> ListAsync();
+        Task<int> AddAsync(Pagos entity);
     }
 }

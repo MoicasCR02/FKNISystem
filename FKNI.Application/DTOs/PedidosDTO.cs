@@ -15,8 +15,6 @@ namespace FKNI.Application.DTOs
 
         public string? MetodoEntrega { get; set; }
 
-        public DateTime? FechaPedido { get; set; }
-
         public string? DireccionEnvio { get; set; }
 
         public int? IdEstado { get; set; }
@@ -24,8 +22,6 @@ namespace FKNI.Application.DTOs
         public int? IdPago { get; set; }
 
         public virtual ICollection<DetallePedido> DetallePedido { get; set; } = new List<DetallePedido>();
-
-        public virtual ICollection<DetallePedidoProducto> DetallePedidoProducto { get; set; } = new List<DetallePedidoProducto>();
 
         public virtual Usuarios? IdClienteNavigation { get; set; }
 

@@ -13,13 +13,15 @@ namespace FKNI.Application.DTOs
 
         public string? MetodoPago { get; set; }
 
-        public int? Vuelto { get; set; }
-
         public decimal? CostoEnvio { get; set; }
 
-        public string? DireccionEntrega { get; set; }
+        public DateTime FechaPago { get; set; }
 
-        public DateOnly? FechaPago { get; set; }
+        public decimal? Subtotal { get; set; }
+
+        public decimal? Impuesto { get; set; }
+
+        public decimal? TotalConImpuesto { get; set; }
 
         public virtual ICollection<Pedidos> Pedidos { get; set; } = new List<Pedidos>();
     }

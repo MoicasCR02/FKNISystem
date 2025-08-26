@@ -25,6 +25,8 @@ public partial class DetalleCarrito
 
     public string? Talla { get; set; }
 
+    public virtual ICollection<DetallePedido> DetallePedido { get; set; } = new List<DetallePedido>();
+
     public virtual Carrito? IdCarritoNavigation { get; set; }
 
     public virtual Productos? IdProductoNavigation { get; set; }

@@ -1,6 +1,7 @@
 ﻿using FKNI.Application.DTOs;
 using FKNI.Application.Services.Implementations;
 using FKNI.Application.Services.Interfaces;
+using FKNI.Infraestructure.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,14 +14,16 @@ namespace FKNI.Web.Controllers
         private readonly IServiceCarrito _serviceCarrito;
         private readonly IServiceDetalleCarrito _serviceDetalleCarrito;
         private readonly IServiceProductos _serviceProductos;
+        private readonly IServiceUsuarios _serviceUsuarios;
 
         //private readonly FKNIContext _context;
 
-        public CarritoController(IServiceCarrito servicePCarrito, IServiceDetalleCarrito serviceDetalleCarrito, IServiceProductos serviceProductos)
+        public CarritoController(IServiceCarrito servicePCarrito, IServiceDetalleCarrito serviceDetalleCarrito, IServiceProductos serviceProductos, IServiceUsuarios serviceUsuarios)
         {
             _serviceCarrito = servicePCarrito;
             _serviceDetalleCarrito = serviceDetalleCarrito;
             _serviceProductos = serviceProductos;
+            _serviceUsuarios = serviceUsuarios;
         }
         [HttpGet]
         // GET: CarritoController
@@ -28,15 +31,13 @@ namespace FKNI.Web.Controllers
         {
             try
             {
-
-                
                 if (id == null)
                 {
                     return RedirectToAction("IndexAdmin");
                 }
                 var @object = await _serviceCarrito.FindByIdAsync(id);
                 var detalles = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
-
+                var usuario = await _serviceUsuarios.FindByIdAsync(id);
                 if (detalles.Count == 0)
                 {
                     detalles = null;
@@ -45,17 +46,14 @@ namespace FKNI.Web.Controllers
                 else
                 {
                     ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+                    ViewBag.Usuario = usuario;
 
                 }
-
-
                 if (@object == null)
                 {
                     throw new Exception("Carrito no existente");
 
                 }
-
-
                 return View(@object);
 
             }
@@ -147,6 +145,16 @@ namespace FKNI.Web.Controllers
                 return Json(new { success = true, mensaje = "Cantidad Eliminada  del carrito", cantidadRestante = eliminado.Cantidad, subtotal = eliminado.Subtotal
                     , total = eliminado.Total, totalImpuesto = eliminado.TotalImpuesto, SubtotalProductos = Subtotal, TotalImpuestoProductos = TotalImpuesto, TotalProductos = Total});
             }
+        }
+
+        public async Task<IActionResult> ResumenCarrito(int id_usuario)
+        {
+            var usuario = await _serviceUsuarios.FindByIdAsync(id_usuario);
+            var @object = await _serviceCarrito.FindByIdAsync(id_usuario);
+            var detalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+            ViewBag.ListDetalleCarrito = detalleCarrito;
+            ViewBag.Usuario = usuario;
+            return PartialView("ResumenCarrito");
         }
     }
 }
