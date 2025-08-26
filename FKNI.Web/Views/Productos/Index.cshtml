@@ -171,7 +171,7 @@
                                     </div>
                                     <div class="pricing-discounted">
                                         <span class="label-small">Con descuento (@item.Descuento%):</span>
-                                        <span class="product-price-current">₡@((item.Precio - (item.Precio * (item.Descuento / 100))).ToString("N2"))</span>
+                                        <span class="product-price-current">₡@(((decimal)item.Precio - ((decimal)item.Precio * (item.Descuento / 100))).ToString("N2"))</span>
                                     </div>
                                 </div>
                             }

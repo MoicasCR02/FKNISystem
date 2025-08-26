@@ -62,7 +62,7 @@
                                     catch { /* segura */ }
 
                                     // Precio - Tu lógica exacta
-                                    string precioTxt = $"₡{(item?.Precio ?? 0m):N2}";
+                                    string precioTxt = $"₡{(decimal)(item?.Precio ?? 0):N2}";
 
                                     // Descuento - Tu lógica exacta
                                     decimal desc = 0m;

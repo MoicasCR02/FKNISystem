@@ -52,8 +52,7 @@ namespace FKNI.Web.Controllers
                                    (promo.TipoPromocion == "categoria" && promo.IdCategoria == p.IdCategoria)
                                  )
                         orderby promo.Descuento descending
-                        select Math.Round(p.Precio * (1m - (promo.Descuento / 100m)), 2)
-                    ).FirstOrDefault()
+                        select Math.Round((decimal)p.Precio * (1m - (promo.Descuento / 100m)), 2)).FirstOrDefault()
                 })
                 .Take(5)
                 .ToListAsync();
@@ -66,7 +65,7 @@ namespace FKNI.Web.Controllers
                     DescripcionCorta = !string.IsNullOrEmpty(x.Descripcion) && x.Descripcion.Length > 90
                         ? x.Descripcion.Substring(0, 90) + "…"
                         : x.Descripcion,
-                    Precio = x.Precio,
+                    Precio = (decimal)x.Precio,
                     PrecioConPromo = x.PrecioConPromo == 0 ? (decimal?)null : x.PrecioConPromo,
                     ImagenUrl = (x.ImagenBytes != null && x.ImagenBytes.Length > 0)
                         ? "data:image/jpeg;base64," + Convert.ToBase64String(x.ImagenBytes)
@@ -98,7 +97,7 @@ namespace FKNI.Web.Controllers
                                    (promo.TipoPromocion == "categoria" && promo.IdCategoria == p.IdCategoria)
                                  )
                         orderby promo.Descuento descending
-                        select Math.Round(p.Precio * (1m - (promo.Descuento / 100m)), 2)
+                        select Math.Round((decimal)p.Precio * (1m - (promo.Descuento / 100m)), 2)
                     ).FirstOrDefault()
                 })
                 .Take(8)
@@ -112,7 +111,7 @@ namespace FKNI.Web.Controllers
                     DescripcionCorta = !string.IsNullOrEmpty(x.Descripcion) && x.Descripcion.Length > 70
                         ? x.Descripcion.Substring(0, 70) + "…"
                         : x.Descripcion,
-                    Precio = x.Precio,
+                    Precio = (decimal)x.Precio,
                     PrecioConPromo = x.PrecioConPromo == 0 ? (decimal?)null : x.PrecioConPromo,
                     ImagenUrl = (x.ImagenBytes != null && x.ImagenBytes.Length > 0)
                         ? "data:image/jpeg;base64," + Convert.ToBase64String(x.ImagenBytes)

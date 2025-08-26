@@ -12,7 +12,7 @@ public partial class Productos
 
     public string? Descripcion { get; set; }
 
-    public decimal Precio { get; set; }
+    public double Precio { get; set; }
 
     public int Stock { get; set; }
 
@@ -33,6 +33,8 @@ public partial class Productos
     public virtual ICollection<Resenas> Resenas { get; set; } = new List<Resenas>();
 
     public virtual ICollection<Etiquetas> IdEtiqueta { get; set; } = new List<Etiquetas>();
+
     [NotMapped]
     public decimal Descuento { get; set; } = 0;
+
 }
