@@ -96,7 +96,7 @@ namespace FKNI.Web.Controllers
 
                 }
 
-                return Ok(new { mensaje = "Compra simulada" });
+                return RedirectToAction("Index", "Pedidos");
             }
             catch (Exception ex)
             {
@@ -104,14 +104,5 @@ namespace FKNI.Web.Controllers
                 return StatusCode(500, new { mensaje = "Error interno", detalle = ex.Message });
             }
         }
-
-
-        [HttpPost]
-        public IActionResult Test()
-        {
-            Console.WriteLine("✅ Entró al método Test");
-            return Ok("Test OK");
-        }
-
     }
 }

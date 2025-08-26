@@ -38,6 +38,10 @@
         <div class="products-grid-container">
             @foreach (var item in Model)
             {
+                if(item.Estado == true)
+                {
+                    
+                
                 <div class="product-item np-hover-lift" data-category="@(item.Descuento > 0 ? "discount" : "all")">
                     <!-- Product Images with Auto-Carousel -->
                     <div class="product-image-container">
@@ -46,49 +50,48 @@
                             var imagenes = item.IdImagen.ToList();
                             var idCarrusel = "carousel-" + item.IdProducto;
 
-                            <div id="@idCarrusel" class="product-carousel" data-bs-interval="3000" data-bs-ride="carousel">
-                                <!-- Carousel Images -->
-                                <div class="product-carousel-inner">
-                                    @for (int i = 0; i < imagenes.Count; i++)
-                                    {
-                                        var img = imagenes[i];
-                                        <div class="product-carousel-slide @(i == 0 ? "active" : "")">
-                                            <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.IdProducto">
-                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(img.UrlImagen)"
-                                                     class="product-image"
-                                                     alt="Imagen del producto" />
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
-
-                                <!-- Carousel Controls -->
-                                @if (imagenes.Count > 1)
+                           <div id="@idCarrusel" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <!-- Carousel Images -->
+                            <div class="carousel-inner product-carousel-inner">
+                                @for (int i = 0; i < imagenes.Count; i++)
                                 {
-                                    <div class="product-carousel-nav">
-                                        <button class="product-carousel-control product-carousel-prev" type="button" data-bs-target="#@idCarrusel" data-bs-slide="prev">
-                                            <i class="bi bi-chevron-left"></i>
-                                        </button>
-                                        <button class="product-carousel-control product-carousel-next" type="button" data-bs-target="#@idCarrusel" data-bs-slide="next">
-                                            <i class="bi bi-chevron-right"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Carousel Indicators -->
-                                    <div class="product-carousel-indicators">
-                                        @for (int i = 0; i < imagenes.Count; i++)
-                                        {
-                                            <button type="button"
-                                                    data-bs-target="#@idCarrusel"
-                                                    data-bs-slide-to="@i"
-                                                    class="product-carousel-dot @(i == 0 ? "active" : "")"
-                                                    aria-current="@(i == 0 ? "true" : "false")"
-                                                    aria-label="Slide @(i + 1)">
-                                            </button>
-                                        }
+                                    var img = imagenes[i];
+                                    <div class="carousel-item product-carousel-slide @(i == 0 ? "active" : "")">
+                                        <a asp-controller="Productos" asp-action="Details" asp-route-id="@item.IdProducto">
+                                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(img.UrlImagen)"
+                                                 class="d-block w-100 product-image"
+                                                 alt="Imagen del producto" />
+                                        </a>
                                     </div>
                                 }
                             </div>
+
+                            <!-- Carousel Controls -->
+                            @if (imagenes.Count > 1)
+                            {
+                                <button class="carousel-control-prev product-carousel-prev" type="button" data-bs-target="#@idCarrusel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next product-carousel-next" type="button" data-bs-target="#@idCarrusel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+
+                                <!-- Carousel Indicators -->
+                                <div class="carousel-indicators product-carousel-indicators">
+                                    @for (int i = 0; i < imagenes.Count; i++)
+                                    {
+                                        <button type="button"
+                                                data-bs-target="#@idCarrusel"
+                                                data-bs-slide-to="@i"
+                                                class="@(i == 0 ? "active" : "") product-carousel-dot"
+                                                aria-current="@(i == 0 ? "true" : "false")"
+                                                aria-label="Slide @(i + 1)">
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </div>
+
                         }
                         else
                         {
@@ -130,19 +133,48 @@
                             </div>
                         }
                     </div>
-                    <div class="size-buttons mb-2">
-                            <label class="form-label d-block">Talla:</label>
-                            <div class="btn-group" role="group" aria-label="Selector de talla">
+                    @{
+                            var PrecioDescuento = ((double)item.Precio - ((double)item.Precio * ((double)item.Descuento / 100)));
+                        }
+                    @if (item.Descuento > 0)
+                            {
+                        
+                            <div class="size-buttons mb-2">
+                                <label class="form-label d-block">Talla:</label>
+                                <div class="btn-group" role="group" aria-label="Selector de talla">
                                 @foreach (var talla in new[] { "XS", "S", "M", "L", "XL" })
                                 {
                                     <button type="button"
                                             class="btn btn-outline-secondary btn-sm me-1"
-                                            onclick="addToCart(@item.IdProducto, '@talla')">
+                                            onclick="addToCart(@item.IdProducto, '@talla',@PrecioDescuento)">
                                         @talla
                                     </button>
                                 }
+                                </div>
                             </div>
-                        </div>
+
+                            }
+                            else
+                            {
+                                <div class="size-buttons mb-2">
+                                <label class="form-label d-block">Talla:</label>
+                                <div class="btn-group" role="group" aria-label="Selector de talla">
+                                @foreach (var talla in new[] { "XS", "S", "M", "L", "XL" })
+                                {
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm me-1"
+                                            onclick="addToCart(@item.IdProducto, '@talla', @item.Precio)">
+                                        @talla
+                                    </button>
+                                }
+                                </div>
+                            </div>
+                            }
+
+                    
+
+
+
                     <!-- Product Information -->
                     <div class="product-info">
                         <div class="product-header">
@@ -167,11 +199,11 @@
                                 <div class="pricing-with-discount">
                                     <div class="pricing-original">
                                         <span class="label-small">Precio original:</span>
-                                        <span class="product-price-original">₡@item.Precio.ToString("N2")</span>
-                                    </div>
+                                        <span class="product-price-original">₡@item.Precio</span>
+                                    </div>  
                                     <div class="pricing-discounted">
                                         <span class="label-small">Con descuento (@item.Descuento%):</span>
-                                        <span class="product-price-current">₡@(((decimal)item.Precio - ((decimal)item.Precio * (item.Descuento / 100))).ToString("N2"))</span>
+                                        <span class="product-price-current">₡@(((double)item.Precio - ((double)item.Precio * ((double)item.Descuento / 100))))</span>
                                     </div>
                                 </div>
                             }
@@ -179,7 +211,7 @@
                             {
                                 <div class="pricing-regular">
                                     <span class="label-small">Precio:</span>
-                                    <span class="product-price-current">₡@item.Precio.ToString("N2")</span>
+                                    <span class="product-price-current">₡@item.Precio</span>
                                 </div>
                             }
                         </div>
@@ -215,6 +247,7 @@
                         }
                     </div>
                 </div>
+                }
             }
         </div>
     </div>
@@ -283,13 +316,20 @@
         });
     });
 
-   function addToCart(idProducto, talla) {
+   function addToCart(idProducto, talla, precio) {
+       console.log(typeof precio); // debería ser "number"
+        console.log(precio); 
+       console.log(idProducto);
+       console.log(talla);
   const idUsuario = document.getElementById('usuario-data').dataset.idusuario;
-
+  console.log(idUsuario);
   const formData = new URLSearchParams();
   formData.append('id_producto', idProducto);
   formData.append('id_usuario', idUsuario);
   formData.append('talla', talla);
+  formData.append('precio', precio);
+
+  console.log(formData);
   fetch('/Carrito/AgregarCarrito', {
     method: 'POST',
     headers: {
@@ -304,9 +344,13 @@
   .then(data => {
     if (data.success) {
       showNotification(`🛒 ${data.mensaje}`, 'success');
-    } else {
+
+    } else if(data.redirectUrl) {
+        alert(data.mensaje);
+        window.location.href = data.redirectUrl;
+        }else{
       showNotification(`❌ ${data.mensaje}`, 'error');
-    }
+      }
   })
   .catch(error => {
     console.error('Error:', error);

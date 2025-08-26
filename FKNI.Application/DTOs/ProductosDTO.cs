@@ -25,7 +25,7 @@ namespace FKNI.Application.DTOs
 
         public int? IdCategoria { get; set; }
 
-        public bool? Estado { get; set; }
+        public bool Estado { get; set; }
 
         [JsonIgnore]
         public virtual Categorias? IdCategoriaNavigation { get; set; }

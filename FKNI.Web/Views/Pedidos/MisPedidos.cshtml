@@ -47,13 +47,13 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="d-inline-flex gap-2">
-                                         @*    <a asp-action="Edit" asp-route-id="@item.IdPedido" class="btn btn-secondary btn-sm" title="Editar">
+                                            @*    <a asp-action="Edit" asp-route-id="@item.IdPedido" class="btn btn-secondary btn-sm" title="Editar">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a> *@
                                             <a asp-action="DetallePedidos" asp-route-pedido="@item.IdPedido" class="btn btn-nude btn-sm" title="Detalles">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                          @*   <a asp-action="Delete" asp-route-id="@item.IdPedido" class="btn btn-ghost btn-sm" title="Eliminar">
+                                            @*   <a asp-action="Delete" asp-route-id="@item.IdPedido" class="btn btn-ghost btn-sm" title="Eliminar">
                                                 <i class="bi bi-trash"></i>
                                             </a> *@
                                         </div>
@@ -74,3 +74,8 @@
         </div>
     </div>
 </section>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

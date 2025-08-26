@@ -16,8 +16,6 @@ namespace FKNI.Web.Controllers
         private readonly IServiceProductos _serviceProductos;
         private readonly IServiceUsuarios _serviceUsuarios;
 
-        //private readonly FKNIContext _context;
-
         public CarritoController(IServiceCarrito servicePCarrito, IServiceDetalleCarrito serviceDetalleCarrito, IServiceProductos serviceProductos, IServiceUsuarios serviceUsuarios)
         {
             _serviceCarrito = servicePCarrito;
@@ -73,14 +71,20 @@ namespace FKNI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AgregarCarrito(int id_producto, int id_usuario, string talla)
+        public async Task<JsonResult> AgregarCarrito(int id_producto, int id_usuario, string talla, double precio)
         {
             try
             {
                 var carrito = await _serviceCarrito.FindByIdAsync(id_usuario);
                 if(id_usuario == 0)
                 {
-                    return Json(new { success = true, mensaje = "Debes iniciar sesion" });
+                    return Json(new
+                    {
+                        success = false,
+                        mensaje = "Debes iniciar sesión",
+                        redirectUrl = Url.Action("Index", "Login")
+                    });
+
                 }
 
                 var id_carrito = 0;
@@ -95,6 +99,8 @@ namespace FKNI.Web.Controllers
 
                 var existe = await _serviceDetalleCarrito.FindByExist(id_carrito, id_producto, talla);
                 var producto = await _serviceProductos.FindByIdAsync(id_producto);
+
+
                 if (existe == null)
                 {
                     var detallecarritoDTO = new DetalleCarritoDTO
@@ -102,11 +108,11 @@ namespace FKNI.Web.Controllers
                         IdCarrito = id_carrito,
                         IdProducto = id_producto,
                         Cantidad = 1,
-                        PrecioUnitario = (int)producto.Precio,
+                        PrecioUnitario = precio,
                         Talla = talla
                     };
 
-                    detallecarritoDTO.Subtotal = (int)producto.Precio;
+                    detallecarritoDTO.Subtotal = precio;
                     detallecarritoDTO.Impuesto = 0.13;
                     detallecarritoDTO.TotalImpuesto = (int)(detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto);
                     detallecarritoDTO.Total = detallecarritoDTO.Subtotal + (int)detallecarritoDTO.TotalImpuesto;
@@ -123,7 +129,7 @@ namespace FKNI.Web.Controllers
                         Cantidad = existe.Cantidad + 1,
                         Talla = existe.Talla
                     };
-                    detallecarritoDTO.Subtotal = (int)existe.Subtotal + (int)producto.Precio;
+                    detallecarritoDTO.Subtotal = (int)existe.Subtotal + precio;
                     detallecarritoDTO.Impuesto = 0.13;
                     detallecarritoDTO.TotalImpuesto = existe.TotalImpuesto + ((int)(detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto));
                     detallecarritoDTO.Total = existe.Total + (detallecarritoDTO.Subtotal + (int)detallecarritoDTO.TotalImpuesto);
@@ -157,9 +163,9 @@ namespace FKNI.Web.Controllers
             var detalles = await _serviceDetalleCarrito.FindByIdAsync(id_carrito);
             foreach(var item in detalles)
             {
-                Subtotal = Subtotal + item.Subtotal;
-                TotalImpuesto = TotalImpuesto  + item.TotalImpuesto;
-                Total = Total + item.Total;
+                Subtotal = eliminado.Subtotal;
+                TotalImpuesto = eliminado.TotalImpuesto;
+                Total = eliminado.Total;
             }
 
             if (eliminado == null)

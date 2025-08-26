@@ -123,6 +123,16 @@
                                     <span>Productos</span>
                                 </a>
                             </li>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark nav-link-modern" asp-area="" asp-controller="Pedidos" asp-action="MisPedidos" asp-route-id="@User.FindFirst(System.Security.Claims.ClaimTypes.Actor)?.Value">
+                                    <i class="fas fa-tshirt"></i>
+                                    <span>Mis pedidos</span>
+                                </a>
+                            </li>
+                            }
+
                         </ul>
 
                         <!-- User Actions -->

@@ -9,7 +9,7 @@ namespace FKNI.Infraestructure.Repository.Interfaces
 {
     public interface IRepositoryDetallePedido
     {
-        Task<DetallePedido> FindByIdAsync(int id_Detalle);
+        Task<ICollection<DetallePedido>> FindByIdAsync(int id_Detalle);
         Task<ICollection<DetallePedido>> ListAsync();
         Task<int> AddAsync(DetallePedido entity);
     }

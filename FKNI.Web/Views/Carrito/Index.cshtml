@@ -63,20 +63,19 @@
     <div class="alert alert-success">@TempData["Mensaje"]</div>
 }
 
-
 @if (ViewBag.ListDetalleCarrito != null)
 {
 
-    decimal subtotalGeneral = 0;
-    decimal impuestoRate = 0.13m;
+    double subtotalGeneral = 0;
+    double impuestoRate = 0.13;
 
     foreach (var detalle in ViewBag.ListDetalleCarrito)
     {
-        subtotalGeneral += detalle.Cantidad * detalle.IdProductoNavigation.Precio;
+        subtotalGeneral += detalle.Cantidad * detalle.PrecioUnitario;
     }
 
-    decimal impuestoGeneral = subtotalGeneral * impuestoRate;
-    decimal totalGeneral = subtotalGeneral + impuestoGeneral;
+    double impuestoGeneral = subtotalGeneral * impuestoRate;
+    double totalGeneral = subtotalGeneral + impuestoGeneral;
 
 
     <input type="hidden" id="subtotalGeneral" value="@subtotalGeneral.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
@@ -104,7 +103,7 @@
 
             @foreach (var detalle in ViewBag.ListDetalleCarrito)
             {
-                var precioUnitario = detalle.IdProductoNavigation.Precio;
+                var precioUnitario = detalle.PrecioUnitario;
                 var subtotalProducto = detalle.Cantidad * precioUnitario;
                 var impuestoProducto = subtotalProducto * impuestoRate;
                 var totalProducto = subtotalProducto + impuestoProducto;
@@ -131,10 +130,10 @@
                     </td>
                     <td>@detalle.IdProductoNavigation.NombreProducto</td>
                     <td class="cantidad">@detalle.Cantidad</td>
-                    <td>₡@precioUnitario.ToString("N2")</td>
-                    <td class="subtotal">₡@subtotalProducto.ToString("N2")</td>
-                    <td class="impuesto">₡@impuestoProducto.ToString("N2")</td>
-                    <td class="total">₡@totalProducto.ToString("N2")</td>
+                    <td>₡@precioUnitario</td>
+                    <td class="subtotal">₡@subtotalProducto</td>
+                    <td class="impuesto">₡@impuestoProducto</td>
+                    <td class="total">₡@totalProducto</td>
                     <td>@detalle.Talla</td>
                     <td>
                         <button class="btn btn-primary btn-sm"
@@ -148,15 +147,15 @@
         <tfoot>
             <tr>
                 <td colspan="6" class="text-end fw-bold">Subtotal general:</td>
-                <td class="SubtotalProductos">₡@subtotalGeneral.ToString("N2")</td>
+                <td class="SubtotalProductos">₡@subtotalGeneral</td>
             </tr>
             <tr>
                 <td colspan="6" class="text-end fw-bold">Impuesto (13%):</td>
-                <td class="ImpuestoProductos">₡@impuestoGeneral.ToString("N2")</td>
+                <td class="ImpuestoProductos">₡@impuestoGeneral</td>
             </tr>
             <tr>
                 <td colspan="6" class="text-end fw-bold">Total a pagar:</td>
-                <td class="TotalProductos">₡@totalGeneral.ToString("N2")</td>
+                <td class="TotalProductos">₡@totalGeneral</td>
             </tr>
         </tfoot>
     </table>
@@ -168,9 +167,10 @@
             <i class="bi bi-cart-check"></i> Realizar compra
         </button>
     </div>  
+    
 
     <!-- Modal -->
-    <div class="modal fade" id="modalResumenCompra" tabindex="-1" aria-labelledby="modalResumenCompraLabel" aria-hidden="true">
+    <div class="modal fade" aria-modal="true" id="modalResumenCompra" tabindex="-1" aria-labelledby="modalResumenCompraLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl-custom modal-dialog-scrollable">
             <div class="modal-content" id="contenido-modal-compra">
                 
@@ -178,16 +178,45 @@
                 
             </div>
         </div>
+    </div> 
+
+
+    <div class="modal fade" id="modalCompraExitosa" tabindex="-1" aria-labelledby="modalCompraExitosaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalCompraExitosaLabel">¡Compra exitosa!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-5">Realizaste la compra con éxito.</p>
+                    <button class="btn btn-success" onclick="verPedido()">Ver pedido</button>
+                </div>
+            </div>
+        </div>
     </div>
-   
+
 }
 else
 {
     <p>No hay productos en el carrito.</p>
 }
 
+
+
 @section Scripts {
     <script>
+
+        function verPedido() {
+    const idUsuario = document.getElementById("idUsuario")?.value;
+    console.log
+    if (idUsuario) {
+        window.location.href = `/Pedidos/MisPedidos?id=${idUsuario}`;
+    } else {
+        alert("No se pudo obtener el ID del usuario.");
+    }
+}
+
         function realizarCompra() {
             const detalles = [];
 
@@ -238,9 +267,11 @@ else
             })
             .then(res => {
                 if (res.ok) {
-                    alert("Compra exitosa");
                     const modal = bootstrap.Modal.getInstance(document.getElementById("modalResumenCompra"));
                     modal?.hide();
+
+                    const exitoModal = new bootstrap.Modal(document.getElementById("modalCompraExitosa"));
+                    exitoModal.show();
                 } else {
                     alert("Error al registrar la compra");
                 }

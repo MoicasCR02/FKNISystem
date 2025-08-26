@@ -17,16 +17,16 @@ namespace FKNI.Infraestructure.Repository.Implementations
         {
             _context = context;
         }
-        public async Task<Pedidos> FindByIdAsync(int id_pedido)
+        public async Task<ICollection<Pedidos>> FindByIdAsync(int id_usuario)
         {
             //Obtener un Libro con su autor y las lista de categorías
             var @object = await _context.Set<Pedidos>()
-                                .Where(x => x.IdPedido == id_pedido)
+                                .Where(x => x.IdCliente == id_usuario)
                                 .Include(x => x.IdClienteNavigation)
                                 .Include(x => x.IdEstadoNavigation)
                                 .Include(x => x.IdPagoNavigation)
                                 .Include(x => x.DetallePedido)
-                                .FirstAsync();
+                                .ToListAsync();
             return @object!;
         }
         public async Task<ICollection<Pedidos>> ListAsync()

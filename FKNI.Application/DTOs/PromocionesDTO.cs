@@ -23,7 +23,7 @@ namespace FKNI.Application.DTOs
         public int? IdCategoria { get; set; }
 
        
-        public decimal Descuento { get; set; }
+        public double Descuento { get; set; }
 
         public DateTime? FechaInicio { get; set; }
 

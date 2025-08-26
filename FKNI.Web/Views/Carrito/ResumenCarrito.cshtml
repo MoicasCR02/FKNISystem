@@ -22,23 +22,23 @@
                 </thead>
                 <tbody>
                     @{
-                        decimal subtotalGeneral = 0;
-                        decimal impuestoRate = 0.13m;
+                        double subtotalGeneral = 0;
+                        double impuestoRate = 0.13;
 
                         foreach (var detalle in ViewBag.ListDetalleCarrito)
                         {
-                            subtotalGeneral += detalle.Cantidad * detalle.IdProductoNavigation.Precio;
+                            subtotalGeneral += detalle.Cantidad * detalle.PrecioUnitario;
                         }
 
-                        decimal impuestoGeneral = subtotalGeneral * impuestoRate;
-                        decimal totalGeneral = subtotalGeneral + impuestoGeneral;
+                        double impuestoGeneral = subtotalGeneral * impuestoRate;
+                        double totalGeneral = subtotalGeneral + impuestoGeneral;
                     }
                     @{
                         foreach (var detalle in ViewBag.ListDetalleCarrito)
                         {
-                            var precioUnitario = detalle.IdProductoNavigation.Precio;
+                            var precioUnitario = detalle.PrecioUnitario;
                             var subtotalProducto = detalle.Cantidad * precioUnitario;
-                            var impuestoProducto = subtotalProducto * 0.13m;
+                            var impuestoProducto = subtotalProducto * impuestoRate;
                             var totalProducto = subtotalProducto + impuestoProducto;
                             var imagenes = detalle.IdProductoNavigation.IdImagen;
                             <tr>

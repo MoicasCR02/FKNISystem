@@ -55,7 +55,7 @@ namespace FKNI.Infraestructure.Repository.Implementations
                 var promo = promocionesVigentes.FirstOrDefault(pr => pr.IdProducto == producto.IdProducto)
                          ?? promocionesVigentes.FirstOrDefault(pr => pr.IdCategoria == producto.IdCategoria);
 
-                producto.Descuento = promo?.Descuento ?? 0;
+                producto.Descuento = (int)(promo?.Descuento ?? 0);
             }
 
             return collection;

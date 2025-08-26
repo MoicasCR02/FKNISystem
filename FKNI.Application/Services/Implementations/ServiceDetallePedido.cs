@@ -20,10 +20,10 @@ namespace FKNI.Application.Services.Implementations
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<DetallePedidoDTO> FindByIdAsync(int id_detallePedido)
+        public async Task<ICollection<DetallePedidoDTO>> FindByIdAsync(int id_pedido)
         {
-            var @object = await _repository.FindByIdAsync(id_detallePedido);
-            var objectMapped = _mapper.Map<DetallePedidoDTO>(@object);
+            var @object = await _repository.FindByIdAsync(id_pedido);
+            var objectMapped = _mapper.Map<ICollection<DetallePedidoDTO>>(@object);
             return objectMapped;
         }
         public async Task<ICollection<DetallePedidoDTO>> ListAsync()

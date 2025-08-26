@@ -106,6 +106,7 @@ namespace FKNI.Web.Controllers
 
             }
             dto.Precio = (int)(dto.Precio);
+            dto.Estado = true;
             await _serviceProductos.AddAsync(dto, selectedEtiquetas);
             var collection = await _serviceProductos.ListAsync();
             var ultimoProducto = collection.OrderByDescending(p => p.IdProducto).FirstOrDefault();
@@ -142,7 +143,6 @@ namespace FKNI.Web.Controllers
             var etiquetas = await _serviceEtiquetas.ListAsync();
             ViewBag.ListCategoria = await _serviceCategorias.ListAsync();
             var etiquetasSelected = @object.IdEtiqueta.Select(x => x.IdEtiqueta.ToString()).ToList();
-
             ViewBag.ListEtiquetas = new MultiSelectList(
                     items: etiquetas,
                     dataValueField: nameof(EtiquetasDTO.IdEtiqueta),
@@ -162,7 +162,7 @@ namespace FKNI.Web.Controllers
         public async Task<IActionResult> Edit(int id, ProductosDTO dto, List<IFormFile> ImageFiles, string[] selectedEtiquetas, List<int> imagenesEliminadas)
         {
             ModelState.Remove("imagenesEliminadas");
-
+            ModelState.Remove("Estado");
             if (!ModelState.IsValid)
             {
                 string errors = string.Join("; ", ModelState.Values
@@ -219,6 +219,7 @@ namespace FKNI.Web.Controllers
 
             // 5. Actualizar producto y colecciones con método que cargue bien el entity desde BD
             dto.Precio = (int)(dto.Precio);
+           
             await _serviceProductos.UpdateAsync(id, dto, selectedEtiquetas);
 
             return RedirectToAction("Index");

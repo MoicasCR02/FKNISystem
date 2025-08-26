@@ -33,7 +33,7 @@ namespace FKNI.Web.Controllers
             // Si el usuario NO es administrador, asignar rol cliente por defecto
             if (!User.IsInRole("Administrador"))
             {
-                dto.IdRol = 1; // Rol Cliente
+                dto.IdRol = 2; // Rol Cliente
             }
 
             if (!ModelState.IsValid)

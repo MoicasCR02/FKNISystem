@@ -29,49 +29,53 @@ namespace FKNI.Web.Controllers
 
             // ---------- DESTACADOS: traemos bytes y luego convertimos en memoria ----------
             var destacadosRaw = await _ctx.Productos
-                .AsNoTracking()
-                .Where(p => p.Estado == true)
-                .OrderByDescending(p => p.PromedioValoracion)
-                .ThenByDescending(p => p.IdProducto)
-                .Select(p => new
-                {
-                    p.IdProducto,
-                    p.NombreProducto,
-                    p.Descripcion,
-                    p.Precio,
-                    p.IdCategoria,
-                    ImagenBytes = p.IdImagen
-                        .OrderBy(i => i.IdImagen)
-                        .Select(i => i.UrlImagen) // byte[]
-                        .FirstOrDefault(),
-                    PrecioConPromo = (
-                        from promo in _ctx.Promociones
-                        where promo.FechaInicio <= ahora && ahora <= promo.FechaFin
-                              && (
-                                   (promo.TipoPromocion == "producto"  && promo.IdProducto  == p.IdProducto) ||
-                                   (promo.TipoPromocion == "categoria" && promo.IdCategoria == p.IdCategoria)
-                                 )
-                        orderby promo.Descuento descending
-                        select Math.Round((decimal)p.Precio * (1m - (promo.Descuento / 100m)), 2)).FirstOrDefault()
-                })
-                .Take(5)
-                .ToListAsync();
+             .AsNoTracking()
+             .Where(p => p.Estado == true)
+             .OrderByDescending(p => p.PromedioValoracion)
+             .ThenByDescending(p => p.IdProducto)
+             .Select(p => new
+             {
+                 p.IdProducto,
+                 p.NombreProducto,
+                 p.Descripcion,
+                 p.Precio,
+                 p.IdCategoria,
+                 ImagenBytes = p.IdImagen
+                     .OrderBy(i => i.IdImagen)
+                     .Select(i => i.UrlImagen)
+                     .FirstOrDefault(),
+
+                 PrecioConPromo = (
+                     from promo in _ctx.Promociones
+                     where promo.FechaInicio <= ahora && ahora <= promo.FechaFin
+                           && (
+                               (promo.TipoPromocion == "producto" && promo.IdProducto == p.IdProducto) ||
+                               (promo.TipoPromocion == "categoria" && promo.IdCategoria == p.IdCategoria)
+                           )
+                     orderby promo.Descuento descending
+                     select Math.Round((double)p.Precio * (1 - (promo.Descuento / 100.0)), 2)
+                 ).FirstOrDefault()
+             })
+             .Take(5)
+             .ToListAsync();
+
 
             var destacados = destacadosRaw
-                .Select(x => new ProductCardVM
-                {
-                    Id = x.IdProducto,
-                    Nombre = x.NombreProducto,
-                    DescripcionCorta = !string.IsNullOrEmpty(x.Descripcion) && x.Descripcion.Length > 90
-                        ? x.Descripcion.Substring(0, 90) + "…"
-                        : x.Descripcion,
-                    Precio = (decimal)x.Precio,
-                    PrecioConPromo = x.PrecioConPromo == 0 ? (decimal?)null : x.PrecioConPromo,
-                    ImagenUrl = (x.ImagenBytes != null && x.ImagenBytes.Length > 0)
-                        ? "data:image/jpeg;base64," + Convert.ToBase64String(x.ImagenBytes)
-                        : "https://source.unsplash.com/1600x900/?tshirt,apparel"
-                })
-                .ToList();
+            .Select(x => new ProductCardVM
+            {
+                Id = x.IdProducto,
+                Nombre = x.NombreProducto,
+                DescripcionCorta = !string.IsNullOrEmpty(x.Descripcion) && x.Descripcion.Length > 90
+                    ? x.Descripcion.Substring(0, 90) + "…"
+                    : x.Descripcion,
+                Precio = (decimal)x.Precio, // ya es decimal
+                PrecioConPromo = x.PrecioConPromo == 0 ? (decimal?)null : (decimal)x.PrecioConPromo,
+                ImagenUrl = x.ImagenBytes is byte[] bytes && bytes.Length > 0
+                    ? "data:image/jpeg;base64," + Convert.ToBase64String(bytes)
+                    : "https://source.unsplash.com/1600x900/?tshirt,apparel"
+            })
+            .ToList();
+
 
             // ---------- RECIENTES: mismo patrón ----------
             var recientesRaw = await _ctx.Productos
@@ -97,7 +101,7 @@ namespace FKNI.Web.Controllers
                                    (promo.TipoPromocion == "categoria" && promo.IdCategoria == p.IdCategoria)
                                  )
                         orderby promo.Descuento descending
-                        select Math.Round((decimal)p.Precio * (1m - (promo.Descuento / 100m)), 2)
+                        select Math.Round((double)p.Precio * (1 - (promo.Descuento / 100.0)), 2)
                     ).FirstOrDefault()
                 })
                 .Take(8)
@@ -112,7 +116,7 @@ namespace FKNI.Web.Controllers
                         ? x.Descripcion.Substring(0, 70) + "…"
                         : x.Descripcion,
                     Precio = (decimal)x.Precio,
-                    PrecioConPromo = x.PrecioConPromo == 0 ? (decimal?)null : x.PrecioConPromo,
+                    PrecioConPromo = x.PrecioConPromo == 0 ? (decimal?)null : (decimal)x.PrecioConPromo,
                     ImagenUrl = (x.ImagenBytes != null && x.ImagenBytes.Length > 0)
                         ? "data:image/jpeg;base64," + Convert.ToBase64String(x.ImagenBytes)
                         : "https://source.unsplash.com/600x600/?tshirt,streetwear"

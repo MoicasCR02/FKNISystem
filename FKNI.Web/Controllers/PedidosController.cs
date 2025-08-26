@@ -7,14 +7,22 @@ namespace FKNI.Web.Controllers
     public class PedidosController : Controller
     {
         private readonly IServicePedidos _servicePedidos;
-        public PedidosController(IServicePedidos servicePedidos)
+        private readonly IServiceDetallePedido _serviceDetallePedido;
+        public PedidosController(IServicePedidos servicePedidos, IServiceDetallePedido serviceDetallePedido)
         {
             _servicePedidos = servicePedidos;
+            _serviceDetallePedido = serviceDetallePedido;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var collection = await _servicePedidos.ListAsync();
+            return View(collection);
+        }
+
+        public async Task<IActionResult> MisPedidos(int id)
+        {
+            var collection = await _servicePedidos.FindByIdAsync(id);
             return View(collection);
         }
         public async Task<ActionResult> Details(int? id)
@@ -39,6 +47,12 @@ namespace FKNI.Web.Controllers
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<IActionResult> DetallePedidos(int pedido)
+        {
+            var collection = await _serviceDetallePedido.FindByIdAsync(pedido);
+            return View(collection);
         }
     }
 }

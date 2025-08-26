@@ -77,11 +77,24 @@
 
                     <button type="button" class="btn btn-outline-primary mt-2" onclick="agregarNuevaImagen()">Agregar imagen</button>
                 </div>
+                <div class="mb-3">
+                    <label asp-for="Estado" class="form-label">¿Activo?</label>
+                    @Html.DropDownListFor(m => m.Estado,
+                    new List<SelectListItem>
+                                        {
+                                        new SelectListItem { Text = "Activo", Value = "true", Selected = Model.Estado == false },
+                                        new SelectListItem { Text = "Inactivo", Value = "false", Selected = Model.Estado == true }
+                                        },
+                                        new { @class = "form-select" })
+
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+
 
                 <div id="previewList" class="mt-3"></div>
 
                 <div class="d-grid mt-4">
-                    <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
+                    <input type="submit" value="Guardar Cambios" class="" />
                 </div>
             </form>
 

@@ -1,0 +1,101 @@
+﻿@model List<FKNI.Application.DTOs.DetallePedidoDTO>
+
+@{
+    ViewData["Title"] = "Detalle de Pedido";
+    var pedido = Model.FirstOrDefault();
+}
+
+<h1 class="mb-4">Factura de Pedido</h1>
+
+@if (pedido != null)
+{
+    <div class="card mb-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Cliente</dt>
+                <dd class="col-sm-9">@pedido.IdPedidoNavigation?.IdClienteNavigation?.NombreUsuario</dd>
+
+                <dt class="col-sm-3">Dirección de Envío</dt>
+                <dd class="col-sm-9">@pedido.IdPedidoNavigation?.DireccionEnvio</dd>
+
+                <dt class="col-sm-3">Método de Entrega</dt>
+                <dd class="col-sm-9">@pedido.IdPedidoNavigation?.MetodoEntrega</dd>
+
+                <dt class="col-sm-3">Fecha de Pago</dt>
+                <dd class="col-sm-9">@pedido.IdPedidoNavigation?.IdPagoNavigation?.FechaPago.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-nude text-black">@pedido.IdPedidoNavigation?.IdEstadoNavigation?.NombreEstado</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <h4 class="mt-4">Productos</h4>
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Talla</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+                <th>Impuesto</th>
+                <th>Total con Impuesto</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var imagenUrl = item.IdDetalleCarritoNavigation?.IdProductoNavigation?.IdImagen?.FirstOrDefault()?.UrlImagen;
+                <tr>
+                    <td>
+                        @if (imagenUrl != null && imagenUrl.Length > 0)
+                        {
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(imagenUrl)" alt="Producto" style="width: 60px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Sin imagen</span>
+                        }
+                    </td>
+                    <td>@item.IdDetalleCarritoNavigation?.IdProductoNavigation?.NombreProducto</td>
+                    <td>@item.IdDetalleCarritoNavigation?.IdProductoNavigation?.Descripcion</td>
+                    <td>@item.IdDetalleCarritoNavigation?.Talla</td>
+                    <td>@item.IdDetalleCarritoNavigation?.Cantidad</td>
+                    <td>₡@item.IdDetalleCarritoNavigation?.PrecioUnitario.ToString()</td>
+                    <td>₡@item.IdDetalleCarritoNavigation?.Subtotal.ToString()</td>
+                    <td>₡@item.IdDetalleCarritoNavigation?.Impuesto.ToString()</td>
+                    <td>₡@item.IdDetalleCarritoNavigation?.TotalImpuesto.ToString()</td>
+                    <td>₡@item.IdDetalleCarritoNavigation?.Total.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Totales</h4>
+    <table class="table table-borderless w-50">
+        <tbody>
+            <tr>
+                <th>Subtotal</th>
+                <td>₡@pedido.IdPedidoNavigation?.IdPagoNavigation?.Subtotal</td>
+            </tr>
+            <tr>
+                <th>Total Impuesto</th>
+                <td>₡@pedido.IdPedidoNavigation?.IdPagoNavigation?.Impuesto</td>
+            </tr>
+            <tr>
+                <th>Total General</th>
+                <td><strong>₡@pedido.IdPedidoNavigation?.IdPagoNavigation?.TotalConImpuesto</strong></td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+</div>
