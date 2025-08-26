@@ -35,8 +35,16 @@ namespace FKNI.Web.Controllers
                 {
                     return RedirectToAction("IndexAdmin");
                 }
-                var @object = await _serviceCarrito.FindByIdAsync(id);
-                var detalles = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+                var objectcarrito = await _serviceCarrito.FindByIdAsync(id);
+                var id_carrito=0;
+                foreach (var item in objectcarrito.Where(c => c.Estado == true))
+                {
+                    // Solo entra si Estado == true
+                    id_carrito = item.IdCarrito;
+                }
+                objectcarrito = objectcarrito.Where(c => c.Estado == true).ToList();
+
+                var detalles = await _serviceDetalleCarrito.FindByIdAsync(id_carrito);
                 var usuario = await _serviceUsuarios.FindByIdAsync(id);
                 if (detalles.Count == 0)
                 {
@@ -50,12 +58,12 @@ namespace FKNI.Web.Controllers
                     ViewBag.Usuario = usuario;
 
                 }
-                if (@object == null)    
+                if (objectcarrito == null)    
                 {
                     throw new Exception("Carrito no existente");
 
                 }
-                return View(@object);
+                return View();
 
             }
             catch (Exception ex)
@@ -74,13 +82,24 @@ namespace FKNI.Web.Controllers
                 {
                     return Json(new { success = true, mensaje = "Debes iniciar sesion" });
                 }
-                var existe = await _serviceDetalleCarrito.FindByExist(carrito.IdCarrito, id_producto, talla);
+
+                var id_carrito = 0;
+                foreach (var item in carrito)
+                {
+                    if (item.Estado == true)
+                    {
+                        id_carrito = item.IdCarrito;
+                    }
+                }
+
+
+                var existe = await _serviceDetalleCarrito.FindByExist(id_carrito, id_producto, talla);
                 var producto = await _serviceProductos.FindByIdAsync(id_producto);
                 if (existe == null)
                 {
                     var detallecarritoDTO = new DetalleCarritoDTO
                     {
-                        IdCarrito = carrito.IdCarrito,
+                        IdCarrito = id_carrito,
                         IdProducto = id_producto,
                         Cantidad = 1,
                         PrecioUnitario = (int)producto.Precio,
@@ -124,6 +143,8 @@ namespace FKNI.Web.Controllers
             var Subtotal = 0d;
             var TotalImpuesto = 0d;
             var Total = 0d;
+
+
             var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito,talla);
 
             ViewBag.Mensaje = eliminado == null
@@ -156,7 +177,16 @@ namespace FKNI.Web.Controllers
         {
             var usuario = await _serviceUsuarios.FindByIdAsync(id_usuario);
             var @object = await _serviceCarrito.FindByIdAsync(id_usuario);
-            var detalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+            var id_carrito = 0;
+            foreach (var item in @object)
+            {
+                if (item.Estado == true)
+                {
+                    id_carrito = item.IdCarrito;
+                }
+            }
+
+            var detalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(id_carrito);
             ViewBag.ListDetalleCarrito = detalleCarrito;
             ViewBag.Usuario = usuario;
             return PartialView("ResumenCarrito");

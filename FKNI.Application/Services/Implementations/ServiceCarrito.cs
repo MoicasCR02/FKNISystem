@@ -23,10 +23,10 @@ namespace FKNI.Application.Services.Implementations
 
 
 
-        public async Task<CarritoDTO> FindByIdAsync(int id_usuario)
+        public async Task<ICollection<CarritoDTO>> FindByIdAsync(int id_usuario)
         {
             var @object = await _repository.FindByIdAsync(id_usuario);
-            var objectMapped = _mapper.Map<CarritoDTO>(@object);
+            var objectMapped = _mapper.Map<ICollection<CarritoDTO>>(@object);
             return objectMapped;
         }
 
@@ -44,6 +44,12 @@ namespace FKNI.Application.Services.Implementations
 
             // Return
             return await _repository.AddAsync(objectMapped);
+        }
+
+        public async Task UpdateAsync(CarritoDTO dto)
+        {
+            var objectMapped = _mapper.Map<Carrito>(dto);
+            await _repository.UpdateAsync(objectMapped);
         }
     }
 }

@@ -18,12 +18,12 @@ namespace FKNI.Infraestructure.Repository.Implementations
             _context = context;
         }
 
-        public async Task<Carrito> FindByIdAsync(int id_usuario)
+        public async Task<ICollection<Carrito>> FindByIdAsync(int id_usuario)
         {
             var @object = await _context.Set<Carrito>()
                 .Where(x => x.IdUsuario == id_usuario)
                 .Include(x => x.IdUsuarioNavigation)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
             return @object!;
         }
 
@@ -40,6 +40,18 @@ namespace FKNI.Infraestructure.Repository.Implementations
             await _context.Set<Carrito>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity.IdCarrito;
+        }
+
+        public async Task UpdateAsync(Carrito entity)
+        {
+            var existing = await _context.Carrito.FindAsync(entity.IdCarrito);
+            // No tocamos IdProducto ni FechaCreacion
+            if (entity.IdCarrito != null)
+            {
+                _context.Entry(entity).Reference(e => e.IdUsuarioNavigation).IsModified = false;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

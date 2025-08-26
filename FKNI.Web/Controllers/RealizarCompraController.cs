@@ -14,16 +14,16 @@ namespace FKNI.Web.Controllers
         private readonly IServicePagos _servicePagos;
         private readonly IServicePedidos _servicePedidos;
         private readonly IServiceDetallePedido _serviceDetallePedido;
-        private readonly IServiceDetalleCarrito _serviceDetalleCarrito;
+        private readonly IServiceCarrito _serviceCarrito;
 
         //private readonly FKNIContext _context;
 
-        public RealizarCompraController(IServicePagos servicePagos, IServicePedidos servidePedidos, IServiceDetallePedido serviceDetallePedido,IServiceDetalleCarrito serviceDetalleCarrito )
+        public RealizarCompraController(IServicePagos servicePagos, IServicePedidos servidePedidos, IServiceDetallePedido serviceDetallePedido, IServiceCarrito serviceCarrito)
         {
             _servicePagos = servicePagos;
             _servicePedidos = servidePedidos;
             _serviceDetallePedido = serviceDetallePedido;
-            _serviceDetalleCarrito = serviceDetalleCarrito;
+            _serviceCarrito = serviceCarrito;
         }
 
         public async Task<IActionResult> Index()
@@ -64,7 +64,36 @@ namespace FKNI.Web.Controllers
                         item.IdPedido = idPedido;
                         await _serviceDetallePedido.AddAsync(item);
                     }
-                    //await _serviceDetalleCarrito.
+                    //Crear nuevon carrito 
+
+
+                    var nuevoCarrito = new CarritoDTO
+                    {
+                        IdUsuario = compra.Pedido.IdCliente,
+                        Estado = true 
+                    };
+
+                    var carrito = await _serviceCarrito.FindByIdAsync((int)compra.Pedido.IdCliente);
+                    var id_carrito = 0;
+                    foreach (var item in carrito)
+                    {
+                        if (item.Estado == true)
+                        {
+                            id_carrito = item.IdCarrito;
+                        }
+                    }
+
+                    await _serviceCarrito.AddAsync(nuevoCarrito);
+                    
+
+                    var Editarcarrito = new CarritoDTO
+                    {
+                        IdCarrito = id_carrito,
+                        IdUsuario = compra.Pedido.IdCliente,
+                        Estado = false
+                    };
+                    await _serviceCarrito.UpdateAsync(Editarcarrito);
+
                 }
 
                 return Ok(new { mensaje = "Compra simulada" });

@@ -83,7 +83,6 @@
     <input type="hidden" id="impuestoGeneral" value="@impuestoGeneral.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
     <input type="hidden" id="totalGeneral" value="@totalGeneral.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" />
 
-
     <h4>Productos en el carrito</h4>
    
     <table class="table table-bordered table-striped">
@@ -180,191 +179,176 @@
             </div>
         </div>
     </div>
-    @section Scripts {
-        <script>
-            function realizarCompra() {
-                const detalles = [];
-                if()
-                @foreach (var detalle in ViewBag.ListDetalleCarrito)
-                {
-                            <text>
-                            detalles.push({
-                                    IdDetalleCarrito: @detalle.IdDetalleCarrito
-                            });
-                            </text>
-                }
-
-                const resumenTotales = {
-                subtotalGeneral: parseFloat(document.getElementById("subtotalGeneral").value),
-                TotalImpuestoGeneral: parseFloat(document.getElementById("impuestoGeneral").value),
-                TotalGeneral: parseFloat(document.getElementById("totalGeneral").value)
-                };
-
-                const idCliente = parseInt(document.getElementById("idUsuario").value, 10);
-
-                const compra = {
-                    Pago: {
-                        MetodoPago: "Tarjeta",
-                        CostoEnvio: 2600,
-                        FechaPago: new Date().toISOString(),
-                        Subtotal: resumenTotales.subtotalGeneral,
-                        Impuesto: resumenTotales.TotalImpuestoGeneral,
-                        TotalConImpuesto: resumenTotales.TotalGeneral
-                    },
-                    Pedido: {
-                        IdCliente: idCliente,
-                        MetodoEntrega: "Domicilio",
-                        DireccionEnvio: document.querySelector("select.form-select").value,
-                        IdEstado: 1
-                    },
-                    Detalles: detalles
-                };
-
-                console.log(compra);
-
-                fetch("/RealizarCompra/Create", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(compra)
-                })
-                .then(res => {
-                    if (res.ok) {
-                        alert("Compra exitosa");
-                        const modal = bootstrap.Modal.getInstance(document.getElementById("modalResumenCompra"));
-                        modal.hide();
-                    } else {
-                        alert("Error al registrar la compra");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error en el fetch:", err);
-                    alert("No se pudo conectar con el servidor");
-                });
-            }
-
-            //Enviar Compra
-
-            /// Funcion siguiente
-
-            document.getElementById("realizar-compra").addEventListener("click", function (e) {
-                e.preventDefault();
-
-                const idUsuario = document.getElementById("idUsuario").value;
-
-                fetch(`/Carrito/ResumenCarrito?id_usuario=${idUsuario}`)
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById("contenido-modal-compra").innerHTML = html;
-
-                        const modal = new bootstrap.Modal(document.getElementById("modalResumenCompra"));
-                        modal.show();
-                    });
-            });
-
-                    function Eliminar(idProducto, idCarrito, talla, IdDetalleCarrito) {
-                        console.log(talla);
-                const formData = new URLSearchParams();
-                formData.append('id_producto', idProducto);
-                formData.append('id_carrito', idCarrito);
-                formData.append('talla', talla);
-
-                fetch('/Carrito/Delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: formData.toString()
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Error en la solicitud');
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        console.log(data);
-                        showNotification(`🛒 ${data.mensaje}`, 'success');
-                    const fila = document.getElementById(`producto-${IdDetalleCarrito}`);
-                    if (data.cantidadRestante < 1) {
-                    const filasRestantes = document.querySelectorAll('tbody tr');
-                    actualizarTotalesGenerales(data);
-                    if (filasRestantes.length === 1) {
-                        // Esta es la última fila, así que eliminamos todo el carrito
-                    document.querySelector('table')?.remove();
-                    document.querySelector('h4')?.remove();
-                    document.getElementById('realizar-compra')?.remove();
-
-                    const mensaje = document.createElement('p');
-                    mensaje.textContent = 'No hay productos en el carrito.';
-                    mensaje.className = 'text-muted';
-
-                    // Insertar el mensaje en un contenedor más lógico si existe
-                    const contenedor = document.querySelector('.checkout-button')?.parentElement || document.body;
-                    contenedor.appendChild(mensaje);
-
-                    } else {
-                        // Solo eliminar la fila actual
-                        fila?.remove();
-                    }
-                    } else {
-                        // Actualizar cantidad restante
-                        fila.querySelector('.cantidad').textContent = data.cantidadRestante;
-
-                        // Actualizar subtotal del producto
-                        fila.querySelector('.subtotal').textContent = `₡${data.subtotal.toFixed(2)}`;
-
-                        // Actualizar total del producto
-                        fila.querySelector('.total').textContent = `₡${data.total.toFixed(2)}`;
-
-                        // Actualizar impuesto del producto
-                        fila.querySelector('.impuesto').textContent = `₡${data.totalImpuesto.toFixed(2)}`;
-
-                        actualizarTotalesGenerales(data);
-                    }
-                    } else {
-                        showNotification(`❌ ${data.mensaje}`, 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('❌ No se pudo eliminar el producto', 'error');
-                });
-            }
-
-                    function actualizarTotalesGenerales(data) {
-                document.querySelector('.SubtotalProductos').textContent = `₡${data.subtotalProductos.toFixed(2)}`;
-                document.querySelector('.ImpuestoProductos').textContent = `₡${data.totalImpuestoProductos.toFixed(2)}`;
-                document.querySelector('.TotalProductos').textContent = `₡${data.totalProductos.toFixed(2)}`;
-            }
-
-
-            function showNotification(message, type = 'success') {
-                const notification = document.createElement('div');
-                notification.className = `notification notification-${type}`;
-                notification.innerHTML = `
-                    <div class="notification-content">
-                        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
-                        <span>${message}</span>
-                    </div>
-                `;
-
-                document.body.appendChild(notification);
-
-                setTimeout(() => notification.classList.add('show'), 100);
-
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        if (document.body.contains(notification)) {
-                            document.body.removeChild(notification);
-                        }
-                    }, 300);
-                }, 4000);
-            }
-        </script>
-    }
+   
 }
 else
 {
     <p>No hay productos en el carrito.</p>
 }
 
+@section Scripts {
+    <script>
+        function realizarCompra() {
+            const detalles = [];
+
+            @if (ViewBag.ListDetalleCarrito != null)
+            {
+                    foreach (var detalle in ViewBag.ListDetalleCarrito)
+                    {
+                            <text>
+                            detalles.push({
+                                IdDetalleCarrito: @detalle.IdDetalleCarrito
+                            });
+                            </text>
+                    }
+            }
+
+            const resumenTotales = {
+                subtotalGeneral: parseFloat(document.getElementById("subtotalGeneral")?.value || "0"),
+                TotalImpuestoGeneral: parseFloat(document.getElementById("impuestoGeneral")?.value || "0"),
+                TotalGeneral: parseFloat(document.getElementById("totalGeneral")?.value || "0")
+            };
+
+            const idCliente = parseInt(document.getElementById("idUsuario")?.value || "0", 10);
+
+            const compra = {
+                Pago: {
+                    MetodoPago: "Tarjeta",
+                    CostoEnvio: 2600,
+                    FechaPago: new Date().toISOString(),
+                    Subtotal: resumenTotales.subtotalGeneral,
+                    Impuesto: resumenTotales.TotalImpuestoGeneral,
+                    TotalConImpuesto: resumenTotales.TotalGeneral
+                },
+                Pedido: {
+                    IdCliente: idCliente,
+                    MetodoEntrega: "Domicilio",
+                    DireccionEnvio: document.querySelector("select.form-select")?.value || "",
+                    IdEstado: 1
+                },
+                Detalles: detalles
+            };
+
+            console.log(compra);
+
+            fetch("/RealizarCompra/Create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(compra)
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert("Compra exitosa");
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("modalResumenCompra"));
+                    modal?.hide();
+                } else {
+                    alert("Error al registrar la compra");
+                }
+            })
+            .catch(err => {
+                console.error("Error en el fetch:", err);
+                alert("No se pudo conectar con el servidor");
+            });
+        }
+
+        document.getElementById("realizar-compra")?.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const idUsuario = document.getElementById("idUsuario")?.value;
+            if (!idUsuario) return;
+
+            fetch(`/Carrito/ResumenCarrito?id_usuario=${idUsuario}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById("contenido-modal-compra").innerHTML = html;
+                    const modal = new bootstrap.Modal(document.getElementById("modalResumenCompra"));
+                    modal.show();
+                });
+        });
+
+        function Eliminar(idProducto, idCarrito, talla, IdDetalleCarrito) {
+            const formData = new URLSearchParams();
+            formData.append('id_producto', idProducto);
+            formData.append('id_carrito', idCarrito);
+            formData.append('talla', talla);
+
+            fetch('/Carrito/Delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString()
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la solicitud');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showNotification(`🛒 ${data.mensaje}`, 'success');
+                    const fila = document.getElementById(`producto-${IdDetalleCarrito}`);
+                    if (data.cantidadRestante < 1) {
+                        const filasRestantes = document.querySelectorAll('tbody tr');
+                        actualizarTotalesGenerales(data);
+                        if (filasRestantes.length === 1) {
+                            document.querySelector('table')?.remove();
+                            document.querySelector('h4')?.remove();
+                            document.getElementById('realizar-compra')?.remove();
+
+                            const mensaje = document.createElement('p');
+                            mensaje.textContent = 'No hay productos en el carrito.';
+                            mensaje.className = 'text-muted';
+
+                            const contenedor = document.querySelector('.checkout-button')?.parentElement || document.body;
+                            contenedor.appendChild(mensaje);
+                        } else {
+                            fila?.remove();
+                        }
+                    } else {
+                        fila.querySelector('.cantidad').textContent = data.cantidadRestante;
+                        fila.querySelector('.subtotal').textContent = `₡${data.subtotal.toFixed(2)}`;
+                        fila.querySelector('.total').textContent = `₡${data.total.toFixed(2)}`;
+                        fila.querySelector('.impuesto').textContent = `₡${data.totalImpuesto.toFixed(2)}`;
+                        actualizarTotalesGenerales(data);
+                    }
+                } else {
+                    showNotification(`❌ ${data.mensaje}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('❌ No se pudo eliminar el producto', 'error');
+            });
+        }
+
+        function actualizarTotalesGenerales(data) {
+            document.querySelector('.SubtotalProductos').textContent = `₡${data.subtotalProductos.toFixed(2)}`;
+            document.querySelector('.ImpuestoProductos').textContent = `₡${data.totalImpuestoProductos.toFixed(2)}`;
+            document.querySelector('.TotalProductos').textContent = `₡${data.totalProductos.toFixed(2)}`;
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.classList.add('show'), 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+    </script>
+}
