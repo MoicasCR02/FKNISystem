@@ -45,11 +45,12 @@ namespace FKNI.Web.Controllers
                 }
                 else
                 {
-                    ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(@object.IdCarrito);
+
+                    ViewBag.ListDetalleCarrito = detalles.Any() ? detalles : null;
                     ViewBag.Usuario = usuario;
 
                 }
-                if (@object == null)
+                if (@object == null)    
                 {
                     throw new Exception("Carrito no existente");
 
@@ -69,6 +70,10 @@ namespace FKNI.Web.Controllers
             try
             {
                 var carrito = await _serviceCarrito.FindByIdAsync(id_usuario);
+                if(id_usuario == 0)
+                {
+                    return Json(new { success = true, mensaje = "Debes iniciar sesion" });
+                }
                 var existe = await _serviceDetalleCarrito.FindByExist(carrito.IdCarrito, id_producto, talla);
                 var producto = await _serviceProductos.FindByIdAsync(id_producto);
                 if (existe == null)
