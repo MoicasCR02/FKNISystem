@@ -105,6 +105,7 @@ namespace FKNI.Web.Controllers
                 return BadRequest(errors);
 
             }
+            dto.Precio = (int)(dto.Precio);
             await _serviceProductos.AddAsync(dto, selectedEtiquetas);
             var collection = await _serviceProductos.ListAsync();
             var ultimoProducto = collection.OrderByDescending(p => p.IdProducto).FirstOrDefault();
@@ -217,6 +218,7 @@ namespace FKNI.Web.Controllers
             dto.IdImagen = imagenesEntidad;
 
             // 5. Actualizar producto y colecciones con método que cargue bien el entity desde BD
+            dto.Precio = (int)(dto.Precio);
             await _serviceProductos.UpdateAsync(id, dto, selectedEtiquetas);
 
             return RedirectToAction("Index");

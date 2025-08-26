@@ -44,14 +44,20 @@ namespace FKNI.Infraestructure.Repository.Implementations
 
         public async Task UpdateAsync(Carrito entity)
         {
-            var existing = await _context.Carrito.FindAsync(entity.IdCarrito);
-            // No tocamos IdProducto ni FechaCreacion
-            if (entity.IdCarrito != null)
-            {
-                _context.Entry(entity).Reference(e => e.IdUsuarioNavigation).IsModified = false;
-            }
+            var existing = await _context.Carrito
+                .FirstOrDefaultAsync(c => c.IdCarrito == entity.IdCarrito && c.IdUsuario == entity.IdUsuario);
 
-            await _context.SaveChangesAsync();
+            if (existing != null)
+            {
+                existing.Estado = false; // Cambiar el bit a 0
+
+                // No tocamos navegación ni otros campos
+                _context.Entry(existing).Property(e => e.Estado).IsModified = true;
+                _context.Entry(existing).Reference(e => e.IdUsuarioNavigation).IsModified = false;
+
+                await _context.SaveChangesAsync();
+            }
         }
+
     }
 }

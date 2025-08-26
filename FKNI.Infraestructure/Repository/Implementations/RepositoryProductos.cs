@@ -93,7 +93,7 @@ namespace FKNI.Infraestructure.Repository.Implementations
             // Actualizar propiedades simples
             productoEnDb.NombreProducto = dto.NombreProducto;
             productoEnDb.Descripcion = dto.Descripcion;
-            productoEnDb.Precio = dto.Precio;
+            productoEnDb.Precio = (int)dto.Precio;
             productoEnDb.Stock = dto.Stock;
             productoEnDb.IdCategoria = dto.IdCategoria;
 

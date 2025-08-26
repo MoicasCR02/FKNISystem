@@ -108,8 +108,8 @@ namespace FKNI.Web.Controllers
 
                     detallecarritoDTO.Subtotal = (int)producto.Precio;
                     detallecarritoDTO.Impuesto = 0.13;
-                    detallecarritoDTO.TotalImpuesto = detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto;
-                    detallecarritoDTO.Total = detallecarritoDTO.Subtotal + detallecarritoDTO.TotalImpuesto;
+                    detallecarritoDTO.TotalImpuesto = (int)(detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto);
+                    detallecarritoDTO.Total = detallecarritoDTO.Subtotal + (int)detallecarritoDTO.TotalImpuesto;
 
                     await _serviceDetalleCarrito.AddAsync(detallecarritoDTO);
                 }
@@ -123,9 +123,10 @@ namespace FKNI.Web.Controllers
                         Cantidad = existe.Cantidad + 1,
                         Talla = existe.Talla
                     };
-                    detallecarritoDTO.Subtotal = existe.Subtotal + existe.PrecioUnitario;
-                    detallecarritoDTO.TotalImpuesto = detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto;
-                    detallecarritoDTO.Total = detallecarritoDTO.Subtotal + detallecarritoDTO.TotalImpuesto;
+                    detallecarritoDTO.Subtotal = (int)existe.Subtotal + (int)producto.Precio;
+                    detallecarritoDTO.Impuesto = 0.13;
+                    detallecarritoDTO.TotalImpuesto = existe.TotalImpuesto + ((int)(detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto));
+                    detallecarritoDTO.Total = existe.Total + (detallecarritoDTO.Subtotal + (int)detallecarritoDTO.TotalImpuesto);
                     await _serviceDetalleCarrito.UpdateAsync(detallecarritoDTO);
                 }
 
