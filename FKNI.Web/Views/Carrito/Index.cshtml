@@ -337,9 +337,9 @@ else
                         }
                     } else {
                         fila.querySelector('.cantidad').textContent = data.cantidadRestante;
-                        fila.querySelector('.subtotal').textContent = `₡${data.subtotal.toFixed(2)}`;
-                        fila.querySelector('.total').textContent = `₡${data.total.toFixed(2)}`;
-                        fila.querySelector('.impuesto').textContent = `₡${data.totalImpuesto.toFixed(2)}`;
+                        fila.querySelector('.subtotal').textContent = `₡${data.subtotal}`;
+                        fila.querySelector('.total').textContent = `₡${data.total}`;
+                        fila.querySelector('.impuesto').textContent = `₡${data.totalImpuesto}`;
                         actualizarTotalesGenerales(data);
                     }
                 } else {
@@ -353,9 +353,9 @@ else
         }
 
         function actualizarTotalesGenerales(data) {
-            document.querySelector('.SubtotalProductos').textContent = `₡${data.subtotalProductos.toFixed(2)}`;
-            document.querySelector('.ImpuestoProductos').textContent = `₡${data.totalImpuestoProductos.toFixed(2)}`;
-            document.querySelector('.TotalProductos').textContent = `₡${data.totalProductos.toFixed(2)}`;
+            document.querySelector('.SubtotalProductos').textContent = `₡${data.subtotalProductos}`;
+            document.querySelector('.ImpuestoProductos').textContent = `₡${data.totalImpuestoProductos}`;
+            document.querySelector('.TotalProductos').textContent = `₡${data.totalProductos}`;
         }
 
         function showNotification(message, type = 'success') {

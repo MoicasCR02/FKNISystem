@@ -129,10 +129,11 @@ namespace FKNI.Web.Controllers
                         Cantidad = existe.Cantidad + 1,
                         Talla = existe.Talla
                     };
+
                     detallecarritoDTO.Subtotal = (int)existe.Subtotal + precio;
                     detallecarritoDTO.Impuesto = 0.13;
                     detallecarritoDTO.TotalImpuesto = existe.TotalImpuesto + ((int)(detallecarritoDTO.Subtotal * detallecarritoDTO.Impuesto));
-                    detallecarritoDTO.Total = existe.Total + (detallecarritoDTO.Subtotal + (int)detallecarritoDTO.TotalImpuesto);
+                    detallecarritoDTO.Total =(detallecarritoDTO.Subtotal + (int)detallecarritoDTO.TotalImpuesto);
                     await _serviceDetalleCarrito.UpdateAsync(detallecarritoDTO);
                 }
 
@@ -152,7 +153,7 @@ namespace FKNI.Web.Controllers
             var Total = 0d;
 
 
-            var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito,talla);
+            var eliminado = await _serviceDetalleCarrito.DeleteAsync(id_producto, id_carrito, talla);
 
             ViewBag.Mensaje = eliminado == null
                     ? "Se eliminó el producto del carrito"
@@ -161,12 +162,14 @@ namespace FKNI.Web.Controllers
             ViewBag.ListDetalleCarrito = await _serviceDetalleCarrito.FindByIdAsync(id_carrito);
 
             var detalles = await _serviceDetalleCarrito.FindByIdAsync(id_carrito);
-            foreach(var item in detalles)
-            {
-                Subtotal = eliminado.Subtotal;
-                TotalImpuesto = eliminado.TotalImpuesto;
-                Total = eliminado.Total;
+            foreach (var item in detalles) {
+                Subtotal += item.Subtotal;
+                TotalImpuesto += item.TotalImpuesto;
+                Total +=item.Total; 
             }
+
+
+
 
             if (eliminado == null)
             {
