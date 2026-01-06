@@ -25,17 +25,22 @@ The project follows a layered architecture to ensure scalability, maintainabilit
 
 FKNISystem
 │
--
-├── Application
--
-│ └── Business logic, use cases, and services
-│
-├── Infrastructure
-│ └── Database access, repositories, and external services
-│
-└── Web
-└── User interface, controllers, and presentation layer
 
+├── Application
+
+│ └── Business logic, use cases, and services
+
+│
+
+├── Infrastructure
+
+│ └── Database access, repositories, and external services
+
+│
+
+└── Web
+
+└── User interface, controllers, and presentation layer
 
 ---
 
