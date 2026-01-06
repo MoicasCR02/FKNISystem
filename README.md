@@ -23,6 +23,7 @@ It provides both customer-facing and administrative functionalities, covering th
 ## 🧱 Project Architecture
 The project follows a layered architecture to ensure scalability, maintainability, and separation of concerns:
 
+```text
 FKNISystem
 │
 ├── Application
@@ -34,6 +35,7 @@ FKNISystem
 └── Web
     └── User interface, controllers, and presentation layer
 
+```
 ---
 
 ## ✨ Main Features
