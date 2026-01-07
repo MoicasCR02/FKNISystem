@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    //aja
     environment {
         SOLUTION = 'FKNI.Web.sln'
         TEST_PROJECT = 'FKNI.Tests/FKNI.Tests.csproj'
