@@ -40,7 +40,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 // Genera un archivo fijo de resultados
-                bat "dotnet test ${env.TEST_PROJECT} --configuration Release --no-build --logger \"trx;LogFileName=test_results.trx\""
+                bat "dotnet test ${env.TEST_PROJECT} --configuration Release --no-build --logger \"trx;LogFileName=test_results.trx\" --results-directory TestResults"
             }
         }
 
