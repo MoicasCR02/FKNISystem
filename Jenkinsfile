@@ -2,14 +2,6 @@ pipeline {
     agent any
 
     environment {
-        GIT_BRANCH = 'master'
-        GIT_URL    = 'https://github.com/MoicasCR02/FKNISystem'
-
-        SOLUTION = 'FKNI.Web.sln'
-pipeline {
-    agent any
-
-    environment {
         SOLUTION = 'FKNI.Web.sln'
         TEST_PROJECT = 'FKNI.Tests/FKNI.Tests.csproj'
     }
@@ -43,3 +35,4 @@ pipeline {
         }
     }
 }
+
