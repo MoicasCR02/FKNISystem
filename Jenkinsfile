@@ -4,7 +4,7 @@ pipeline {
     // Variables de configuración (ajústalas a tu entorno) ok
     environment {
         // Git
-        GIT_BRANCH = 'main'
+        GIT_BRANCH = 'master'
         GIT_URL    = 'https://github.com/usuario/FKNI.git'
 
         // SonarQube
