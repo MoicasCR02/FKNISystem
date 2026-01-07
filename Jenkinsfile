@@ -31,8 +31,10 @@ pipeline {
 
     post {
         always {
-            junit 'TestResults/test_results.trx'
-        }
+            step([$class: 'MSTestPublisher', testResultsFile: 'TestResults/test_results.trx'])
+               }
+         }
+
     }
 }
 
