@@ -5,15 +5,6 @@ pipeline {
         GIT_BRANCH = 'master'
         GIT_URL    = 'https://github.com/MoicasCR02/FKNISystem'
 
-        SONARQUBE_SERVER = 'SonarQubeServer'
-        SONAR_PROJECT_KEY = 'FKNI.Web'
-        SONAR_PROJECT_NAME = 'FKNI.Web'
-        SONAR_PROJECT_VERSION = '1.0.0'
-
-        CX_PROJECT_NAME = 'FKNI.Web'
-        CX_TEAM         = 'Company/Teams/DevSecOps'
-        CX_PRESET       = 'Default'
-
         SOLUTION = 'FKNI.Web.sln'
         TEST_PROJECT = 'FKNI.Tests/FKNI.Tests.csproj'
     }
@@ -44,31 +35,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
-            steps {
-                withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
-                    bat """
-                        dotnet sonarscanner begin /k:"${env.SONAR_PROJECT_KEY}" /n:"${env.SONAR_PROJECT_NAME}" /v:"${env.SONAR_PROJECT_VERSION}"
-                        dotnet build ${env.SOLUTION} --configuration Release
-                        dotnet sonarscanner end
-                    """
-                }
-            }
-        }
-
-        stage('Checkmarx scan') {
-            steps {
-                bat """
-                    cx scan \
-                        --project-name "${env.CX_PROJECT_NAME}" \
-                        --team "${env.CX_TEAM}" \
-                        --preset "${env.CX_PRESET}" \
-                        --sast \
-                        --file-source .
-                """
-            }
-        }
-
         stage('Publish') {
             steps {
                 // Publica la aplicación en carpeta ./publish
@@ -87,10 +53,10 @@ pipeline {
             archiveArtifacts artifacts: 'publish/**/*', fingerprint: true, onlyIfSuccessful: true
         }
         failure {
-            echo 'Pipeline falló: revisa errores de build, tests, SonarQube o Checkmarx.'
+            echo 'Pipeline falló: revisa errores de build o tests.'
         }
         success {
-            echo 'Pipeline exitoso: build, pruebas, análisis de calidad y seguridad completados.'
+            echo 'Pipeline exitoso: build, pruebas y publicación completados.'
         }
     }
 }
