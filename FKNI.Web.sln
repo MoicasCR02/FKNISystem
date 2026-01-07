@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FKNI.Web", "FKNI.Web\FKNI.Web.csproj", "{97E86F99-F68C-434C-97E6-0F01AFCCEEA0}"
 EndProject
@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FKNI.Infraestructure", "FKNI.Infraestructure\FKNI.Infraestructure.csproj", "{17DA023D-7135-4249-8158-A21F18159CB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FKNI.Tests", "FKNI.Tests\FKNI.Tests.csproj", "{30C2F396-E50F-49D5-A791-DBE9E0CF738A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{AAAF37AA-F180-4C86-8528-7899148DCC9D}"
+	ProjectSection(SolutionItems) = preProject
+		JenkinsFile = JenkinsFile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
