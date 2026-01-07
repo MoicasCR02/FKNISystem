@@ -19,7 +19,7 @@ pipeline {
 
         // Checkmarx (CxCLI o CxFlow según tu instalación)
         // Ajusta estos valores a tu proyecto de Checkmarx
-        CX_PROJECT_NAME = 'FKNI'
+        CX_PROJECT_NAME = 'FKNI.Web'
         CX_TEAM         = 'Company/Teams/DevSecOps'
         CX_PRESET       = 'Default'
         // Referencia a credenciales configuradas en Jenkins
