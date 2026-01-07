@@ -81,7 +81,7 @@ pipeline {
     post {
         always {
             // Publica resultados de pruebas
-            junit '**/test_results.trx'
+            junit 'TestResults/test_results.trx'
 
             // Archiva artefactos publicados
             archiveArtifacts artifacts: 'publish/**/*', fingerprint: true, onlyIfSuccessful: true
