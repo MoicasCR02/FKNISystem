@@ -27,7 +27,7 @@ pipeline {
         // CX_PASSWORD = credentials('CX_PASSWORD_ID')
 
         // .NET
-        SOLUTION = 'FKNI.sln'
+        SOLUTION = 'FKNI.Web.sln'
         TEST_PROJECT = 'FKNI.Tests/FKNI.Tests.csproj'
     }
 
