@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FKNI.Infraestructure", "FKN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FKNI.Tests", "FKNI.Tests\FKNI.Tests.csproj", "{30C2F396-E50F-49D5-A791-DBE9E0CF738A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{AAAF37AA-F180-4C86-8528-7899148DCC9D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{208FF036-01BA-4E63-85AD-31AA7C4843FD}"
 	ProjectSection(SolutionItems) = preProject
-		JenkinsFile = JenkinsFile
+		Jenkinsfile = Jenkinsfile
 	EndProjectSection
 EndProject
 Global
