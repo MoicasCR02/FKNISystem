@@ -97,7 +97,7 @@ pipeline {
 
         stage('Publish (opcional)') {
             steps {
-                bat "dotnet publish ${env.SOLUTION} -c Release -o ./publish"
+               bat 'dotnet test FKNI.Tests/FKNI.Tests.csproj --logger "trx;LogFileName=test_results.trx"'
                 echo 'Publicación lista en ./publish (integra copia a servidor o build de Docker según tu flujo).'
             }
         }
@@ -106,7 +106,7 @@ pipeline {
     post {
         always {
             // Publica resultados de pruebas
-            junit '**/TestResults/*.trx'
+            junit '**/test_results.trx'
 
             // Archiva artefactos (opcional)
             archiveArtifacts artifacts: 'publish/**/*', fingerprint: true, onlyIfSuccessful: true
