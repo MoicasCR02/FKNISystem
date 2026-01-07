@@ -5,7 +5,7 @@ pipeline {
     environment {
         // Git
         GIT_BRANCH = 'master'
-        GIT_URL    = 'https://github.com/usuario/FKNI.git'
+        GIT_URL    = 'https://github.com/MoicasCR02/FKNISystem'
 
         // SonarQube
         // Este nombre debe coincidir con el "Name" del servidor configurado en Jenkins (Manage Jenkins > Configure System > SonarQube servers)
