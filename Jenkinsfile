@@ -10,8 +10,8 @@ pipeline {
         // SonarQube
         // Este nombre debe coincidir con el "Name" del servidor configurado en Jenkins (Manage Jenkins > Configure System > SonarQube servers)
         SONARQUBE_SERVER = 'SonarQubeServer'
-        SONAR_PROJECT_KEY = 'FKNI'
-        SONAR_PROJECT_NAME = 'FKNI'
+        SONAR_PROJECT_KEY = 'FKNI.Web'
+        SONAR_PROJECT_NAME = 'FKNI.web'
         SONAR_PROJECT_VERSION = '1.0.0'
         // Usa credenciales seguras en Jenkins (Credentials) y referéncialas con withCredentials
         // Si usas token de login clásico:
