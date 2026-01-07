@@ -39,8 +39,8 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                // Genera un archivo fijo de resultados
-                bat "dotnet test ${env.TEST_PROJECT} --configuration Release --no-build --logger \"trx;LogFileName=test_results.trx\" --results-directory TestResults"
+                // Genera el archivo .trx en la carpeta del workspace
+                bat "dotnet test ${env.TEST_PROJECT} --configuration Release --no-build --logger \"trx;LogFileName=test_results.trx\" --results-directory \"${env.WORKSPACE}\\TestResults\""
             }
         }
 
@@ -80,7 +80,7 @@ pipeline {
 
     post {
         always {
-            // Publica resultados de pruebas
+            // Publica resultados de pruebas desde la carpeta fija
             junit 'TestResults/test_results.trx'
 
             // Archiva artefactos publicados
