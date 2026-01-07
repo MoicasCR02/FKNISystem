@@ -30,11 +30,9 @@ pipeline {
     }
 
     post {
-        always {
-            step([$class: 'MSTestPublisher', testResultsFile: 'TestResults/test_results.trx'])
-               }
+    always {
+        step([$class: 'MSTestPublisher', testResultsFile: 'TestResults/test_results.trx'])
+           }
          }
-
-    }
 }
 
